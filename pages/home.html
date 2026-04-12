@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="id" dir="ltr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+
+  <title>Beranda — DENTAVIZION</title>
+  <meta name="description" content="Halaman utama DENTAVIZION. Mulai petualangan kesehatan gigi dan mulutmu!">
+
+  <!-- PWA Meta -->
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#2BAA8E">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/pages/home.css">
+</head>
+
+<body>
+  <!-- Skip Link -->
+  <a href="#main-content" class="skip-link" id="skip-link">
+    Langsung ke konten utama
+  </a>
+
+  <!-- Live Region -->
+  <div id="a11y-announcer" class="a11y-announcement" aria-live="polite" aria-atomic="true" role="status"></div>
+
+  <!-- ======================== -->
+  <!-- HOME PAGE (BERANDA)      -->
+  <!-- ======================== -->
+  <div class="app-shell">
+
+    <!-- ─── Header ─── -->
+    <header class="home-header" role="banner">
+      <div class="home-header__top">
+        <div class="home-header__brand">
+          <div class="home-header__logo" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="white" width="18" height="18">
+              <path
+                d="M12 2C9.24 2 7 4.24 7 7c0 1.47.5 2.83 1.33 3.92C9.08 12.05 10 14.42 10 17v2a2 2 0 004 0v-2c0-2.58.92-4.95 1.67-6.08A6.94 6.94 0 0017 7c0-2.76-2.24-5-5-5z" />
+            </svg>
+          </div>
+          <span class="home-header__brand-text">DENTAVIZION</span>
+        </div>
+        <button id="btn-profile" class="home-header__avatar" aria-label="Buka profil pengguna"
+          data-a11y-read="Tombol profil pengguna">
+          <img src="../assets/images/mascot-tooth.png" alt="Avatar" width="36" height="36">
+        </button>
+      </div>
+
+      <!-- Level Badge + Greeting -->
+      <div class="home-header__greeting">
+        <div class="home-header__level-badge">
+          <span class="level-dot" aria-hidden="true"></span>
+          <span class="level-text">LEVEL 5: PENJAGA GIGI</span>
+        </div>
+        <h1 class="home-header__name">Halo, Sahabat!</h1>
+        <p class="home-header__subtitle">Gigi kamu sudah 85% sehat minggu ini. Yuk, tuntaskan hari ini!</p>
+      </div>
+
+      <!-- Today's Mission Pill -->
+      <a href="brushing-guide.html" class="mission-pill" aria-label="Misi hari ini: Sikat Gigi Sore">
+        <div class="mission-pill__icon-wrap">
+          <span class="mission-pill__icon">🎯</span>
+        </div>
+        <div class="mission-pill__content">
+          <span class="mission-pill__label">MISI HARI INI</span>
+          <span class="mission-pill__text">Sikat Gigi Sore</span>
+        </div>
+        <svg class="mission-pill__arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </a>
+    </header>
+
+    <!-- ─── Main Content ─── -->
+    <main id="main-content" class="home-main" role="main">
+
+      <!-- ── Hero CTA Card ── -->
+      <section class="hero-card" aria-labelledby="hero-title">
+        <div class="hero-card__visual">
+          <img src="../assets/images/hero-brushing.png" alt="Maskot gigi pahlawan" class="hero-card__img" width="160"
+            height="160" loading="eager">
+        </div>
+        <div class="hero-card__body">
+          <h2 id="hero-title" class="hero-card__title">
+            Waktunya menjaga<br>senyummu!
+          </h2>
+          <p class="hero-card__desc">
+            Ayo pelajari cara menyikat gigi yang benar melalui petualangan seru hari ini.
+          </p>
+          <a href="modules.html" class="hero-card__btn" id="btn-start-learning" aria-label="Mulai belajar menyikat gigi"
+            data-a11y-read="Tombol mulai belajar. Tekan untuk memulai petualangan menyikat gigi.">
+            Mulai Belajar
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </a>
+        </div>
+      </section>
+
+      <!-- ── Materi Seru ── -->
+      <section class="section-block" aria-labelledby="materials-title">
+        <div class="section-header">
+          <h2 id="materials-title" class="section-header__title">Materi Seru</h2>
+          <a href="modules.html" class="section-header__link" aria-label="Lihat semua materi belajar">
+            Lihat Semua <span aria-hidden="true">›</span>
+          </a>
+        </div>
+        <div class="materials-rail" role="list">
+          <!-- Card 1: Brushing -->
+          <a href="brushing-guide.html" class="mat-card" role="listitem" aria-label="Cara Sikat Gigi 2 Menit">
+            <div class="mat-card__thumb">
+              <img src="../assets/images/material-brushing.png" alt="" loading="lazy">
+              <span class="mat-card__tag mat-card__tag--teal">TIPS</span>
+            </div>
+            <div class="mat-card__body">
+              <h3 class="mat-card__title">Cara Sikat Gigi 2 Menit</h3>
+              <p class="mat-card__desc">Ikuti langkah ini agar sikat gigi jadi lebih seru!</p>
+            </div>
+          </a>
+          <!-- Card 2: Food -->
+          <a href="#" class="mat-card" role="listitem" aria-label="Makanan Sehat untuk Gigi">
+            <div class="mat-card__thumb">
+              <img src="../assets/images/material-food.png" alt="" loading="lazy">
+              <span class="mat-card__tag mat-card__tag--coral">BARU</span>
+            </div>
+            <div class="mat-card__body">
+              <h3 class="mat-card__title">Makanan Sehat Gigi</h3>
+              <p class="mat-card__desc">Cari tahu makanan yang bikin gigimu super kuat!</p>
+            </div>
+          </a>
+          <!-- Card 3: Clinic -->
+          <a href="#" class="mat-card" role="listitem" aria-label="Kunjungan ke Dokter Gigi">
+            <div class="mat-card__thumb">
+              <img src="../assets/images/mascot-tooth.png" alt="" loading="lazy">
+              <span class="mat-card__tag mat-card__tag--green">MODUL</span>
+            </div>
+            <div class="mat-card__body">
+              <h3 class="mat-card__title">Dokter Gigi Temanmu</h3>
+              <p class="mat-card__desc">Ayo lihat apa saja di ruang periksa.</p>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <!-- ── Progress Card ── -->
+      <section class="section-block" aria-labelledby="progress-title">
+        <div class="progress-card">
+          <!-- Circular Progress -->
+          <div class="progress-card__ring-wrap" aria-label="85 persen">
+            <svg viewBox="0 0 120 120" class="progress-ring" aria-hidden="true">
+              <circle cx="60" cy="60" r="50" class="progress-ring__track" />
+              <circle cx="60" cy="60" r="50" class="progress-ring__bar"
+                style="stroke-dasharray: 314; stroke-dashoffset: 47;" />
+            </svg>
+            <div class="progress-ring__label">
+              <span class="progress-ring__pct">85%</span>
+              <span class="progress-ring__sub">Skor Gigiku</span>
+            </div>
+          </div>
+          <!-- Text -->
+          <h2 id="progress-title" class="progress-card__heading">Luar Biasa!</h2>
+          <p class="progress-card__text">
+            Satu langkah lagi untuk mendapatkan lencana <strong>Pahlawan Dental</strong>.
+            Kamu sudah rajin menyikat gigi? Hebat banget!
+          </p>
+          <!-- Stat Chips -->
+          <div class="progress-card__chips">
+            <div class="chip chip--green">
+              <span aria-hidden="true">🔥</span> 12 Hari Beruntun
+            </div>
+            <div class="chip chip--mint">
+              <span aria-hidden="true">🦷</span> 42 Gigi Bersih
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Weekly Challenge ── -->
+      <section class="section-block" aria-labelledby="challenge-title">
+        <div class="challenge-card">
+          <div class="challenge-card__accent" aria-hidden="true"></div>
+          <div class="challenge-card__inner">
+            <div class="challenge-card__icon" aria-hidden="true">🏆</div>
+            <div class="challenge-card__content">
+              <h2 id="challenge-title" class="challenge-card__title">Tantangan Mingguan</h2>
+              <p class="challenge-card__text">Kumpulkan 500 coin untuk membuka stiker baru!</p>
+            </div>
+          </div>
+          <button class="challenge-card__btn" id="btn-leaderboard" aria-label="Lihat papan skor tantangan mingguan"
+            data-a11y-read="Tombol papan skor. Tekan untuk melihat peringkatmu.">
+            Lihat Papan Skor
+          </button>
+        </div>
+      </section>
+
+      <!-- Spacer for bottom nav -->
+      <div style="height: 90px;" aria-hidden="true"></div>
+    </main>
+
+    <!-- ─── Bottom Navigation ─── -->
+    <nav class="btm-nav" role="navigation" aria-label="Menu utama">
+      <a href="home.html" class="btm-nav__item btm-nav__item--active" aria-label="Beranda, halaman aktif"
+        aria-current="page" id="nav-home">
+        <svg class="btm-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+        <span>BERANDA</span>
+      </a>
+      <a href="modules.html" class="btm-nav__item" aria-label="Modul pembelajaran" id="nav-modules">
+        <svg class="btm-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
+        </svg>
+        <span>MODUL</span>
+      </a>
+      <a href="schedule.html" class="btm-nav__item" aria-label="Jadwal sikat gigi" id="nav-schedule">
+        <svg class="btm-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+          <line x1="16" y1="2" x2="16" y2="6" />
+          <line x1="8" y1="2" x2="8" y2="6" />
+          <line x1="3" y1="10" x2="21" y2="10" />
+        </svg>
+        <span>JADWAL</span>
+      </a>
+      <a href="profile.html" class="btm-nav__item" aria-label="Profil pengguna" id="nav-profile">
+        <svg class="btm-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+        <span>PROFIL</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/accessibility.js"></script>
+  <script src="../js/pwa.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const mode = localStorage.getItem('dentavizion-mode');
+
+      // Guard: redirect to mode selection if not chosen
+      if (!mode) {
+        window.location.href = '../index.html';
+        return;
+      }
+
+      document.documentElement.setAttribute('data-mode', mode);
+
+      // TTS only for blind/audio mode
+      if (typeof DentaA11y !== 'undefined' && mode === 'blind') {
+        DentaA11y.announceToScreenReader('Halaman Beranda. Selamat datang di DENTAVIZION.');
+        DentaA11y.speak('Selamat datang di Beranda DENTAVIZION. Kamu bisa mulai belajar, melihat materi seru, atau cek tantangan mingguan.', true);
+      }
+
+      // Animate progress ring on scroll
+      const ring = document.querySelector('.progress-ring__bar');
+      if (ring) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(e => {
+            if (e.isIntersecting) {
+              ring.classList.add('progress-ring__bar--animate');
+              observer.unobserve(e.target);
+            }
+          });
+        }, { threshold: 0.5 });
+        observer.observe(ring.closest('.progress-card'));
+      }
+    });
+  </script>
+</body>
+
+</html>

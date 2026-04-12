@@ -1,0 +1,717 @@
+/* ============================================
+   DENTAVIZION — Schedule / Jadwal Page
+   Daily brushing schedule & alarm settings
+   ============================================ */
+
+.app-shell {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--color-bg-primary);
+  max-width: var(--container-max);
+  margin: 0 auto;
+  position: relative;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   HEADER
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.sch-header {
+  background: linear-gradient(180deg, #E8F5F0 0%, #F0FAF6 60%, var(--color-bg-primary) 100%);
+  padding: var(--space-md) var(--space-lg) var(--space-lg);
+}
+
+.sch-header__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-xl);
+}
+
+.sch-header__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.sch-header__logo {
+  width: 28px;
+  height: 28px;
+  background: var(--color-primary-gradient);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(43, 170, 142, 0.25);
+}
+
+.sch-header__brand-text {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+}
+
+.sch-header__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--color-primary);
+  box-shadow: 0 2px 8px rgba(43, 170, 142, 0.2);
+  padding: 0;
+  background: var(--color-primary-50);
+  cursor: pointer;
+}
+
+.sch-header__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sch-header__title {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  line-height: 1.15;
+  margin-bottom: 4px;
+}
+
+.sch-header__subtitle {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   MAIN
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.sch-main {
+  padding: 0 var(--space-lg);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   DAY SELECTOR
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.day-selector {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 4px 0 16px;
+  margin-bottom: 8px;
+}
+
+.day-selector::-webkit-scrollbar { display: none; }
+
+.day-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 52px;
+  padding: 10px 8px 12px;
+  border-radius: 20px;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  flex-shrink: 0;
+  font-family: var(--font-family);
+  position: relative;
+}
+
+.day-pill:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-50);
+}
+
+.day-pill--active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 16px rgba(43, 170, 142, 0.3);
+}
+
+.day-pill__name {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--color-text-tertiary);
+  letter-spacing: 0.04em;
+}
+
+.day-pill--active .day-pill__name {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.day-pill__num {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+}
+
+.day-pill--active .day-pill__num {
+  color: #FFFFFF;
+}
+
+.day-pill__dot {
+  width: 4px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+  margin-top: 2px;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   BRUSHING CARDS
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.brush-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.brush-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 18px;
+  animation: fadeInUp 0.4s ease both;
+}
+
+.brush-card:nth-child(2) { animation-delay: 0.08s; }
+
+.brush-card--morning {
+  background: rgba(43, 170, 142, 0.08);
+  border: 1px solid rgba(43, 170, 142, 0.1);
+}
+
+.brush-card--night {
+  background: rgba(43, 170, 142, 0.12);
+  border: 1px solid rgba(43, 170, 142, 0.15);
+}
+
+.brush-card__icon {
+  font-size: 22px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.brush-card__body { flex: 1; }
+
+.brush-card__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 1px;
+}
+
+.brush-card__sub {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+/* Toggle Switch */
+.brush-card__toggle {
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.brush-card__toggle-track {
+  display: block;
+  width: 38px;
+  height: 22px;
+  border-radius: 11px;
+  background: #D0D0D0;
+  position: relative;
+  transition: background var(--transition-base);
+}
+
+.brush-card__toggle-track--on {
+  background: var(--color-primary);
+}
+
+.brush-card__toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  transition: transform var(--transition-base);
+}
+
+.brush-card__toggle-thumb--on {
+  transform: translateX(16px);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   REMINDER CARD
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.reminder-card {
+  background: #FFFFFF;
+  border-radius: 22px;
+  padding: 20px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  margin-bottom: 16px;
+  animation: fadeInUp 0.5s ease 0.15s both;
+}
+
+.reminder-card__title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.reminder-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.reminder-card__divider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.05);
+  margin: 12px 0;
+}
+
+.reminder-card__label {
+  display: block;
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--color-text-tertiary);
+  letter-spacing: 0.06em;
+  margin-bottom: 2px;
+}
+
+.reminder-card__time {
+  display: block;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+
+/* Reminder Toggle */
+.reminder-toggle {
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.reminder-toggle__track {
+  display: block;
+  width: 44px;
+  height: 26px;
+  border-radius: 13px;
+  background: #D0D0D0;
+  position: relative;
+  transition: background var(--transition-base);
+}
+
+.reminder-toggle--on .reminder-toggle__track {
+  background: var(--color-primary);
+}
+
+.reminder-toggle__thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  transition: transform var(--transition-base);
+}
+
+.reminder-toggle--on .reminder-toggle__thumb {
+  transform: translateX(18px);
+}
+
+/* Pasang Alarm Button */
+.reminder-card__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 13px;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #F4845F 0%, #FF9E80 100%);
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-family);
+  margin-top: 18px;
+  box-shadow: 0 4px 16px rgba(244, 132, 95, 0.3);
+  transition: all var(--transition-base);
+}
+
+.reminder-card__btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(244, 132, 95, 0.4);
+}
+
+.reminder-card__btn:active {
+  transform: scale(0.97);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   HEALTH TRACKER ROW
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.health-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+  animation: fadeInUp 0.5s ease 0.25s both;
+}
+
+.health-card {
+  background: #FFFFFF;
+  border-radius: 18px;
+  padding: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+}
+
+.health-card__icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.health-card__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 2px;
+}
+
+.health-card__sub {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  margin-bottom: 10px;
+}
+
+.health-card__bar {
+  width: 100%;
+  height: 6px;
+  background: #EEE;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.health-card__bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.6s ease;
+}
+
+.health-card--water .health-card__bar-fill {
+  background: linear-gradient(90deg, #64B5F6, #42A5F5);
+}
+
+.health-card--fruit .health-card__bar-fill {
+  background: linear-gradient(90deg, #81C784, #66BB6A);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ALARM MODAL (Bottom Sheet)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.alarm-modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.alarm-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.alarm-modal__sheet {
+  position: relative;
+  background: #FFFFFF;
+  border-radius: 28px 28px 0 0;
+  padding: 24px var(--space-lg) calc(24px + env(safe-area-inset-bottom));
+  width: 100%;
+  max-width: var(--container-max);
+  max-height: 85vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 -4px 32px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.alarm-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.alarm-modal__title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+.alarm-modal__close {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  background: none;
+  border: none;
+  transition: all var(--transition-fast);
+}
+
+.alarm-modal__close:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* Alarm Section */
+.alarm-section {
+  margin-bottom: 24px;
+}
+
+.alarm-section__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.alarm-section__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.alarm-section__icon--morning {
+  background: #FFF8E1;
+}
+
+.alarm-section__icon--night {
+  background: #E8EAF6;
+}
+
+.alarm-section__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.alarm-section__sub {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+/* Time Picker */
+.time-picker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: var(--color-bg-primary);
+  border-radius: 18px;
+  padding: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.time-picker__col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.time-picker__arrow {
+  width: 36px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  color: var(--color-text-tertiary);
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all var(--transition-fast);
+  font-family: var(--font-family);
+}
+
+.time-picker__arrow:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--color-text-primary);
+}
+
+.time-picker__arrow:active {
+  transform: scale(0.9);
+}
+
+.time-picker__value {
+  font-size: 40px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  line-height: 1;
+  min-width: 60px;
+  text-align: center;
+}
+
+.time-picker__sep {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--color-text-tertiary);
+  margin-bottom: 4px;
+}
+
+/* Repeat Toggle */
+.alarm-repeat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  margin-bottom: 16px;
+}
+
+.alarm-repeat__left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.alarm-repeat__text {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+/* Save Button */
+.alarm-save {
+  width: 100%;
+  padding: 15px;
+  border-radius: 50px;
+  background: none;
+  border: 2px solid rgba(0, 0, 0, 0.08);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  font-family: var(--font-family);
+  transition: all var(--transition-base);
+}
+
+.alarm-save:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.alarm-save:active {
+  transform: scale(0.98);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   BOTTOM NAVIGATION
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.btm-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: var(--container-max);
+  height: 62px;
+  background: #FFFFFF;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: var(--z-sticky);
+  padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.04);
+}
+
+.btm-nav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 12px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #B0BEC5;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  border-radius: 10px;
+  min-width: 56px;
+  position: relative;
+}
+
+.btm-nav__item--active { color: var(--color-primary); }
+
+.btm-nav__item--active::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  width: 4px;
+  height: 4px;
+  background: var(--color-primary);
+  border-radius: 50%;
+}
+
+.btm-nav__item:hover { color: var(--color-primary); }
+
+.btm-nav__icon { width: 22px; height: 22px; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   RESPONSIVE
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@media (max-width: 350px) {
+  .sch-header__title { font-size: 24px; }
+  .reminder-card__time { font-size: 20px; }
+  .time-picker__value { font-size: 32px; }
+}

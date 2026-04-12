@@ -1,0 +1,145 @@
+/* ============================================
+   DENTAVIZION — Design Tokens
+   All CSS custom properties for the design system
+   ============================================ */
+
+:root {
+  /* ── Color Palette ── */
+  /* Primary Colors */
+  --color-primary: #2BAA8E;
+  --color-primary-dark: #229478;
+  --color-primary-light: #3EC4A6;
+  --color-primary-50: #E8F5F0;
+  --color-primary-100: #C5E8DD;
+  --color-primary-200: #9ED9C9;
+  --color-primary-gradient: linear-gradient(135deg, #2BAA8E 0%, #3EC4A6 100%);
+
+  /* Accent / Coral */
+  --color-accent: #F4845F;
+  --color-accent-dark: #E06D47;
+  --color-accent-light: #FF9E80;
+  --color-accent-50: #FFF0EB;
+  --color-accent-100: #FFD9CC;
+  --color-accent-gradient: linear-gradient(135deg, #F4845F 0%, #FF9E80 100%);
+
+  /* Backgrounds */
+  --color-bg-primary: #F5FBF8;
+  --color-bg-secondary: #FFFFFF;
+  --color-bg-card: #FFFFFF;
+  --color-bg-card-green: #E8F5F0;
+  --color-bg-card-coral: #FFF0EB;
+  --color-bg-card-yellow: #FFF8E1;
+  --color-bg-overlay: rgba(0, 0, 0, 0.4);
+
+  /* Text Colors */
+  --color-text-primary: #1A2B2F;
+  --color-text-secondary: #6B7C80;
+  --color-text-tertiary: #9AABAF;
+  --color-text-inverse: #FFFFFF;
+  --color-text-accent: #2BAA8E;
+  --color-text-coral: #F4845F;
+
+  /* Status Colors */
+  --color-success: #4CAF50;
+  --color-warning: #FFC107;
+  --color-error: #F44336;
+  --color-info: #2196F3;
+
+  /* ── Typography ── */
+  --font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-medium: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* Font Sizes — fluid scale */
+  --text-xs: clamp(0.625rem, 0.6rem + 0.15vw, 0.75rem);      /* 10-12px */
+  --text-sm: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);        /* 12-14px */
+  --text-base: clamp(0.875rem, 0.83rem + 0.25vw, 1rem);        /* 14-16px */
+  --text-lg: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);           /* 16-18px */
+  --text-xl: clamp(1.125rem, 1.05rem + 0.4vw, 1.25rem);        /* 18-20px */
+  --text-2xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);         /* 20-24px */
+  --text-3xl: clamp(1.5rem, 1.35rem + 0.7vw, 1.875rem);        /* 24-30px */
+  --text-4xl: clamp(1.875rem, 1.7rem + 0.9vw, 2.25rem);        /* 30-36px */
+
+  /* Line Heights */
+  --leading-tight: 1.2;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.7;
+
+  /* ── Spacing ── */
+  --space-2xs: 0.25rem;   /* 4px */
+  --space-xs: 0.5rem;     /* 8px */
+  --space-sm: 0.75rem;    /* 12px */
+  --space-md: 1rem;       /* 16px */
+  --space-lg: 1.25rem;    /* 20px */
+  --space-xl: 1.5rem;     /* 24px */
+  --space-2xl: 2rem;      /* 32px */
+  --space-3xl: 2.5rem;    /* 40px */
+  --space-4xl: 3rem;      /* 48px */
+
+  /* ── Layout ── */
+  --container-max: 430px;
+  --container-padding: var(--space-lg);
+  --nav-height: 64px;
+  --header-height: 56px;
+
+  /* ── Border Radius ── */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* ── Shadows ── */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.12);
+  --shadow-glow-primary: 0 4px 24px rgba(43, 170, 142, 0.25);
+  --shadow-glow-accent: 0 4px 24px rgba(244, 132, 95, 0.25);
+
+  /* ── Transitions ── */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+  --transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── Z-Index Scale ── */
+  --z-base: 1;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-overlay: 30;
+  --z-modal: 40;
+  --z-toast: 50;
+  --z-tooltip: 60;
+}
+
+/* ── High Contrast Mode (Blind/Audio Path) ── */
+[data-mode="blind"] {
+  --color-primary: #008066;
+  --color-primary-dark: #006B55;
+  --color-accent: #E05530;
+  --color-text-primary: #000000;
+  --color-text-secondary: #333333;
+  --color-bg-primary: #FFFFFF;
+  --color-bg-card: #F0F0F0;
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: 0ms;
+    --transition-base: 0ms;
+    --transition-slow: 0ms;
+    --transition-spring: 0ms;
+  }
+}
+
+/* ── Dark Mode (optional future support) ── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Reserved for future dark mode implementation */
+  }
+}

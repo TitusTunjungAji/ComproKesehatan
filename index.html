@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="id" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  
+  <!-- SEO & Meta -->
+  <title>DENTAVIZION — Edukasi Gigi Inklusif untuk Semua</title>
+  <meta name="description" content="Platform edukasi kesehatan gigi dan mulut yang inklusif untuk siswa SLB. Belajar menyikat gigi dengan cara yang seru dan mudah diakses!">
+  <meta name="keywords" content="edukasi gigi, kesehatan mulut, SLB, inklusif, tunarungu, tunanetra, sikat gigi, dental education">
+  <meta name="author" content="DENTAVIZION Team">
+  <meta name="robots" content="index, follow">
+  
+  <!-- PWA Meta -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2BAA8E">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="DENTAVIZION">
+  <meta name="msapplication-TileColor" content="#2BAA8E">
+  
+  <!-- Favicons & Icons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/icon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/icon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/icon-192x192.png">
+  
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages/landing.css">
+</head>
+
+<body>
+  <!-- Skip to Main Content — Screen Reader -->
+  <a href="#main-content" class="skip-link" id="skip-link">
+    Langsung ke konten utama
+  </a>
+
+  <!-- Live Region for Accessibility Announcements -->
+  <div id="a11y-announcer" 
+       class="a11y-announcement" 
+       aria-live="polite" 
+       aria-atomic="true"
+       role="status">
+  </div>
+
+  <!-- ======================== -->
+  <!-- LANDING PAGE             -->
+  <!-- ======================== -->
+  <main id="main-content" class="landing" role="main">
+    
+    <!-- Header / Branding -->
+    <header class="landing__header" role="banner">
+      <div class="landing__logo-container">
+        <div class="landing__logo-icon" aria-hidden="true">
+          <!-- Tooth SVG Icon -->
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M12 2C9.24 2 7 4.24 7 7c0 1.47.5 2.83 1.33 3.92C9.08 12.05 10 14.42 10 17v2a2 2 0 004 0v-2c0-2.58.92-4.95 1.67-6.08A6.94 6.94 0 0017 7c0-2.76-2.24-5-5-5z" fill="white"/>
+            <path d="M12 2C14.76 2 17 4.24 17 7c0 1.47-.5 2.83-1.33 3.92C14.92 12.05 14 14.42 14 17v2a2 2 0 01-2 2" fill="rgba(255,255,255,0.7)"/>
+          </svg>
+        </div>
+        <span class="landing__logo-text" aria-label="DENTAVIZION">
+          DENTA<span>VIZION</span>
+        </span>
+      </div>
+
+      <h1 class="landing__title">
+        Selamat Datang! 👋
+      </h1>
+      <p class="landing__subtitle">
+        Yuk belajar menjaga kesehatan gigi dan mulut dengan cara yang seru!
+      </p>
+    </header>
+
+    <!-- Mascot Illustration -->
+    <div class="landing__mascot" 
+         role="img"
+         aria-label="Maskot gigi yang tersenyum">
+      <img src="assets/images/mascot-tooth.png" 
+           alt="Maskot DENTAVIZION — gigi pahlawan yang tersenyum"
+           width="180" 
+           height="180"
+           loading="eager">
+    </div>
+
+    <!-- Mode Selection -->
+    <section class="landing__modes" 
+             aria-labelledby="mode-selection-label"
+             role="region">
+
+      <p id="mode-selection-label" class="landing__modes-label">
+        Pilih Mode Belajarmu
+      </p>
+
+      <!-- Mode A: Deaf / Visual -->
+      <button id="mode-visual"
+              class="mode-card mode-card--visual"
+              role="button"
+              aria-label="Mode Visual untuk Teman Tuli. Belajar dengan animasi, gambar, dan teks yang jelas. Tekan untuk memilih Mode Visual."
+              aria-describedby="visual-desc"
+              data-a11y-read="Mode Visual. Untuk teman tuli. Belajar dengan animasi, gambar, dan teks yang jelas."
+              tabindex="0">
+        
+        <div class="mode-card__icon" aria-hidden="true">
+          <!-- Eye Icon -->
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+        
+        <div class="mode-card__content">
+          <h2 class="mode-card__title">Mode Visual</h2>
+          <p id="visual-desc" class="mode-card__description">
+            Untuk Teman Tuli — Belajar dengan animasi, gambar, dan teks yang jelas
+          </p>
+        </div>
+
+        <div class="mode-card__arrow" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+      </button>
+
+      <!-- Mode B: Blind / Audio -->
+      <button id="mode-audio"
+              class="mode-card mode-card--audio"
+              role="button"
+              aria-label="Mode Audio untuk Teman Tunanetra. Belajar dengan suara, narasi, dan getaran panduan. Tekan untuk memilih Mode Audio."
+              aria-describedby="audio-desc"
+              data-a11y-read="Mode Audio. Untuk teman tunanetra. Belajar dengan suara, narasi, dan getaran panduan."
+              tabindex="0">
+        
+        <div class="mode-card__icon" aria-hidden="true">
+          <!-- Headphones / Audio Icon -->
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 18v-6a9 9 0 0118 0v6"/>
+            <path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/>
+          </svg>
+        </div>
+        
+        <div class="mode-card__content">
+          <h2 class="mode-card__title">Mode Audio</h2>
+          <p id="audio-desc" class="mode-card__description">
+            Untuk Teman Tunanetra — Belajar dengan suara, narasi, dan getaran panduan
+          </p>
+        </div>
+
+        <div class="mode-card__arrow" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+      </button>
+    </section>
+
+    <!-- Footer -->
+    <footer class="landing__footer" role="contentinfo">
+      <p class="landing__footer-text">
+        Dibuat dengan ❤️ untuk pendidikan inklusif<br>
+        <a href="#" aria-label="Tentang DENTAVIZION">DENTAVIZION</a> &copy; 2026
+      </p>
+    </footer>
+  </main>
+
+  <!-- PWA Install Banner -->
+  <aside id="install-banner" 
+         class="install-banner"
+         role="complementary"
+         aria-label="Pasang aplikasi DENTAVIZION">
+    <div class="install-banner__icon" aria-hidden="true">📲</div>
+    <div class="install-banner__content">
+      <p class="install-banner__title">Pasang DENTAVIZION</p>
+      <p class="install-banner__desc">Akses offline tanpa perlu internet!</p>
+    </div>
+    <button id="install-banner-action" 
+            class="btn btn-sm btn-primary"
+            aria-label="Pasang aplikasi DENTAVIZION di perangkat ini">
+      Pasang
+    </button>
+    <button id="install-banner-close"
+            class="install-banner__close"
+            aria-label="Tutup banner pemasangan">
+      ✕
+    </button>
+  </aside>
+
+  <!-- Scripts (loaded in order: accessibility → pwa → app) -->
+  <script src="js/accessibility.js"></script>
+  <script src="js/pwa.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
