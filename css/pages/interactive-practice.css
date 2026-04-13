@@ -1,0 +1,278 @@
+/* ============================================
+   DENTAVIZION — Interactive Practice Page
+   Matches mobile-first layout of other pages
+   ============================================ */
+
+/* ── App Shell (same as other pages) ── */
+.app-shell {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--color-bg-primary);
+  max-width: var(--container-max);
+  margin: 0 auto;
+  position: relative;
+}
+
+/* ── Main area ── */
+.interactive-main {
+  padding: 0 0 100px 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: var(--color-bg-primary);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Step indicator pills ── */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px var(--space-lg) 4px;
+}
+
+.step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary-200);
+  transition: all var(--transition-base);
+}
+
+.step-dot--active {
+  width: 24px;
+  border-radius: 4px;
+  background: var(--color-primary);
+}
+
+.step-dot--done {
+  background: var(--color-primary);
+}
+
+/* ── Scene Header ── */
+.scene-header {
+  padding: 16px var(--space-lg) 0;
+  text-align: left;
+}
+
+.scene-header__title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.scene-header__text {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  background: var(--color-bg-secondary);
+  padding: 14px 16px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  line-height: 1.65;
+  border-left: 3px solid var(--color-primary);
+}
+
+/* ── Progress Bar ── */
+.progress-bar-container {
+  width: 100%;
+  padding: 0 var(--space-lg);
+  margin-top: 16px;
+}
+
+.progress-track {
+  height: 10px;
+  background: var(--color-primary-50);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--color-primary-gradient);
+  width: 0%;
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-tertiary);
+}
+
+/* ── Interactive Area ── */
+.interactive-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 16px var(--space-lg);
+}
+
+/* ── Viewer Wrapper: NO circle, full width ── */
+.viewer-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  touch-action: none;
+  cursor: pointer;
+}
+
+/* When actively brushing, use the toothbrush cursor */
+.viewer-wrapper--brushing {
+  cursor: url('../images/sikat gigi.png') 16 16, crosshair;
+}
+
+/* ── Viewer Image: fill the wrapper ── */
+.viewer-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+/* ── Plaque (dirt) styling ── */
+.plaque {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background: radial-gradient(circle,
+    rgba(139, 69, 19, 0.9) 0%,
+    rgba(160, 82, 45, 0.6) 55%,
+    rgba(205, 133, 63, 0) 100%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.1s ease-out, transform 0.2s ease;
+  pointer-events: none;
+  z-index: 10;
+  filter: blur(3px);
+}
+
+/* ── Toothpaste squeeze interaction ── */
+.toothpaste-blob {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-color: #f8f9fa;
+  border: 2px solid #a3cef1;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 10;
+}
+
+.toothpaste-blob.squeezed {
+  transform: translate(-50%, -50%) scale(4);
+}
+
+/* ── Success badge ── */
+.success-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: var(--color-primary-gradient);
+  color: white;
+  font-weight: 800;
+  padding: 10px 24px;
+  border-radius: var(--radius-full);
+  font-size: 18px;
+  box-shadow: var(--shadow-glow-primary);
+  z-index: 20;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  white-space: nowrap;
+}
+
+.success-badge--visible {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* ── Bottom CTA ── */
+.interactive-cta {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: var(--container-max);
+  padding: 12px var(--space-lg);
+  background: var(--color-bg-secondary);
+  box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.04);
+  z-index: var(--z-sticky);
+  display: flex;
+  justify-content: center;
+  padding-bottom: calc(env(safe-area-inset-bottom, 12px) + 12px);
+}
+
+.interactive-cta .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 16px 24px;
+  border-radius: 50px;
+  background: var(--color-accent-gradient);
+  color: white;
+  font-size: 17px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-glow-accent);
+  transition: all var(--transition-base);
+  font-family: var(--font-family);
+}
+
+.interactive-cta .btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(244, 132, 95, 0.45);
+}
+
+.interactive-cta .btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+.interactive-cta .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   RESPONSIVE
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@media (max-width: 350px) {
+  .scene-header__title {
+    font-size: 18px;
+  }
+
+  .plaque {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (min-width: 400px) {
+  .scene-header__title {
+    font-size: 24px;
+  }
+}

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="id" dir="ltr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+
+  <title>Simulasi Sikat Gigi — DENTAVIZION</title>
+  <meta name="description" content="Simulasi interaktif cara menyikat gigi langkah demi langkah.">
+
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#2BAA8E">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/pages/module-content.css">
+  <link rel="stylesheet" href="../css/pages/interactive-practice.css">
+</head>
+
+<body>
+  <a href="#main-content" class="skip-link" id="skip-link">Langsung ke konten utama</a>
+  <div id="a11y-announcer" class="a11y-announcement" aria-live="polite" aria-atomic="true" role="status"></div>
+
+  <!-- Custom Toothbrush Cursor (follows pointer during brushing) -->
+  <div id="brush-cursor" style="
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    display: none;
+    transform: translate(-50%, -50%) rotate(-30deg);
+    transition: opacity 0.15s ease;
+    opacity: 0;
+  ">
+    <img src="../assets/images/sikat gigi.png" alt="" aria-hidden="true"
+         style="width: 80px; height: auto; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));">
+  </div>
+
+  <div class="app-shell">
+
+    <!-- ─── Top Navigation Bar ─── -->
+    <header class="topbar" role="banner">
+      <button class="topbar__back" id="btn-back" aria-label="Kembali ke halaman sebelumnya"
+        data-a11y-read="Tombol kembali. Tekan untuk kembali ke halaman sebelumnya.">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
+      <span class="topbar__brand">PRAKTIK SIKAT GIGI</span>
+      <div class="topbar__points" aria-label="100 Poin">
+        <span class="topbar__points-icon" aria-hidden="true">⭐</span>
+        <span class="topbar__points-text">100 POIN!</span>
+      </div>
+    </header>
+
+    <!-- ─── Step Indicator Dots ─── -->
+    <div class="step-indicator" id="step-indicator" aria-hidden="true">
+      <!-- Dots injected by JS -->
+    </div>
+
+    <main id="main-content" class="interactive-main" role="main">
+
+      <!-- Header Area -->
+      <section class="scene-header" aria-live="polite">
+        <h1 id="scene-title" class="scene-header__title">Persiapan Alat</h1>
+        <p id="scene-text" class="scene-header__text">
+          Siapkan sikat gigi dan pasta gigi. Ambil pasta gigi sebesar biji jagung — oleskan di bulu sikat.
+        </p>
+      </section>
+
+      <!-- Progress Area -->
+      <div class="progress-bar-container" aria-hidden="true">
+        <div class="progress-track">
+          <div id="scene-progress" class="progress-fill"></div>
+        </div>
+        <div class="progress-label">
+          <span id="progress-text">Gosok untuk membersihkan!</span>
+          <span id="progress-pct">0%</span>
+        </div>
+      </div>
+
+      <!-- Interactive Area -->
+      <div class="interactive-area">
+        <div id="viewer" class="viewer-wrapper" role="region" aria-label="Area simulasi menyikat">
+          <img id="viewer-img" class="viewer-image" src="../assets/images/sikat_gigi_dan_odol.png" alt="Objek simulasi" draggable="false">
+          <div id="tooth-paste-blob" class="toothpaste-blob"></div>
+          <div id="success-badge" class="success-badge" aria-hidden="true">Bersih! ✨</div>
+        </div>
+      </div>
+
+      <!-- Bottom CTAs -->
+      <div class="interactive-cta">
+        <button id="btn-next" class="btn" disabled
+          aria-label="Lanjut ke langkah berikutnya" data-a11y-read="Tombol Lanjut. Selesaikan misi dulu.">
+          Misi Belum Selesai
+        </button>
+      </div>
+    </main>
+
+  </div>
+
+  <script src="../js/accessibility.js"></script>
+  <script src="../js/pwa.js"></script>
+  <script>
+    (() => {
+      'use strict';
+
+      // ── SCENARIOS ──
+      const scenarios = [
+        {
+          id: 'persiapan',
+          title: 'Persiapan Alat',
+          text: 'Siapkan sikat gigi dan pasta gigi. Sentuh dan gesek sikat di bawah untuk memberi pasta gigi sebesar biji jagung. Tidak perlu banyak-banyak, ya!',
+          img: '../assets/images/sikat_gigi_dan_odol.png',
+          action: 'squeeze',
+          plaques: []
+        },
+        {
+          id: 'regio1',
+          title: 'Regio 1 — Depan Atas & Bawah',
+          text: 'Mulai dari gigi depan. Miringkan sikat ke arah gusi, lalu putar pelan-pelan ke bawah untuk gigi atas, dan ke atas untuk gigi bawah. Gosok nodanya sampai hilang!',
+          img: '../assets/images/Regio 1 2 3.png',
+          action: 'brush',
+          plaques: [
+            { top: 35, left: 50 },
+            { top: 50, left: 50 },
+            { top: 65, left: 50 }
+          ],
+          imgTransform: 'none'
+        },
+        {
+          id: 'regio2',
+          title: 'Regio 2 — Samping Kanan Luar',
+          text: 'Sekarang sikat bagian samping kanan luar. Rasakan gigi geraham kanan, lalu sikat dengan gerakan memutar dari gusi ke gigi. Coba gosok nodanya!',
+          img: '../assets/images/Regio 1 2 3.png',
+          action: 'brush',
+          plaques: [
+            { top: 40, left: 75 },
+            { top: 55, left: 70 },
+            { top: 65, left: 80 }
+          ],
+          imgTransform: 'none'
+        },
+        {
+          id: 'regio3',
+          title: 'Regio 3 — Samping Kiri Luar',
+          text: 'Pindah ke bagian samping kiri luar. Arahkan sikat ke gigi geraham kiri, sikat dengan gerakan memutar. Pastikan bulu sikat menyentuh gusi juga.',
+          img: '../assets/images/Regio 1 2 3.png',
+          action: 'brush',
+          plaques: [
+            { top: 40, left: 25 },
+            { top: 55, left: 30 },
+            { top: 65, left: 20 }
+          ],
+          imgTransform: 'scaleX(-1)'
+        },
+        {
+          id: 'regio4',
+          title: 'Regio 4 — Permukaan Kunyah',
+          text: 'Sekarang sikat permukaan kunyah. Lakukan gerakan maju-mundur di gigi geraham kanan dan kiri, baik atas maupun bawah. Gosok sampai terasa bersih!',
+          img: '../assets/images/Regio 4 — Permukaan Kunyah.png',
+          action: 'brush',
+          plaques: [
+            { top: 25, left: 25 },
+            { top: 30, left: 75 },
+            { top: 75, left: 25 },
+            { top: 70, left: 75 }
+          ],
+          imgTransform: 'none'
+        },
+        {
+          id: 'regio5',
+          title: 'Regio 5 — Bagian Dalam',
+          text: 'Terakhir, sikat bagian dalam gigi. Sikat dari gusi ke arah luar. Gosok semua kotoran yang bersembunyi di baliknya!',
+          img: '../assets/images/Regio 5 — Bagian Dalam.png',
+          action: 'brush',
+          plaques: [
+            { top: 30, left: 50 },
+            { top: 50, left: 25 },
+            { top: 50, left: 75 },
+            { top: 75, left: 50 }
+          ],
+          imgTransform: 'none'
+        }
+      ];
+
+      let currentStep = 0;
+      let plaquesCleaned = 0;
+      let totalPlaques = 0;
+      let isInteracting = false;
+      let interactionCount = 0;
+
+      // ── DOM refs ──
+      const titleEl = document.getElementById('scene-title');
+      const textEl = document.getElementById('scene-text');
+      const viewerEl = document.getElementById('viewer');
+      const viewerImg = document.getElementById('viewer-img');
+      const toothpasteBlob = document.getElementById('tooth-paste-blob');
+      const btnNext = document.getElementById('btn-next');
+      const btnBack = document.getElementById('btn-back');
+      const progressFill = document.getElementById('scene-progress');
+      const progressText = document.getElementById('progress-text');
+      const progressPct = document.getElementById('progress-pct');
+      const successBadge = document.getElementById('success-badge');
+      const stepIndicator = document.getElementById('step-indicator');
+      const brushCursor = document.getElementById('brush-cursor');
+
+      // ── Build step indicator dots ──
+      function buildStepDots() {
+        stepIndicator.innerHTML = '';
+        scenarios.forEach((_, i) => {
+          const dot = document.createElement('div');
+          dot.className = 'step-dot';
+          if (i < currentStep) dot.classList.add('step-dot--done');
+          if (i === currentStep) dot.classList.add('step-dot--active');
+          stepIndicator.appendChild(dot);
+        });
+      }
+
+      // ── Custom Brush Cursor ──
+      function showBrushCursor(x, y) {
+        brushCursor.style.display = 'block';
+        brushCursor.style.left = x + 'px';
+        brushCursor.style.top = y + 'px';
+        brushCursor.style.opacity = '1';
+      }
+
+      function hideBrushCursor() {
+        brushCursor.style.opacity = '0';
+        setTimeout(() => { brushCursor.style.display = 'none'; }, 150);
+      }
+
+      // ── Init a scenario ──
+      function initScenario(index) {
+        if (index >= scenarios.length) {
+          finishSimulation();
+          return;
+        }
+
+        const scene = scenarios[index];
+        titleEl.textContent = scene.title;
+        textEl.textContent = scene.text;
+        viewerImg.src = scene.img;
+        viewerImg.style.transform = scene.imgTransform || 'none';
+
+        // reset state
+        btnNext.disabled = true;
+        btnNext.textContent = 'Misi Belum Selesai';
+        progressFill.style.width = '0%';
+        progressPct.textContent = '0%';
+        progressText.textContent = scene.action === 'squeeze' ? 'Gesek untuk mengoleskan pasta!' : 'Gosok untuk membersihkan!';
+        successBadge.classList.remove('success-badge--visible');
+
+        // Clean previous interactive items
+        document.querySelectorAll('.plaque').forEach(e => e.remove());
+        toothpasteBlob.classList.remove('squeezed');
+        interactionCount = 0;
+        plaquesCleaned = 0;
+
+        // Hide custom cursor by default, only show it in brush mode
+        viewerEl.style.cursor = 'pointer';
+
+        if (scene.action === 'squeeze') {
+          toothpasteBlob.style.display = 'block';
+        } else if (scene.action === 'brush') {
+          toothpasteBlob.style.display = 'none';
+          totalPlaques = scene.plaques.length;
+
+          // Hide default cursor in brush mode (custom cursor replaces it)
+          viewerEl.style.cursor = 'none';
+
+          scene.plaques.forEach((pos) => {
+            const plaque = document.createElement('div');
+            plaque.className = 'plaque';
+            plaque.style.top = pos.top + '%';
+            plaque.style.left = pos.left + '%';
+            plaque.dataset.dirt = 100;
+            viewerEl.appendChild(plaque);
+          });
+        }
+
+        buildStepDots();
+
+        // Accessibility Announcement
+        if (typeof DentaA11y !== 'undefined') {
+          const mode = localStorage.getItem('dentavizion-mode');
+          if (mode === 'blind') {
+            DentaA11y.speak(scene.title + '. ' + scene.text, true);
+          }
+        }
+      }
+
+      // ── Update progress ──
+      function updateProgress(percent) {
+        percent = Math.min(100, Math.round(percent));
+        progressFill.style.width = percent + '%';
+        progressPct.textContent = percent + '%';
+        if (percent >= 100) {
+          stepCompleted();
+        }
+      }
+
+      // ── Step completed ──
+      function stepCompleted() {
+        btnNext.disabled = false;
+        btnNext.innerHTML = 'Lanjut <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>';
+        progressText.textContent = 'Selesai! 🎉';
+
+        successBadge.textContent = 'Bersih! ✨';
+        successBadge.classList.add('success-badge--visible');
+
+        // Hide brush cursor on completion
+        hideBrushCursor();
+
+        if (typeof DentaA11y !== 'undefined') {
+          DentaA11y.vibrate('confirm');
+          const mode = localStorage.getItem('dentavizion-mode');
+          if (mode === 'blind') {
+            DentaA11y.speak('Tahap selesai! Tekan tombol Lanjut untuk bagian berikutnya.', true);
+          }
+        }
+      }
+
+      // ── Handle brushing / squeezing interaction ──
+      function handleInteraction(x, y) {
+        const scene = scenarios[currentStep];
+
+        if (scene.action === 'squeeze') {
+          interactionCount++;
+          updateProgress(Math.min(100, interactionCount * 5));
+          if (interactionCount > 15 && !toothpasteBlob.classList.contains('squeezed')) {
+            toothpasteBlob.classList.add('squeezed');
+            toothpasteBlob.style.top = '48%';
+            toothpasteBlob.style.left = '45%';
+          }
+        }
+        else if (scene.action === 'brush') {
+          // Short vibrate feedback for audio mode
+          if (interactionCount % 10 === 0 && typeof navigator.vibrate === 'function') {
+            navigator.vibrate(20);
+          }
+          interactionCount++;
+
+          // Check distance of pointer to each dirt spot
+          const rect = viewerEl.getBoundingClientRect();
+          const pX = x - rect.left;
+          const pY = y - rect.top;
+
+          document.querySelectorAll('.plaque').forEach(plaque => {
+            let dirt = parseInt(plaque.dataset.dirt);
+            if (dirt > 0) {
+              let topPct = parseFloat(plaque.style.top) / 100;
+              let leftPct = parseFloat(plaque.style.left) / 100;
+              let plaqueX = rect.width * leftPct;
+              let plaqueY = rect.height * topPct;
+
+              let dist = Math.sqrt(Math.pow(pX - plaqueX, 2) + Math.pow(pY - plaqueY, 2));
+
+              if (dist < 50) {
+                dirt -= 5;
+                plaque.dataset.dirt = dirt;
+                plaque.style.opacity = dirt / 100;
+
+                if (dirt <= 0) {
+                  plaque.style.display = 'none';
+                  plaquesCleaned++;
+
+                  if (typeof DentaA11y !== 'undefined') {
+                    DentaA11y.vibrate(100);
+                  }
+
+                  let progress = (plaquesCleaned / totalPlaques) * 100;
+                  updateProgress(progress);
+                }
+              }
+            }
+          });
+        }
+      }
+
+      // ── Pointer events ──
+      viewerEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault(); // Prevent native dragging behavior
+        isInteracting = true;
+        const scene = scenarios[currentStep];
+        if (scene && scene.action === 'brush') {
+          showBrushCursor(e.clientX, e.clientY);
+        }
+        handleInteraction(e.clientX, e.clientY);
+      });
+
+      viewerEl.addEventListener('pointermove', (e) => {
+        if (!isInteracting) return;
+        e.preventDefault();
+        const scene = scenarios[currentStep];
+        if (scene && scene.action === 'brush') {
+          showBrushCursor(e.clientX, e.clientY);
+        }
+        handleInteraction(e.clientX, e.clientY);
+      });
+
+      window.addEventListener('pointerup', () => {
+        isInteracting = false;
+        hideBrushCursor();
+      });
+
+      // Also update brush cursor when hovering (desktop) even without pressing
+      viewerEl.addEventListener('mousemove', (e) => {
+        const scene = scenarios[currentStep];
+        if (scene && scene.action === 'brush') {
+          brushCursor.style.display = 'block';
+          brushCursor.style.left = e.clientX + 'px';
+          brushCursor.style.top = e.clientY + 'px';
+          brushCursor.style.opacity = isInteracting ? '1' : '0.5';
+        }
+      });
+
+      viewerEl.addEventListener('mouseleave', () => {
+        if (!isInteracting) hideBrushCursor();
+      });
+
+      // ── Navigation ──
+      btnNext.addEventListener('click', () => {
+        currentStep++;
+        initScenario(currentStep);
+      });
+
+      btnBack.addEventListener('click', () => {
+        window.history.back();
+      });
+
+      // ── Finish ──
+      function finishSimulation() {
+        titleEl.textContent = 'Luar Biasa! 🏆';
+        textEl.textContent = 'Kamu sudah belajar menyikat gigi dengan baik dari semua regio! Gigi kamu pasti sehat dan kuat. Jangan lupa untuk menyikat gigi 2 kali sehari ya!';
+        viewerImg.src = '../assets/images/mascot-tooth.png';
+        viewerImg.style.transform = 'none';
+        progressFill.style.width = '100%';
+        progressPct.textContent = '100%';
+        progressText.textContent = 'Simulasi selesai!';
+        btnNext.textContent = 'Selesai & Kembali';
+        btnNext.disabled = false;
+        btnNext.onclick = () => window.location.href = 'modules.html';
+
+        successBadge.textContent = 'Pahlawan Gigi! 🦷';
+        successBadge.classList.add('success-badge--visible');
+
+        // Mark all dots as done
+        document.querySelectorAll('.step-dot').forEach(d => {
+          d.classList.remove('step-dot--active');
+          d.classList.add('step-dot--done');
+        });
+
+        if (typeof DentaA11y !== 'undefined') {
+          DentaA11y.vibrate('confirm');
+          const mode = localStorage.getItem('dentavizion-mode');
+          if (mode === 'blind') {
+            DentaA11y.speak('Luar biasa! Simulasi selesai. Kamu sudah belajar semua tekniknya.', true);
+          }
+        }
+      }
+
+      // ── Init ──
+      document.addEventListener('DOMContentLoaded', () => {
+        const mode = localStorage.getItem('dentavizion-mode');
+        if (!mode) { window.location.href = '../index.html'; return; }
+        document.documentElement.setAttribute('data-mode', mode);
+
+        initScenario(currentStep);
+      });
+    })();
+  </script>
+</body>
+
+</html>
