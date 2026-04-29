@@ -1,90 +1,29 @@
-<!DOCTYPE html>
-<html lang="id" dir="ltr">
+import re
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+with open('c:/Users/ilham/Documents/web/ComproKesehatan/pages/interactive-practice.html', 'r', encoding='utf-8') as f:
+    content = f.read()
 
-  <title>Simulasi Sikat Gigi — DENTAVIZION</title>
-  <meta name="description" content="Simulasi interaktif cara menyikat gigi langkah demi langkah.">
+# 1. Add MediaPipe scripts
+content = content.replace(
+    '<script src="../js/pwa.js"></script>',
+    '''<script src="../js/pwa.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>'''
+)
 
-  <link rel="manifest" href="../manifest.json">
-  <meta name="theme-color" content="#2BAA8E">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link rel="stylesheet" href="../css/variables.css">
-  <link rel="stylesheet" href="../css/base.css">
-  <link rel="stylesheet" href="../css/components.css">
-  <link rel="stylesheet" href="../css/pages/module-content.css">
-  <link rel="stylesheet" href="../css/pages/interactive-practice.css">
-</head>
-
-<body>
-  <a href="#main-content" class="skip-link" id="skip-link">Langsung ke konten utama</a>
-  <div id="a11y-announcer" class="a11y-announcement" aria-live="polite" aria-atomic="true" role="status"></div>
-
-  <!-- Custom Toothbrush Cursor (follows pointer during brushing) -->
-  <div id="brush-cursor" style="
-    position: fixed;
-    pointer-events: none;
-    z-index: 9999;
-    display: none;
-    transform: translate(-50%, -50%) rotate(-30deg);
-    transition: opacity 0.15s ease;
-    opacity: 0;
-  ">
-    <img src="../assets/images/sikat gigi.png" alt="" aria-hidden="true"
-         style="width: 80px; height: auto; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));">
-  </div>
-
-  <div class="app-shell">
-
-    <!-- ─── Top Navigation Bar ─── -->
-    <header class="topbar" role="banner">
-      <button class="topbar__back" id="btn-back" aria-label="Kembali ke halaman sebelumnya"
-        data-a11y-read="Tombol kembali. Tekan untuk kembali ke halaman sebelumnya.">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-          stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="15 18 9 12 15 6" />
-        </svg>
-      </button>
-      <span class="topbar__brand">PRAKTIK SIKAT GIGI</span>
-      <div class="topbar__points" aria-label="100 Poin">
-        <span class="topbar__points-icon" aria-hidden="true">⭐</span>
-        <span class="topbar__points-text">100 POIN!</span>
-      </div>
-    </header>
-
-    <!-- ─── Step Indicator Dots ─── -->
-    <div class="step-indicator" id="step-indicator" aria-hidden="true">
-      <!-- Dots injected by JS -->
-    </div>
-
-    <main id="main-content" class="interactive-main" role="main">
-
-      <!-- Header Area -->
-      <section class="scene-header" aria-live="polite">
-        <h1 id="scene-title" class="scene-header__title">Persiapan Alat</h1>
-        <p id="scene-text" class="scene-header__text">
-          Siapkan sikat gigi dan pasta gigi. Ambil pasta gigi sebesar biji jagung — oleskan di bulu sikat.
-        </p>
-      </section>
-
-      <!-- Progress Area -->
-      <div class="progress-bar-container" aria-hidden="true">
-        <div class="progress-track">
-          <div id="scene-progress" class="progress-fill"></div>
+# 2. Replace Interactive Area
+interactive_area_old = '''      <!-- Interactive Area -->
+      <div class="interactive-area">
+        <div id="viewer" class="viewer-wrapper" role="region" aria-label="Area simulasi menyikat">
+          <img id="viewer-img" class="viewer-image" src="../assets/images/sikat_gigi_dan_odol.png" alt="Objek simulasi" draggable="false">
+          <div id="tooth-paste-blob" class="toothpaste-blob"></div>
+          <div id="success-badge" class="success-badge" aria-hidden="true">Bersih! ✨</div>
         </div>
-        <div class="progress-label">
-          <span id="progress-text">Gosok untuk membersihkan!</span>
-          <span id="progress-pct">0%</span>
-        </div>
-      </div>
+      </div>'''
 
-      <!-- Interactive Area -->
+interactive_area_new = '''      <!-- Interactive Area -->
       <div class="interactive-area">
         <div id="viewer" class="viewer-wrapper" role="region" aria-label="Area simulasi menyikat">
           <video id="webcam" style="display: none;" playsinline></video>
@@ -92,30 +31,14 @@
           <div id="ar-instructions" class="ar-instructions">Memuat Kamera AR...</div>
           <div id="success-badge" class="success-badge" aria-hidden="true">Bersih! ✨</div>
         </div>
-      </div>
+      </div>'''
 
-      <!-- Bottom CTAs -->
-      <div class="interactive-cta">
-        <button id="btn-next" class="btn" disabled
-          aria-label="Lanjut ke langkah berikutnya" data-a11y-read="Tombol Lanjut. Selesaikan misi dulu.">
-          Misi Belum Selesai
-        </button>
-      </div>
-    </main>
+content = content.replace(interactive_area_old, interactive_area_new)
 
-  </div>
+# 3. Replace JS Scenarios and Logic
+js_old = content[content.find('// ── SCENARIOS ──'):content.find('// ── Navigation ──')]
 
-  <script src="../js/accessibility.js"></script>
-  <script src="../js/pwa.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
-  <script>
-    (() => {
-      'use strict';
-
-      // ── SCENARIOS ──
+js_new = '''// ── SCENARIOS ──
       const scenarios = [
         {
           id: 'persiapan',
@@ -446,51 +369,21 @@
         if (!isInteracting) hideBrushCursor();
       });
 
-      // ── Navigation ──
-      btnNext.addEventListener('click', () => {
-        currentStep++;
+      '''
+
+content = content.replace(js_old, js_new)
+
+# 4. Modify finishSimulation and Init logic to call initAR
+init_old = '''// ── Init ──
+      document.addEventListener('DOMContentLoaded', () => {
+        const mode = localStorage.getItem('dentavizion-mode');
+        if (!mode) { window.location.href = '../index.html'; return; }
+        document.documentElement.setAttribute('data-mode', mode);
+
         initScenario(currentStep);
-      });
+      });'''
 
-      btnBack.addEventListener('click', () => {
-        window.history.back();
-      });
-
-      // ── Finish ──
-      function finishSimulation() {
-        titleEl.textContent = 'Luar Biasa! 🏆';
-        textEl.textContent = 'Kamu sudah belajar menyikat gigi dengan baik dari semua regio! Gigi kamu pasti sehat dan kuat. Jangan lupa untuk menyikat gigi 2 kali sehari ya!';
-        viewerImg.src = '../assets/images/mascot-tooth.png';
-        viewerImg.style.transform = 'none';
-        progressFill.style.width = '100%';
-        progressPct.textContent = '100%';
-        progressText.textContent = 'Simulasi selesai!';
-        if (camera) camera.stop();
-        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-        arInstructions.style.display = 'none';
-        btnNext.textContent = 'Selesai & Kembali';
-        btnNext.disabled = false;
-        btnNext.onclick = () => window.location.href = 'modules.html';
-
-        successBadge.textContent = 'Pahlawan Gigi! 🦷';
-        successBadge.classList.add('success-badge--visible');
-
-        // Mark all dots as done
-        document.querySelectorAll('.step-dot').forEach(d => {
-          d.classList.remove('step-dot--active');
-          d.classList.add('step-dot--done');
-        });
-
-        if (typeof DentaA11y !== 'undefined') {
-          DentaA11y.vibrate('confirm');
-          const mode = localStorage.getItem('dentavizion-mode');
-          if (mode === 'blind') {
-            DentaA11y.speak('Luar biasa! Simulasi selesai. Kamu sudah belajar semua tekniknya.', true);
-          }
-        }
-      }
-
-      // ── Init ──
+init_new = '''// ── Init ──
       document.addEventListener('DOMContentLoaded', () => {
         const mode = localStorage.getItem('dentavizion-mode');
         if (!mode) { window.location.href = '../index.html'; return; }
@@ -498,9 +391,18 @@
 
         initAR();
         initScenario(currentStep);
-      });
-    })();
-  </script>
-</body>
+      });'''
 
-</html>
+content = content.replace(init_old, init_new)
+
+# Stop camera on finish
+finish_old = '''progressText.textContent = 'Simulasi selesai!';'''
+finish_new = '''progressText.textContent = 'Simulasi selesai!';
+        if (camera) camera.stop();
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        arInstructions.style.display = 'none';'''
+
+content = content.replace(finish_old, finish_new)
+
+with open('c:/Users/ilham/Documents/web/ComproKesehatan/pages/interactive-practice.html', 'w', encoding='utf-8') as f:
+    f.write(content)
