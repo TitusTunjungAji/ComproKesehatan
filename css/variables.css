@@ -1,66 +1,80 @@
 /* ============================================
    DENTAVIZION — Design Tokens
-   All CSS custom properties for the design system
+   🌿 Kid-Friendly Green Fun Edition! 🦷
    ============================================ */
 
 :root {
-  /* ── Color Palette ── */
-  /* Primary Colors */
-  --color-primary: #2BAA8E;
-  --color-primary-dark: #229478;
-  --color-primary-light: #3EC4A6;
-  --color-primary-50: #E8F5F0;
-  --color-primary-100: #C5E8DD;
-  --color-primary-200: #9ED9C9;
-  --color-primary-gradient: linear-gradient(135deg, #2BAA8E 0%, #3EC4A6 100%);
+  /* ── Color Palette — Bright Green & Fun ── */
+  /* Primary: Playful Bright Green */
+  --color-primary: #00C9A7;
+  --color-primary-dark: #00B396;
+  --color-primary-light: #33E8C8;
+  --color-primary-50: #E0FFF7;
+  --color-primary-100: #B3FFE9;
+  --color-primary-200: #80FFD9;
+  --color-primary-gradient: linear-gradient(135deg, #00C9A7 0%, #33E8C8 100%);
 
-  /* Accent / Coral */
-  --color-accent: #F4845F;
-  --color-accent-dark: #E06D47;
-  --color-accent-light: #FF9E80;
-  --color-accent-50: #FFF0EB;
+  /* Accent: Bright Coral-Orange */
+  --color-accent: #FF7B54;
+  --color-accent-dark: #E8654A;
+  --color-accent-light: #FF9B80;
+  --color-accent-50: #FFF3ED;
   --color-accent-100: #FFD9CC;
-  --color-accent-gradient: linear-gradient(135deg, #F4845F 0%, #FF9E80 100%);
+  --color-accent-gradient: linear-gradient(135deg, #FF7B54 0%, #FF9B80 50%, #FFB8A3 100%);
 
-  /* Backgrounds */
-  --color-bg-primary: #F5FBF8;
+  /* Fun Extra Colors — Bright & Cheerful */
+  --color-fun-yellow: #FFD93D;
+  --color-fun-yellow-light: #FFF3B0;
+  --color-fun-green: #4ADE80;
+  --color-fun-green-light: #DCFCE7;
+  --color-fun-blue: #60A5FA;
+  --color-fun-blue-light: #DBEAFE;
+  --color-fun-orange: #FB923C;
+  --color-fun-orange-light: #FFF7ED;
+  --color-fun-lime: #84CC16;
+  --color-fun-lime-light: #F7FEE7;
+  --color-fun-mint: #5EEAD4;
+  --color-fun-mint-light: #CCFBF1;
+
+  /* Backgrounds — Soft & Warm */
+  --color-bg-primary: #F5FFFB;
   --color-bg-secondary: #FFFFFF;
   --color-bg-card: #FFFFFF;
-  --color-bg-card-green: #E8F5F0;
-  --color-bg-card-coral: #FFF0EB;
+  --color-bg-card-green: #E0FFF7;
+  --color-bg-card-coral: #FFF3ED;
   --color-bg-card-yellow: #FFF8E1;
-  --color-bg-overlay: rgba(0, 0, 0, 0.4);
+  --color-bg-overlay: rgba(0, 0, 0, 0.35);
 
-  /* Text Colors */
-  --color-text-primary: #1A2B2F;
-  --color-text-secondary: #6B7C80;
-  --color-text-tertiary: #9AABAF;
+  /* Text Colors — Friendly Dark Green */
+  --color-text-primary: #1A3B34;
+  --color-text-secondary: #5A7A72;
+  --color-text-tertiary: #8AADA3;
   --color-text-inverse: #FFFFFF;
-  --color-text-accent: #2BAA8E;
-  --color-text-coral: #F4845F;
+  --color-text-accent: #00C9A7;
+  --color-text-coral: #FF7B54;
 
   /* Status Colors */
-  --color-success: #4CAF50;
-  --color-warning: #FFC107;
-  --color-error: #F44336;
-  --color-info: #2196F3;
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  --color-info: #3B82F6;
 
-  /* ── Typography ── */
-  --font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* ── Typography — Fun & Rounded ── */
+  --font-family: 'Nunito', 'Comic Sans MS', -apple-system, sans-serif;
   --font-weight-regular: 400;
   --font-weight-medium: 600;
   --font-weight-bold: 700;
   --font-weight-extrabold: 800;
 
   /* Font Sizes — fluid scale */
-  --text-xs: clamp(0.625rem, 0.6rem + 0.15vw, 0.75rem);      /* 10-12px */
-  --text-sm: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);        /* 12-14px */
-  --text-base: clamp(0.875rem, 0.83rem + 0.25vw, 1rem);        /* 14-16px */
-  --text-lg: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);           /* 16-18px */
-  --text-xl: clamp(1.125rem, 1.05rem + 0.4vw, 1.25rem);        /* 18-20px */
-  --text-2xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);         /* 20-24px */
-  --text-3xl: clamp(1.5rem, 1.35rem + 0.7vw, 1.875rem);        /* 24-30px */
-  --text-4xl: clamp(1.875rem, 1.7rem + 0.9vw, 2.25rem);        /* 30-36px */
+  --text-xs: clamp(0.625rem, 0.6rem + 0.15vw, 0.75rem);
+  --text-sm: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);
+  --text-base: clamp(0.875rem, 0.83rem + 0.25vw, 1rem);
+  --text-lg: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
+  --text-xl: clamp(1.125rem, 1.05rem + 0.4vw, 1.25rem);
+  --text-2xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --text-3xl: clamp(1.5rem, 1.35rem + 0.7vw, 1.875rem);
+  --text-4xl: clamp(1.875rem, 1.7rem + 0.9vw, 2.25rem);
 
   /* Line Heights */
   --leading-tight: 1.2;
@@ -68,15 +82,15 @@
   --leading-relaxed: 1.7;
 
   /* ── Spacing ── */
-  --space-2xs: 0.25rem;   /* 4px */
-  --space-xs: 0.5rem;     /* 8px */
-  --space-sm: 0.75rem;    /* 12px */
-  --space-md: 1rem;       /* 16px */
-  --space-lg: 1.25rem;    /* 20px */
-  --space-xl: 1.5rem;     /* 24px */
-  --space-2xl: 2rem;      /* 32px */
-  --space-3xl: 2.5rem;    /* 40px */
-  --space-4xl: 3rem;      /* 48px */
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.25rem;
+  --space-xl: 1.5rem;
+  --space-2xl: 2rem;
+  --space-3xl: 2.5rem;
+  --space-4xl: 3rem;
 
   /* ── Layout ── */
   --container-max: 430px;
@@ -84,27 +98,29 @@
   --nav-height: 64px;
   --header-height: 56px;
 
-  /* ── Border Radius ── */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-  --radius-2xl: 24px;
+  /* ── Border Radius — Extra Rounded & Bubbly ── */
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-2xl: 28px;
   --radius-full: 9999px;
 
-  /* ── Shadows ── */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.08);
-  --shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.12);
-  --shadow-glow-primary: 0 4px 24px rgba(43, 170, 142, 0.25);
-  --shadow-glow-accent: 0 4px 24px rgba(244, 132, 95, 0.25);
+  /* ── Shadows — Green & Soft ── */
+  --shadow-sm: 0 2px 8px rgba(0, 201, 167, 0.06);
+  --shadow-md: 0 4px 16px rgba(0, 201, 167, 0.08);
+  --shadow-lg: 0 8px 32px rgba(0, 201, 167, 0.1);
+  --shadow-xl: 0 12px 48px rgba(0, 201, 167, 0.14);
+  --shadow-glow-primary: 0 4px 24px rgba(0, 201, 167, 0.3);
+  --shadow-glow-accent: 0 4px 24px rgba(255, 123, 84, 0.3);
+  --shadow-glow-yellow: 0 4px 24px rgba(255, 217, 61, 0.3);
 
-  /* ── Transitions ── */
+  /* ── Transitions — Bouncy & Playful ── */
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
   --transition-slow: 400ms ease;
   --transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition-bounce: 600ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
   /* ── Z-Index Scale ── */
   --z-base: 1;
@@ -134,6 +150,7 @@
     --transition-base: 0ms;
     --transition-slow: 0ms;
     --transition-spring: 0ms;
+    --transition-bounce: 0ms;
   }
 }
 

@@ -1,5 +1,6 @@
 /* ============================================
    DENTAVIZION — Auth Pages (Login & Register)
+   🌈 Kid-Friendly Fun Edition! 🦷
    ============================================ */
 
 /* ── Page Layout ── */
@@ -15,7 +16,7 @@
 /* ── Hero / Top Section ── */
 .auth-hero {
   position: relative;
-  background: linear-gradient(160deg, #2BAA8E 0%, #3EC4A6 40%, #E8F5F0 100%);
+  background: linear-gradient(160deg, #00C9A7 0%, #33E8C8 100%);
   padding: var(--space-3xl) var(--space-lg) var(--space-4xl);
   display: flex;
   flex-direction: column;
@@ -127,10 +128,10 @@
   position: relative;
   margin-top: -28px;
   background: white;
-  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+  border-radius: 32px 32px 0 0;
   padding: var(--space-2xl) var(--space-lg) var(--space-3xl);
   flex: 1;
-  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 -4px 24px rgba(0, 201, 167, 0.1);
 }
 
 .auth-form-container--register {
@@ -225,7 +226,7 @@
 .input-group__input:focus {
   border-color: var(--color-primary);
   background: white;
-  box-shadow: 0 0 0 4px rgba(43, 170, 142, 0.1);
+  box-shadow: 0 0 0 4px rgba(0, 201, 167, 0.15);
 }
 
 .input-group__input--error {
@@ -317,16 +318,16 @@
 .auth-submit {
   width: 100%;
   padding: var(--space-md) var(--space-xl);
-  background: var(--color-accent-gradient);
+  background: linear-gradient(135deg, #00C9A7 0%, #33E8C8 100%);
   color: white;
   font-family: var(--font-family);
   font-size: var(--text-lg);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-extrabold);
   border: none;
   border-radius: var(--radius-full);
   cursor: pointer;
-  transition: all var(--transition-base);
-  box-shadow: var(--shadow-glow-accent);
+  transition: all var(--transition-spring);
+  box-shadow: 0 4px 24px rgba(0, 201, 167, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -356,8 +357,8 @@
 }
 
 .auth-submit:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 28px rgba(244, 132, 95, 0.4);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 32px rgba(0, 201, 167, 0.4);
 }
 
 .auth-submit:active {
@@ -440,7 +441,7 @@
 }
 
 .auth-footer__link {
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-extrabold);
   color: var(--color-primary);
   transition: color var(--transition-fast);
 }

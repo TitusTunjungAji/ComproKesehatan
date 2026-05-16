@@ -23,10 +23,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="../css/variables.css">
-  <link rel="stylesheet" href="../css/base.css">
-  <link rel="stylesheet" href="../css/components.css">
-  <link rel="stylesheet" href="../css/pages/auth.css">
+  <link rel="stylesheet" href="../css/variables.css?v=3">
+  <link rel="stylesheet" href="../css/base.css?v=3">
+  <link rel="stylesheet" href="../css/components.css?v=3">
+  <link rel="stylesheet" href="../css/pages/auth.css?v=3">
 </head>
 
 <body>
@@ -193,127 +193,137 @@
   </main>
 
   <!-- Scripts -->
-  <script src="../js/accessibility.js"></script>
-  <script src="../js/pwa.js"></script>
-  <script>
-    (() => {
-      'use strict';
+  <script src="../js/accessibility.js?v=3"></script>
+  <script src="../js/pwa.js?v=3"></script>
+  <script type="module">
+    import { registerUser, saveUserProfile } from '../js/firebase-config.js?v=3';
 
-      document.addEventListener('DOMContentLoaded', () => {
-        const form = document.getElementById('register-form');
-        const nameInput = document.getElementById('reg-name');
-        const emailInput = document.getElementById('reg-email');
-        const passwordInput = document.getElementById('reg-password');
-        const termsCheckbox = document.getElementById('reg-terms');
-        const errorBox = document.getElementById('register-error');
-        const errorText = document.getElementById('register-error-text');
-        const btnRegister = document.getElementById('btn-register');
-        const togglePassword = document.getElementById('toggle-reg-password');
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('register-form');
+      const nameInput = document.getElementById('reg-name');
+      const emailInput = document.getElementById('reg-email');
+      const passwordInput = document.getElementById('reg-password');
+      const termsCheckbox = document.getElementById('reg-terms');
+      const errorBox = document.getElementById('register-error');
+      const errorText = document.getElementById('register-error-text');
+      const btnRegister = document.getElementById('btn-register');
+      const togglePassword = document.getElementById('toggle-reg-password');
 
-        // Password visibility toggle
-        togglePassword.addEventListener('click', () => {
-          const isPassword = passwordInput.type === 'password';
-          passwordInput.type = isPassword ? 'text' : 'password';
-          togglePassword.setAttribute('aria-label',
-            isPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi');
+      // Password visibility toggle
+      togglePassword.addEventListener('click', () => {
+        const isPassword = passwordInput.type === 'password';
+        passwordInput.type = isPassword ? 'text' : 'password';
+        togglePassword.setAttribute('aria-label',
+          isPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi');
+      });
+
+      // Clear errors on input
+      [nameInput, emailInput, passwordInput].forEach(input => {
+        input.addEventListener('input', () => {
+          hideError();
+          input.classList.remove('input-group__input--error');
         });
+      });
 
-        // Clear errors on input
-        [nameInput, emailInput, passwordInput].forEach(input => {
-          input.addEventListener('input', () => {
-            hideError();
-            input.classList.remove('input-group__input--error');
-          });
-        });
+      // Form submit
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-        // Form submit
-        form.addEventListener('submit', (e) => {
-          e.preventDefault();
+        const name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
 
-          const name = nameInput.value.trim();
-          const email = emailInput.value.trim();
-          const password = passwordInput.value;
-
-          // Validation
-          if (!name) {
-            showError('Masukkan nama jagoan kamu');
-            nameInput.classList.add('input-group__input--error');
-            nameInput.focus();
-            return;
-          }
-          if (!email) {
-            showError('Masukkan email kamu');
-            emailInput.classList.add('input-group__input--error');
-            emailInput.focus();
-            return;
-          }
-          if (!password || password.length < 4) {
-            showError('Kata sandi minimal 4 karakter');
-            passwordInput.classList.add('input-group__input--error');
-            passwordInput.focus();
-            return;
-          }
-          if (!termsCheckbox.checked) {
-            showError('Kamu harus menyetujui syarat & ketentuan');
-            form.classList.add('shake');
-            setTimeout(() => form.classList.remove('shake'), 500);
-            return;
-          }
-
-          // Check if email already exists
-          const existing = JSON.parse(localStorage.getItem('dentavizion-accounts') || '[]');
-          if (existing.find(a => a.email === email)) {
-            showError('Email sudah terdaftar. Silakan masuk.');
-            emailInput.classList.add('input-group__input--error');
-            return;
-          }
-
-          // Loading state
-          btnRegister.classList.add('auth-submit--loading');
-          btnRegister.disabled = true;
-
-          // Simulate registration
-          setTimeout(() => {
-            // Save account
-            existing.push({
-              username: email,
-              email: email,
-              name: name,
-              password: password,
-              createdAt: new Date().toISOString()
-            });
-            localStorage.setItem('dentavizion-accounts', JSON.stringify(existing));
-
-            // Auto-login
-            localStorage.setItem('dentavizion-user', JSON.stringify({
-              username: email,
-              name: name,
-              loggedInAt: new Date().toISOString()
-            }));
-
-            if (typeof DentaA11y !== 'undefined') {
-              DentaA11y.vibrate('confirm');
-            }
-
-            // Redirect to mode selection
-            document.body.style.opacity = '0.7';
-            document.body.style.transition = 'opacity 0.3s ease';
-            setTimeout(() => {
-              window.location.href = '../index.html';
-            }, 300);
-          }, 800);
-        });
-
-        function showError(msg) {
-          errorText.textContent = msg;
-          errorBox.classList.add('auth-error--visible');
+        // Validation
+        if (!name) {
+          showError('Masukkan nama jagoan kamu 😊');
+          nameInput.classList.add('input-group__input--error');
+          nameInput.focus();
+          return;
+        }
+        if (!email) {
+          showError('Masukkan email kamu 📧');
+          emailInput.classList.add('input-group__input--error');
+          emailInput.focus();
+          return;
+        }
+        if (!password || password.length < 6) {
+          showError('Kata sandi minimal 6 karakter ya! 🔐');
+          passwordInput.classList.add('input-group__input--error');
+          passwordInput.focus();
+          return;
+        }
+        if (!termsCheckbox.checked) {
+          showError('Kamu harus menyetujui syarat & ketentuan ✅');
+          form.classList.add('shake');
+          setTimeout(() => form.classList.remove('shake'), 500);
+          return;
         }
 
-        function hideError() {
-          errorBox.classList.remove('auth-error--visible');
+        // Loading state
+        btnRegister.classList.add('auth-submit--loading');
+        btnRegister.disabled = true;
+
+        try {
+          // Create Firebase Auth user
+          const user = await registerUser(email, password);
+
+          // Save to localStorage FIRST (critical for redirect flow)
+          localStorage.setItem('dentavizion-user', JSON.stringify({
+            uid: user.uid,
+            email: user.email,
+            name: name,
+            loggedInAt: new Date().toISOString()
+          }));
+
+          // Save profile to Firestore (non-blocking)
+          saveUserProfile(user.uid, {
+            name: name,
+            email: email,
+            level: 1,
+            xp: 0,
+            createdAt: new Date().toISOString()
+          }).catch(e => console.warn('Firestore save warning:', e));
+
+          if (typeof DentaA11y !== 'undefined') DentaA11y.vibrate('confirm');
+
+          // Redirect to mode selection
+          document.body.style.opacity = '0.7';
+          document.body.style.transition = 'opacity 0.3s ease';
+          setTimeout(() => { window.location.href = '../index.html'; }, 300);
+
+        } catch (error) {
+          console.error('Register error:', error);
+          btnRegister.classList.remove('auth-submit--loading');
+          btnRegister.disabled = false;
+
+          // Handle Firebase errors
+          let msg = 'Terjadi kesalahan, coba lagi ya! 😅';
+          if (error.code === 'auth/email-already-in-use') {
+            msg = 'Email sudah terdaftar. Silakan masuk! 📧';
+            emailInput.classList.add('input-group__input--error');
+          } else if (error.code === 'auth/invalid-email') {
+            msg = 'Format email tidak valid 📧';
+            emailInput.classList.add('input-group__input--error');
+          } else if (error.code === 'auth/weak-password') {
+            msg = 'Kata sandi terlalu lemah. Minimal 6 karakter! 🔐';
+            passwordInput.classList.add('input-group__input--error');
+          }
+          showError(msg);
+          form.classList.add('shake');
+          setTimeout(() => form.classList.remove('shake'), 500);
+          if (typeof DentaA11y !== 'undefined') DentaA11y.vibrate('error');
         }
       });
-    })();
+
+      function showError(msg) {
+        errorText.textContent = msg;
+        errorBox.classList.add('auth-error--visible');
+      }
+
+      function hideError() {
+        errorBox.classList.remove('auth-error--visible');
+      }
+    });
   </script>
 </body>
 

@@ -17,10 +17,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="../css/variables.css">
-  <link rel="stylesheet" href="../css/base.css">
-  <link rel="stylesheet" href="../css/components.css">
-  <link rel="stylesheet" href="../css/pages/modules.css">
+  <link rel="stylesheet" href="../css/variables.css?v=3">
+  <link rel="stylesheet" href="../css/base.css?v=3">
+  <link rel="stylesheet" href="../css/components.css?v=3">
+  <link rel="stylesheet" href="../css/pages/modules.css?v=3">
 </head>
 
 <body>
@@ -48,13 +48,13 @@
         </button>
       </div>
 
-      <h1 class="mod-header__title">Petualangan Gigi Sehat</h1>
-      <p class="mod-header__subtitle">Ayo belajar cara menjaga senyum ceria kamu setiap hari!</p>
+      <h1 class="mod-header__title">Petualangan Gigi Sehat! 🌟</h1>
+      <p class="mod-header__subtitle">Yuk belajar jaga gigi biar senyum kamu makin kece! 😁</p>
     </header>
     <!-- ── Overall Progress ── -->
     <div class="overall-progress" id="overall-progress">
       <div class="overall-progress__top">
-        <span class="overall-progress__label">Progres Belajar</span>
+        <span class="overall-progress__label">🎮 Progres Petualangan</span>
         <span class="overall-progress__count" id="progress-count">0/4 Modul</span>
       </div>
       <div class="overall-progress__bar">
@@ -96,8 +96,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="../js/accessibility.js"></script>
-  <script src="../js/pwa.js"></script>
+  <script src="../js/accessibility.js?v=3"></script>
+  <script src="../js/pwa.js?v=3"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       if (!localStorage.getItem('dentavizion-user')) {
@@ -113,32 +113,32 @@
         {
           id: 'mod1',
           key: 'dentavizion-mod1-done',
-          title: 'Ayo Sikat Gigi',
-          desc: 'Pelajari teknik menyikat gigi yang benar dan menyenangkan!',
+          title: 'Ayo Sikat Gigi! 🪥',
+          desc: 'Seru banget! Belajar cara sikat gigi yang bener biar gigi kamu kinclong!',
           img: '../assets/images/hero-brushing.png',
           href: 'brushing-guide.html'
         },
         {
           id: 'mod2',
           key: 'dentavizion-mod2-done',
-          title: 'Scaling Gigi',
-          desc: 'Kenali proses pembersihan karang gigi agar gigimu tetap bersih dan sehat!',
+          title: 'Scaling Gigi ✨',
+          desc: 'Karang gigi bikin senyum kusam! Yuk tau cara bersihinnya!',
           img: '../assets/images/material-food.png',
           href: 'scaling-guide.html'
         },
         {
           id: 'mod3',
           key: 'dentavizion-mod3-done',
-          title: 'Penambalan Gigi',
-          desc: 'Pelajari cara dokter menambal gigi berlubang agar gigimu kuat kembali!',
+          title: 'Tambal Gigi 🦷',
+          desc: 'Gigi bolong? Tenang aja, dokter bisa tambal biar kuat lagi!',
           img: '../assets/images/material-clinic.png',
           href: 'filling-guide.html'
         },
         {
           id: 'mod4',
           key: 'dentavizion-mod4-done',
-          title: 'Pencabutan Gigi',
-          desc: 'Jangan takut! Yuk kenali proses pencabutan gigi yang aman dan tidak menyeramkan.',
+          title: 'Cabut Gigi 💪',
+          desc: 'Nggak usah takut! Cabut gigi itu aman banget kok. Yuk cari tau!',
           img: '../assets/images/mascot-tooth.png',
           href: 'extraction-guide.html'
         }
@@ -194,30 +194,27 @@
           // Badge
           let badgeHTML = '';
           if (state === 'completed') {
-            badgeHTML = `<span class="mod-card__badge mod-card__badge--completed">✅ SELESAI</span>`;
+            badgeHTML = `<span class="mod-card__badge mod-card__badge--completed">✅ LEVEL SELESAI!</span>`;
           } else if (state === 'active') {
-            badgeHTML = `<span class="mod-card__badge mod-card__badge--active">MULAI BELAJAR</span>`;
+            badgeHTML = `<span class="mod-card__badge mod-card__badge--active">🎮 SIAP MAIN!</span>`;
           } else {
-            const prevTitle = COURSES[i - 1] ? COURSES[i - 1].title : '';
-            badgeHTML = `<span class="mod-card__badge mod-card__badge--locked">🔒 SELESAIKAN "${prevTitle.toUpperCase()}"</span>`;
+            badgeHTML = `<span class="mod-card__badge mod-card__badge--locked">🔒 Selesaikan Level ${i} dulu!</span>`;
           }
 
           // Button
           let btnHTML = '';
           if (state === 'completed') {
             btnHTML = `<a href="${course.href}" class="mod-card__btn mod-card__btn--review" id="btn-${course.id}">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              Ulangi Materi
+              ⭐ Main Lagi
             </a>`;
           } else if (state === 'active') {
             btnHTML = `<a href="${course.href}" class="mod-card__btn mod-card__btn--start" id="btn-${course.id}">
-              Mulai Petualangan
+              Main Yuk! 🎮
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
             </a>`;
           } else {
             btnHTML = `<button class="mod-card__btn mod-card__btn--locked" disabled aria-disabled="true">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-              Terkunci
+              🔒 Belum Terbuka
             </button>`;
           }
 
@@ -230,7 +227,7 @@
           }
 
           step.innerHTML = `
-            <div class="course-step__node course-step__node--${state}">${nodeContent}</div>
+            <div class="course-step__node course-step__node--${state}">LV${i+1}</div>
             ${!isLast ? `<div class="course-step__line ${lineClass}"></div>` : ''}
             <article class="mod-card mod-card--${state}" aria-labelledby="${course.id}-title">
               <div class="mod-card__inner">
