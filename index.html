@@ -192,6 +192,14 @@
     </button>
   </aside>
 
+  <!-- Auth Guard -->
+  <script>
+    // Redirect to login if not authenticated
+    if (!localStorage.getItem('dentavizion-user')) {
+      window.location.href = 'pages/login.html';
+    }
+  </script>
+
   <!-- Scripts (loaded in order: accessibility → pwa → app) -->
   <script src="js/accessibility.js"></script>
   <script src="js/pwa.js"></script>

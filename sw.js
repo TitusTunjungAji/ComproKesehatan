@@ -3,7 +3,7 @@
    Network-first for dev, cache-first for prod
    ============================================ */
 
-const CACHE_NAME = 'dentavizion-v6';
+const CACHE_NAME = 'dentavizion-v7';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -15,11 +15,21 @@ const STATIC_ASSETS = [
   '/css/pages/modules.css',
   '/css/pages/module-content.css',
   '/css/pages/quiz.css',
-  '/css/pages/schedule.css',
   '/css/pages/profile.css',
   '/js/app.js',
   '/js/pwa.js',
   '/js/accessibility.js',
+  '/css/pages/auth.css',
+  '/pages/login.html',
+  '/pages/register.html',
+  '/pages/brushing-guide.html',
+  '/pages/scaling-guide.html',
+  '/pages/filling-guide.html',
+  '/pages/extraction-guide.html',
+  '/pages/quiz.html',
+  '/pages/quiz-scaling.html',
+  '/pages/quiz-filling.html',
+  '/pages/quiz-extraction.html',
   '/manifest.json',
   '/assets/icons/icon-192x192.png',
   '/assets/icons/icon-512x512.png',

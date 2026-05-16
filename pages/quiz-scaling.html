@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="id" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>Kuis Scaling Gigi — DENTAVIZION</title>
+  <meta name="description" content="Kuis tentang scaling gigi DENTAVIZION. Uji pengetahuanmu!">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#2BAA8E">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/pages/quiz.css">
+</head>
+<body>
+  <a href="#main-content" class="skip-link" id="skip-link">Langsung ke konten utama</a>
+  <div id="a11y-announcer" class="a11y-announcement" aria-live="polite" aria-atomic="true" role="status"></div>
+
+  <div class="app-shell">
+    <header class="topbar" role="banner">
+      <div class="topbar__brand-row">
+        <button id="btn-exit-quiz" class="topbar__exit" aria-label="Keluar dari kuis">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <span class="topbar__brand-text">KUIS SCALING GIGI</span>
+        <div class="topbar__spacer"></div>
+      </div>
+    </header>
+
+    <div id="exit-modal" class="exit-modal" role="dialog" aria-modal="true" aria-labelledby="exit-modal-title" style="display: none;">
+      <div class="exit-modal__backdrop" id="exit-modal-backdrop"></div>
+      <div class="exit-modal__card">
+        <div class="exit-modal__emoji">😢</div>
+        <h2 id="exit-modal-title" class="exit-modal__title">Yakin mau keluar?</h2>
+        <p class="exit-modal__desc">Progressmu belum tersimpan. Kuis akan diulang dari awal jika kamu keluar.</p>
+        <div class="exit-modal__actions">
+          <button id="btn-exit-cancel" class="exit-modal__btn exit-modal__btn--stay">Lanjut Kuis</button>
+          <button id="btn-exit-confirm" class="exit-modal__btn exit-modal__btn--leave">Keluar</button>
+        </div>
+      </div>
+    </div>
+
+    <main id="main-content" class="quiz-main" role="main">
+      <div id="quiz-screen" class="quiz-screen">
+        <div class="quiz-progress-area">
+          <div class="quiz-progress-row">
+            <span id="quiz-counter" class="quiz-counter" aria-live="polite">PERTANYAAN 1 DARI 5</span>
+            <div id="quiz-streak" class="quiz-streak" style="display: none;"><span aria-hidden="true">✨</span><span>HEBAT!</span></div>
+          </div>
+          <div class="quiz-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="5" aria-label="Progress kuis">
+            <div id="quiz-bar-fill" class="quiz-bar__fill" style="width: 0%;"></div>
+            <div id="quiz-bar-emoji" class="quiz-bar__emoji" style="left: 0%;">😊</div>
+          </div>
+        </div>
+        <div id="quiz-question-area" class="quiz-question" aria-live="polite">
+          <h1 id="quiz-question-text" class="quiz-question__title"></h1>
+          <p id="quiz-question-hint" class="quiz-question__hint"></p>
+        </div>
+        <div id="quiz-answers" class="quiz-grid" role="radiogroup" aria-label="Pilihan jawaban"></div>
+        <div id="quiz-feedback" class="quiz-feedback" style="display: none;" aria-live="assertive">
+          <div class="quiz-feedback__icon" id="quiz-feedback-icon"></div>
+          <p class="quiz-feedback__text" id="quiz-feedback-text"></p>
+        </div>
+      </div>
+
+      <div id="result-screen" class="result-screen" style="display: none;" aria-labelledby="result-title">
+        <div class="result-card">
+          <div class="result-card__emoji" id="result-emoji">🎉</div>
+          <h1 id="result-title" class="result-card__title">Luar Biasa!</h1>
+          <p id="result-desc" class="result-card__desc">Kamu mendapat skor sempurna!</p>
+          <div class="result-card__score"><span id="result-score" class="result-card__number">5/5</span><span class="result-card__label">SKOR</span></div>
+          <div class="result-card__stars" id="result-stars" aria-label="3 bintang dari 3">⭐⭐⭐</div>
+          <div class="result-card__points"><span aria-hidden="true">🪙</span><span id="result-points">+50 Poin!</span></div>
+        </div>
+        <button id="btn-retry" class="result-btn result-btn--outline">Ulangi Kuis</button>
+        <a href="modules.html" id="btn-back-modules" class="result-btn result-btn--primary">Kembali ke Modul <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+      </div>
+    </main>
+
+    <div id="quiz-cta" class="quiz-cta">
+      <button id="btn-check" class="quiz-cta__btn" disabled aria-disabled="true">Cek Jawaban <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+    </div>
+  </div>
+
+  <script src="../js/accessibility.js"></script>
+  <script src="../js/pwa.js"></script>
+  <script>
+    (() => {
+      'use strict';
+      const MODULE_KEY = 'dentavizion-mod2-done';
+      const QUESTIONS = [
+        {
+          question: 'Apa yang dimaksud dengan scaling gigi?',
+          hint: 'Pilih satu jawaban yang benar!',
+          type: 'text',
+          answers: [
+            { text: 'Mencabut gigi', icon: '🦷', correct: false },
+            { text: 'Membersihkan karang gigi', icon: '✨', correct: true },
+            { text: 'Menambal gigi', icon: '🔧', correct: false },
+            { text: 'Memutihkan gigi', icon: '💎', correct: false }
+          ]
+        },
+        {
+          question: 'Apa alat yang digunakan dokter untuk scaling?',
+          hint: 'Ingat pelajaran tadi ya!',
+          type: 'text',
+          answers: [
+            { text: 'Tang gigi', icon: '🔧', correct: false },
+            { text: 'Ultrasonic scaler', icon: '🔊', correct: true },
+            { text: 'Bor gigi', icon: '⚙️', correct: false },
+            { text: 'Sikat gigi listrik', icon: '🪥', correct: false }
+          ]
+        },
+        {
+          question: 'Berapa lama plak bisa mengeras jadi karang gigi?',
+          hint: 'Waktunya cukup singkat loh!',
+          type: 'text',
+          answers: [
+            { text: '1 jam', icon: '⏱️', correct: false },
+            { text: '24-72 jam', icon: '⏰', correct: true },
+            { text: '1 minggu', icon: '📅', correct: false },
+            { text: '1 bulan', icon: '🗓️', correct: false }
+          ]
+        },
+        {
+          question: 'Seberapa sering sebaiknya melakukan scaling?',
+          hint: 'Ini jadwal yang direkomendasikan dokter gigi!',
+          type: 'text',
+          answers: [
+            { text: 'Setiap minggu', icon: '📆', correct: false },
+            { text: 'Setiap 6 bulan', icon: '✅', correct: true },
+            { text: 'Setahun sekali', icon: '📅', correct: false },
+            { text: 'Hanya saat sakit', icon: '🤕', correct: false }
+          ]
+        },
+        {
+          question: 'Apa yang mungkin terjadi setelah scaling?',
+          hint: 'Ini hal yang normal terjadi!',
+          type: 'text',
+          answers: [
+            { text: 'Gigi rontok', icon: '😱', correct: false },
+            { text: 'Gigi lebih sensitif sementara', icon: '🧊', correct: true },
+            { text: 'Gigi berubah warna', icon: '🎨', correct: false },
+            { text: 'Gigi membesar', icon: '📏', correct: false }
+          ]
+        }
+      ];
+
+      let currentQ = 0, score = 0, streak = 0, selectedIdx = null, answered = false, buttonMode = 'check';
+      const els = {};
+
+      function init() {
+        els.counter = document.getElementById('quiz-counter');
+        els.streak = document.getElementById('quiz-streak');
+        els.barFill = document.getElementById('quiz-bar-fill');
+        els.barEmoji = document.getElementById('quiz-bar-emoji');
+        els.questionText = document.getElementById('quiz-question-text');
+        els.questionHint = document.getElementById('quiz-question-hint');
+        els.answersGrid = document.getElementById('quiz-answers');
+        els.feedback = document.getElementById('quiz-feedback');
+        els.feedbackIcon = document.getElementById('quiz-feedback-icon');
+        els.feedbackText = document.getElementById('quiz-feedback-text');
+        els.btnCheck = document.getElementById('btn-check');
+        els.quizScreen = document.getElementById('quiz-screen');
+        els.resultScreen = document.getElementById('result-screen');
+        els.quizCta = document.getElementById('quiz-cta');
+        els.btnRetry = document.getElementById('btn-retry');
+        els.btnCheck.addEventListener('click', handleButtonClick);
+        els.btnRetry.addEventListener('click', resetQuiz);
+        renderQuestion();
+      }
+
+      function handleButtonClick() {
+        if (buttonMode === 'check') checkAnswer();
+        else if (buttonMode === 'next') nextQuestion();
+        else if (buttonMode === 'result') showResults();
+      }
+
+      function renderQuestion() {
+        const q = QUESTIONS[currentQ]; selectedIdx = null; answered = false; buttonMode = 'check';
+        els.counter.textContent = `PERTANYAAN ${currentQ + 1} DARI ${QUESTIONS.length}`;
+        const pct = (currentQ / QUESTIONS.length) * 100;
+        els.barFill.style.width = pct + '%'; els.barEmoji.style.left = pct + '%';
+        els.streak.style.display = streak >= 2 ? 'flex' : 'none';
+        els.questionText.textContent = q.question; els.questionHint.textContent = q.hint;
+        els.feedback.style.display = 'none';
+        els.btnCheck.disabled = true; els.btnCheck.setAttribute('aria-disabled', 'true');
+        els.btnCheck.innerHTML = 'Cek Jawaban <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+        els.answersGrid.innerHTML = '';
+        q.answers.forEach((a, i) => {
+          const card = document.createElement('button');
+          card.className = 'answer-card'; card.setAttribute('role', 'radio'); card.setAttribute('aria-checked', 'false'); card.setAttribute('aria-label', a.text); card.dataset.index = i;
+          card.innerHTML = `<div class="answer-card__icon"><span class="answer-card__emoji">${a.icon}</span></div><span class="answer-card__label">${a.text}</span><div class="answer-card__check" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>`;
+          card.addEventListener('click', () => selectAnswer(i));
+          els.answersGrid.appendChild(card);
+        });
+        els.answersGrid.querySelectorAll('.answer-card').forEach((c, i) => { c.style.animationDelay = `${i * 0.08}s`; });
+      }
+
+      function selectAnswer(idx) {
+        if (answered) return; selectedIdx = idx;
+        els.answersGrid.querySelectorAll('.answer-card').forEach((c, i) => { c.classList.toggle('answer-card--selected', i === idx); c.setAttribute('aria-checked', i === idx ? 'true' : 'false'); });
+        els.btnCheck.disabled = false; els.btnCheck.setAttribute('aria-disabled', 'false');
+        if (typeof DentaA11y !== 'undefined') DentaA11y.vibrate('tap');
+      }
+
+      function checkAnswer() {
+        if (selectedIdx === null || answered) return; answered = true;
+        const q = QUESTIONS[currentQ]; const isCorrect = q.answers[selectedIdx].correct; const correctIdx = q.answers.findIndex(a => a.correct);
+        if (isCorrect) { score++; streak++; } else { streak = 0; }
+        els.answersGrid.querySelectorAll('.answer-card').forEach((c, i) => { if (i === correctIdx) c.classList.add('answer-card--correct'); if (i === selectedIdx && !isCorrect) c.classList.add('answer-card--wrong'); c.style.pointerEvents = 'none'; });
+        els.feedback.style.display = 'flex';
+        if (isCorrect) { els.feedbackIcon.textContent = '🎉'; els.feedbackText.textContent = 'Benar! Kamu hebat!'; els.feedback.className = 'quiz-feedback quiz-feedback--correct'; }
+        else { els.feedbackIcon.textContent = '😢'; els.feedbackText.textContent = `Jawabannya: ${q.answers[correctIdx].text}`; els.feedback.className = 'quiz-feedback quiz-feedback--wrong'; }
+        if (typeof DentaA11y !== 'undefined') DentaA11y.vibrate(isCorrect ? 'confirm' : 'error');
+        if (currentQ < QUESTIONS.length - 1) { buttonMode = 'next'; els.btnCheck.innerHTML = 'Lanjut <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'; }
+        else { buttonMode = 'result'; els.btnCheck.innerHTML = 'Lihat Hasil <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'; }
+      }
+
+      function nextQuestion() { currentQ++; renderQuestion(); }
+
+      function showResults() {
+        els.quizScreen.style.display = 'none'; els.quizCta.style.display = 'none'; els.resultScreen.style.display = 'flex';
+        localStorage.setItem(MODULE_KEY, 'true');
+        const pct = score / QUESTIONS.length; let emoji, title, desc, stars;
+        if (pct === 1) { emoji = '🏆'; title = 'Sempurna!'; desc = 'Kamu ahli scaling gigi!'; stars = '⭐⭐⭐'; }
+        else if (pct >= 0.6) { emoji = '🎉'; title = 'Luar Biasa!'; desc = 'Kerja bagus! Sedikit lagi sempurna!'; stars = '⭐⭐'; }
+        else { emoji = '💪'; title = 'Tetap Semangat!'; desc = 'Yuk belajar lagi!'; stars = '⭐'; }
+        document.getElementById('result-emoji').textContent = emoji; document.getElementById('result-title').textContent = title;
+        document.getElementById('result-desc').textContent = desc; document.getElementById('result-score').textContent = `${score}/${QUESTIONS.length}`;
+        document.getElementById('result-stars').textContent = stars; document.getElementById('result-points').textContent = `+${score * 10} Poin!`;
+        els.barFill.style.width = '100%'; els.barEmoji.style.left = '100%';
+        if (typeof DentaA11y !== 'undefined') DentaA11y.vibrate('confirm');
+      }
+
+      function resetQuiz() { currentQ = 0; score = 0; streak = 0; selectedIdx = null; answered = false; buttonMode = 'check'; els.quizScreen.style.display = 'block'; els.quizCta.style.display = 'block'; els.resultScreen.style.display = 'none'; renderQuestion(); }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        if (!localStorage.getItem('dentavizion-user')) { window.location.href = 'login.html'; return; }
+        const mode = localStorage.getItem('dentavizion-mode');
+        if (!mode) { window.location.href = '../index.html'; return; }
+        document.documentElement.setAttribute('data-mode', mode);
+        init();
+        const exitModal = document.getElementById('exit-modal'), btnExit = document.getElementById('btn-exit-quiz'), btnCancel = document.getElementById('btn-exit-cancel'), btnConfirm = document.getElementById('btn-exit-confirm'), backdrop = document.getElementById('exit-modal-backdrop');
+        function showExitModal() { exitModal.style.display = 'flex'; document.body.classList.add('no-scroll'); btnCancel.focus(); }
+        function hideExitModal() { exitModal.style.display = 'none'; document.body.classList.remove('no-scroll'); }
+        btnExit.addEventListener('click', showExitModal); btnCancel.addEventListener('click', hideExitModal); btnConfirm.addEventListener('click', () => { hideExitModal(); window.history.back(); }); backdrop.addEventListener('click', hideExitModal);
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && exitModal.style.display === 'flex') hideExitModal(); });
+      });
+    })();
+  </script>
+</body>
+</html>

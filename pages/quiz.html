@@ -405,6 +405,8 @@
         els.quizCta.style.display = 'none';
         els.resultScreen.style.display = 'flex';
 
+        localStorage.setItem('dentavizion-mod1-done', 'true');
+
         const pct = score / QUESTIONS.length;
         let emoji, title, desc, stars;
 
@@ -465,6 +467,10 @@
 
       // ── Init ──
       document.addEventListener('DOMContentLoaded', () => {
+        if (!localStorage.getItem('dentavizion-user')) {
+          window.location.href = 'login.html';
+          return;
+        }
         const mode = localStorage.getItem('dentavizion-mode');
         if (!mode) { window.location.href = '../index.html'; return; }
         document.documentElement.setAttribute('data-mode', mode);

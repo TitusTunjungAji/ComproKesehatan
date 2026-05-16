@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="id" dir="ltr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+
+  <!-- SEO & Meta -->
+  <title>Daftar — DENTAVIZION</title>
+  <meta name="description" content="Buat akun baru DENTAVIZION dan mulai perjalanan senyum sehat jagoanmu!">
+
+  <!-- PWA Meta -->
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#2BAA8E">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/icon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/icon-192x192.png">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/pages/auth.css">
+</head>
+
+<body>
+  <!-- Skip Link -->
+  <a href="#main-content" class="skip-link" id="skip-link">
+    Langsung ke konten utama
+  </a>
+
+  <!-- Live Region -->
+  <div id="a11y-announcer" class="a11y-announcement" aria-live="polite" aria-atomic="true" role="status"></div>
+
+  <!-- ======================== -->
+  <!-- REGISTER PAGE            -->
+  <!-- ======================== -->
+  <main id="main-content" class="auth-page" role="main">
+
+    <!-- Hero Section -->
+    <section class="auth-hero auth-hero--register" aria-label="Branding DENTAVIZION">
+      <!-- Top Bar -->
+      <div class="auth-topbar">
+        <a href="login.html" class="auth-topbar__back" aria-label="Kembali ke halaman login">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </a>
+        <span class="auth-topbar__brand">DENTAVIZION</span>
+      </div>
+
+      <div class="auth-hero__mascot">
+        <img src="../assets/images/mascot-tooth.png" 
+             alt="Maskot DENTAVIZION" 
+             width="120" 
+             height="120" 
+             loading="eager">
+      </div>
+    </section>
+
+    <!-- Heading (outside card) -->
+    <div class="auth-heading auth-heading--register">
+      <h1 class="auth-heading__title">Buat Akun Baru</h1>
+      <p class="auth-heading__subtitle">Mulai perjalanan senyum sehat Jagoanmu hari ini! ✨</p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="auth-form-container auth-form-container--register">
+
+      <!-- Error Message -->
+      <div id="register-error" class="auth-error" role="alert">
+        <span class="auth-error__icon" aria-hidden="true">⚠️</span>
+        <span id="register-error-text">Terjadi kesalahan</span>
+      </div>
+
+      <!-- Register Form -->
+      <form id="register-form" class="auth-form" novalidate>
+        <!-- Nama Jagoan -->
+        <div class="input-group">
+          <label class="input-group__label" for="reg-name">Nama Jagoan</label>
+          <div class="input-group__field">
+            <div class="input-group__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                <line x1="9" y1="9" x2="9.01" y2="9" />
+                <line x1="15" y1="9" x2="15.01" y2="9" />
+              </svg>
+            </div>
+            <input type="text" 
+                   id="reg-name" 
+                   class="input-group__input input-group__input--with-icon"
+                   placeholder="Siapa nama pahlawan kecil kita?"
+                   autocomplete="name"
+                   required
+                   aria-required="true">
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="input-group">
+          <label class="input-group__label" for="reg-email">Email</label>
+          <div class="input-group__field">
+            <div class="input-group__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                <polyline points="22,6 12,13 2,6" />
+              </svg>
+            </div>
+            <input type="email" 
+                   id="reg-email" 
+                   class="input-group__input input-group__input--with-icon"
+                   placeholder="ayah_bunda@email.com"
+                   autocomplete="email"
+                   required
+                   aria-required="true">
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="input-group">
+          <label class="input-group__label" for="reg-password">Kata Sandi</label>
+          <div class="input-group__field">
+            <div class="input-group__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0110 0v4" />
+              </svg>
+            </div>
+            <input type="password" 
+                   id="reg-password" 
+                   class="input-group__input input-group__input--with-icon"
+                   placeholder="Pilih sandi yang aman ya"
+                   autocomplete="new-password"
+                   required
+                   aria-required="true">
+            <button type="button" 
+                    class="input-group__toggle" 
+                    id="toggle-reg-password"
+                    aria-label="Tampilkan kata sandi"
+                    tabindex="-1">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Terms Checkbox -->
+        <label class="auth-checkbox" for="reg-terms">
+          <input type="checkbox" id="reg-terms" class="auth-checkbox__input" required>
+          <span class="auth-checkbox__text">
+            Saya setuju dengan 
+            <a href="#" class="auth-checkbox__link">Syarat & Ketentuan</a> 
+            serta 
+            <a href="#" class="auth-checkbox__link">Kebijakan Privasi</a>.
+          </span>
+        </label>
+
+        <!-- Submit -->
+        <button type="submit" class="auth-submit" id="btn-register">
+          <span class="auth-submit__text">
+            Daftar
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </span>
+          <div class="auth-submit__spinner" aria-hidden="true"></div>
+        </button>
+      </form>
+
+      <!-- Footer Link -->
+      <div class="auth-footer">
+        <p class="auth-footer__text">
+          Sudah punya akun? <a href="login.html" class="auth-footer__link">Masuk di sini</a>
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="../js/accessibility.js"></script>
+  <script src="../js/pwa.js"></script>
+  <script>
+    (() => {
+      'use strict';
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('register-form');
+        const nameInput = document.getElementById('reg-name');
+        const emailInput = document.getElementById('reg-email');
+        const passwordInput = document.getElementById('reg-password');
+        const termsCheckbox = document.getElementById('reg-terms');
+        const errorBox = document.getElementById('register-error');
+        const errorText = document.getElementById('register-error-text');
+        const btnRegister = document.getElementById('btn-register');
+        const togglePassword = document.getElementById('toggle-reg-password');
+
+        // Password visibility toggle
+        togglePassword.addEventListener('click', () => {
+          const isPassword = passwordInput.type === 'password';
+          passwordInput.type = isPassword ? 'text' : 'password';
+          togglePassword.setAttribute('aria-label',
+            isPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi');
+        });
+
+        // Clear errors on input
+        [nameInput, emailInput, passwordInput].forEach(input => {
+          input.addEventListener('input', () => {
+            hideError();
+            input.classList.remove('input-group__input--error');
+          });
+        });
+
+        // Form submit
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+
+          const name = nameInput.value.trim();
+          const email = emailInput.value.trim();
+          const password = passwordInput.value;
+
+          // Validation
+          if (!name) {
+            showError('Masukkan nama jagoan kamu');
+            nameInput.classList.add('input-group__input--error');
+            nameInput.focus();
+            return;
+          }
+          if (!email) {
+            showError('Masukkan email kamu');
+            emailInput.classList.add('input-group__input--error');
+            emailInput.focus();
+            return;
+          }
+          if (!password || password.length < 4) {
+            showError('Kata sandi minimal 4 karakter');
+            passwordInput.classList.add('input-group__input--error');
+            passwordInput.focus();
+            return;
+          }
+          if (!termsCheckbox.checked) {
+            showError('Kamu harus menyetujui syarat & ketentuan');
+            form.classList.add('shake');
+            setTimeout(() => form.classList.remove('shake'), 500);
+            return;
+          }
+
+          // Check if email already exists
+          const existing = JSON.parse(localStorage.getItem('dentavizion-accounts') || '[]');
+          if (existing.find(a => a.email === email)) {
+            showError('Email sudah terdaftar. Silakan masuk.');
+            emailInput.classList.add('input-group__input--error');
+            return;
+          }
+
+          // Loading state
+          btnRegister.classList.add('auth-submit--loading');
+          btnRegister.disabled = true;
+
+          // Simulate registration
+          setTimeout(() => {
+            // Save account
+            existing.push({
+              username: email,
+              email: email,
+              name: name,
+              password: password,
+              createdAt: new Date().toISOString()
+            });
+            localStorage.setItem('dentavizion-accounts', JSON.stringify(existing));
+
+            // Auto-login
+            localStorage.setItem('dentavizion-user', JSON.stringify({
+              username: email,
+              name: name,
+              loggedInAt: new Date().toISOString()
+            }));
+
+            if (typeof DentaA11y !== 'undefined') {
+              DentaA11y.vibrate('confirm');
+            }
+
+            // Redirect to mode selection
+            document.body.style.opacity = '0.7';
+            document.body.style.transition = 'opacity 0.3s ease';
+            setTimeout(() => {
+              window.location.href = '../index.html';
+            }, 300);
+          }, 800);
+        });
+
+        function showError(msg) {
+          errorText.textContent = msg;
+          errorBox.classList.add('auth-error--visible');
+        }
+
+        function hideError() {
+          errorBox.classList.remove('auth-error--visible');
+        }
+      });
+    })();
+  </script>
+</body>
+
+</html>
