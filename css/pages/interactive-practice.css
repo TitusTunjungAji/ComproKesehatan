@@ -133,6 +133,40 @@
   cursor: pointer;
 }
 
+.viewer-zoom-btn {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  z-index: 30;
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font-family);
+  color: #ffffff;
+  background: rgba(43, 170, 142, 0.92);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+.viewer-zoom-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(34, 144, 121, 0.95);
+}
+
+.viewer-zoom-btn:active {
+  transform: translateY(0);
+}
+
+.viewer-zoom-btn:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
 /* When actively brushing, use the toothbrush cursor */
 .viewer-wrapper--brushing {
   cursor: url('../images/sikat gigi.png') 16 16, crosshair;

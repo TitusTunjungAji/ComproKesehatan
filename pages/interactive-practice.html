@@ -139,6 +139,10 @@
       <!-- Interactive Area -->
       <div class="interactive-area">
         <div id="viewer" class="viewer-wrapper" role="region" aria-label="Area simulasi menyikat">
+          <button id="btn-recenter-zoom" class="viewer-zoom-btn" type="button"
+            aria-label="Posisikan ulang zoom wajah" data-a11y-read="Tombol posisikan ulang zoom wajah.">
+            Posisikan Ulang Zoom
+          </button>
           <video id="webcam" style="display: none;" playsinline></video>
           <canvas id="ar-canvas" class="viewer-image" width="480" height="480" style="object-fit: cover; transform: scaleX(-1);"></canvas>
           <div id="ar-instructions" class="ar-instructions">Memuat Kamera AR...</div>
@@ -240,9 +244,21 @@
       // ── DOM refs (initialized in DOMContentLoaded) ──
       let titleEl, textEl, viewerEl, videoElement, canvasElement, canvasCtx;
       let arInstructions, btnNext, btnBack, progressFill, progressText, progressPct;
+      let btnRecenterZoom;
       let successBadge, stepIndicator, brushCursor;
       let debugOverlay, debugAnchorX, debugAnchorY, debugMouthLeft, debugMouthRight, debugMouthTop, debugMouthBottom, debugStatus;
       let debugCursorX, debugCursorY, debugHeader, debugMouthCanvas, debugMouthCtx;
+
+      function resetAutoZoom() {
+        autoZoomDone = false;
+        savedZoom = 1;
+        savedOffsetX = 0;
+        savedOffsetY = 0;
+        if (arInstructions && isPoseReady) {
+          arInstructions.textContent = 'Zoom direset. Menyesuaikan posisi wajah...';
+          arInstructions.className = 'ar-instructions';
+        }
+      }
 
       // ── Build step indicator dots ──
       function buildStepDots() {
@@ -522,11 +538,7 @@
             };
           });
           
-          // Draw only glowing lips (hide the rest of the face mesh)
-          if (typeof drawConnectors !== 'undefined' && typeof FACEMESH_LIPS !== 'undefined') {
-            // drawConnectors(canvasCtx, landmarks, FACEMESH_TESSELATION, {color: 'rgba(255,255,255,0.15)', lineWidth: 1}); // Face mesh hidden
-            drawConnectors(canvasCtx, landmarks, FACEMESH_LIPS, {color: isPoseReady ? '#2BAA8E' : '#FFFFFF', lineWidth: 3});
-          }
+          // Keep mouth landmarks for hit-testing, but do not render lip outline.
           
           const pose = detectPose(landmarks);
           checkPoseRequirement(pose);
@@ -702,6 +714,17 @@
           });
         }
 
+        if (btnRecenterZoom) {
+          btnRecenterZoom.addEventListener('pointerdown', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          });
+
+          btnRecenterZoom.addEventListener('click', () => {
+            resetAutoZoom();
+          });
+        }
+
         // ── Debug header toggle ──
         if (debugHeader) {
           debugHeader.addEventListener('click', () => {
@@ -772,6 +795,7 @@
         canvasCtx = canvasElement.getContext('2d');
         arInstructions = document.getElementById('ar-instructions');
         btnNext = document.getElementById('btn-next');
+        btnRecenterZoom = document.getElementById('btn-recenter-zoom');
         btnBack = document.getElementById('btn-back');
         progressFill = document.getElementById('scene-progress');
         progressText = document.getElementById('progress-text');
