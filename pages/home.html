@@ -822,6 +822,17 @@
         clearInterval(triviaTimer);
         startAutoRotation();
       });
+
+      // AR button: set mode to visual then open AR page
+      const btnTryAR = document.getElementById('btn-try-ar');
+      if (btnTryAR) {
+        btnTryAR.addEventListener('click', (e) => {
+          // Ensure app mode is set so AR pages won't redirect to mode selection
+          try { localStorage.setItem('dentavizion-mode', 'visual'); } catch (err) { /* ignore */ }
+          // Navigate to interactive practice AR page (same folder)
+          window.location.href = 'interactive-practice.html';
+        });
+      }
     });
   </script>
 </body>

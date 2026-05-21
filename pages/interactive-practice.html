@@ -104,10 +104,6 @@
         </svg>
       </button>
       <span class="topbar__brand">PRAKTIK SIKAT GIGI</span>
-      <div class="topbar__points" aria-label="100 Poin">
-        <span class="topbar__points-icon" aria-hidden="true">⭐</span>
-        <span class="topbar__points-text">100 POIN!</span>
-      </div>
     </header>
 
     <!-- ─── Step Indicator Dots ─── -->
@@ -242,7 +238,7 @@
       let debugMode = false; // Set to true to show debugging tools
 
       // ── DOM refs (initialized in DOMContentLoaded) ──
-      let titleEl, textEl, viewerEl, videoElement, canvasElement, canvasCtx;
+      let titleEl, textEl, viewerEl, videoElement, canvasElement, canvasCtx, viewerImg;
       let arInstructions, btnNext, btnBack, progressFill, progressText, progressPct;
       let btnRecenterZoom;
       let successBadge, stepIndicator, brushCursor;
@@ -703,6 +699,11 @@
         // ── Navigation ──
         if (btnNext) {
           btnNext.addEventListener('click', () => {
+            // If this button is marked as final, navigate to home instead of advancing step
+            if (btnNext.dataset.final === 'true') {
+              window.location.href = 'home.html';
+              return;
+            }
             currentStep++;
             initScenario(currentStep);
           });
@@ -754,8 +755,13 @@
       function finishSimulation() {
         titleEl.textContent = 'Luar Biasa! 🏆';
         textEl.textContent = 'Kamu sudah belajar menyikat gigi dengan baik dari semua regio! Gigi kamu pasti sehat dan kuat. Jangan lupa untuk menyikat gigi 2 kali sehari ya!';
-        viewerImg.src = '../assets/images/mascot-tooth.png';
-        viewerImg.style.transform = 'none';
+        if (viewerImg) {
+          viewerImg.src = '../assets/images/mascot-tooth.png';
+          viewerImg.style.transform = 'none';
+          viewerImg.style.display = 'block';
+        }
+        if (canvasElement) canvasElement.style.display = 'none';
+        if (videoElement) videoElement.style.display = 'none';
         progressFill.style.width = '100%';
         progressPct.textContent = '100%';
         progressText.textContent = 'Simulasi selesai!';
@@ -764,7 +770,13 @@
         arInstructions.style.display = 'none';
         btnNext.textContent = 'Selesai & Kembali';
         btnNext.disabled = false;
-        btnNext.onclick = () => window.location.href = 'modules.html';
+        // Mark button as final so its click handler will navigate home
+        if (btnNext) {
+          btnNext.dataset.final = 'true';
+          // Fallback: set onclick directly to ensure navigation even if listeners misbehave
+          btnNext.onclick = () => { window.location.href = 'home.html'; };
+          btnNext.setAttribute('aria-label', 'Selesai, kembali ke Beranda');
+        }
 
         successBadge.textContent = 'Pahlawan Gigi! 🦷';
         successBadge.classList.add('success-badge--visible');
@@ -793,6 +805,20 @@
         videoElement = document.getElementById('webcam');
         canvasElement = document.getElementById('ar-canvas');
         canvasCtx = canvasElement.getContext('2d');
+        // Viewer image fallback (created if not present)
+        viewerImg = document.getElementById('viewer-img');
+        if (!viewerImg && viewerEl) {
+          viewerImg = document.createElement('img');
+          viewerImg.id = 'viewer-img';
+          viewerImg.alt = '';
+          viewerImg.style.width = '100%';
+          viewerImg.style.height = '100%';
+          viewerImg.style.objectFit = 'cover';
+          viewerImg.style.position = 'absolute';
+          viewerImg.style.inset = '0';
+          viewerImg.style.display = 'none';
+          viewerEl.appendChild(viewerImg);
+        }
         arInstructions = document.getElementById('ar-instructions');
         btnNext = document.getElementById('btn-next');
         btnRecenterZoom = document.getElementById('btn-recenter-zoom');
