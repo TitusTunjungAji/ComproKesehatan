@@ -15,10 +15,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <link rel="stylesheet" href="../css/variables.css">
-  <link rel="stylesheet" href="../css/base.css">
-  <link rel="stylesheet" href="../css/components.css">
-  <link rel="stylesheet" href="../css/pages/profile.css">
+  <link rel="stylesheet" href="../css/variables.css?v=3">
+  <link rel="stylesheet" href="../css/base.css?v=3">
+  <link rel="stylesheet" href="../css/components.css?v=3">
+  <link rel="stylesheet" href="../css/pages/profile.css?v=3">
 </head>
 
 <body>
@@ -59,8 +59,8 @@
           </div>
           <div class="prof-card__level-badge" aria-label="Level 12">LVL 12</div>
         </div>
-        <h1 class="prof-card__name">Halo, Petra!</h1>
-        <p class="prof-card__title">Penjelajah Gigi Sehat</p>
+        <h1 class="prof-card__name">Hai, Jagoan! 🌟</h1>
+        <p class="prof-card__title">Penjelajah Gigi Super 🦷</p>
         <!-- XP Bar -->
         <div class="prof-card__xp" aria-label="1250 dari 1500 XP">
           <div class="prof-card__xp-bar">
@@ -73,7 +73,7 @@
       <!-- ── Koleksi Piala ── -->
       <section class="trophy-section" aria-labelledby="trophy-title">
         <div class="trophy-section__head">
-          <h2 id="trophy-title" class="trophy-section__title">Koleksi Piala</h2>
+          <h2 id="trophy-title" class="trophy-section__title">🏆 Koleksi Piala</h2>
           <button class="trophy-section__link" id="btn-see-all" aria-label="Lihat semua piala">LIHAT SEMUA</button>
         </div>
 
@@ -89,8 +89,8 @@
                 <path d="M18 2H6v7a6 6 0 0012 0V2z"/>
               </svg>
             </div>
-            <h3 class="trophy-card__title">Pahlawan Sikat Gigi</h3>
-            <p class="trophy-card__sub">7 Hari Berturut-turut</p>
+            <h3 class="trophy-card__title">Pahlawan Sikat Gigi 🪥</h3>
+            <p class="trophy-card__sub">7 Hari Berturut-turut! Keren!</p>
           </div>
 
           <!-- Unlocked 2 -->
@@ -102,8 +102,8 @@
                 <polyline points="22 4 12 14.01 9 11.01"/>
               </svg>
             </div>
-            <h3 class="trophy-card__title">Gigi Sehat Cemerlang</h3>
-            <p class="trophy-card__sub">Bebas Lubang Bulan Ini</p>
+            <h3 class="trophy-card__title">Gigi Super Kinclong ✨</h3>
+            <p class="trophy-card__sub">Bebas Lubang! Mantap!</p>
           </div>
 
           <!-- Locked 1 -->
@@ -115,8 +115,8 @@
                 <path d="M7 11V7a5 5 0 0110 0v4"/>
               </svg>
             </div>
-            <h3 class="trophy-card__title">Pakar Flossing</h3>
-            <p class="trophy-card__sub">Terkunci</p>
+            <h3 class="trophy-card__title">Pakar Flossing 🧵</h3>
+            <p class="trophy-card__sub">Belum terbuka 🔒</p>
           </div>
 
           <!-- Locked 2 -->
@@ -128,54 +128,78 @@
                 <path d="M7 11V7a5 5 0 0110 0v4"/>
               </svg>
             </div>
-            <h3 class="trophy-card__title">Sahabat Dokter Gigi</h3>
-            <p class="trophy-card__sub">Terkunci</p>
+            <h3 class="trophy-card__title">Sahabat Dokter Gigi 👨‍⚕️</h3>
+            <p class="trophy-card__sub">Belum terbuka 🔒</p>
           </div>
         </div>
       </section>
 
-      <!-- ── Statistik Mingguan ── -->
+      <!-- ── Statistik Mingguan (Game Style) ── -->
       <section class="stats-card" aria-labelledby="stats-title">
-        <h2 id="stats-title" class="stats-card__title">Statistik Mingguan</h2>
-        <p class="stats-card__desc">Kamu sikat gigi <strong>12 kali</strong> minggu ini! Hebat!</p>
+        <div class="stats-card__header">
+          <h2 id="stats-title" class="stats-card__title">📅 Minggu Ini</h2>
+        </div>
 
-        <div class="stats-chart" aria-label="Grafik sikat gigi mingguan">
-          <div class="stats-chart__bar-group" data-day="SEN">
-            <div class="stats-chart__bar stats-chart__bar--filled" style="height: 70%;"></div>
-            <span class="stats-chart__label stats-chart__label--active">SEN</span>
+        <!-- Day circles like a game calendar -->
+        <div class="stats-days" aria-label="Status sikat gigi per hari">
+          <div class="stats-day stats-day--done">
+            <span class="stats-day__emoji">✅</span>
+            <span class="stats-day__label">Sen</span>
           </div>
-          <div class="stats-chart__bar-group" data-day="SEL">
-            <div class="stats-chart__bar stats-chart__bar--filled" style="height: 100%;"></div>
-            <span class="stats-chart__label stats-chart__label--active">SEL</span>
+          <div class="stats-day stats-day--done">
+            <span class="stats-day__emoji">✅</span>
+            <span class="stats-day__label">Sel</span>
           </div>
-          <div class="stats-chart__bar-group" data-day="RAB">
-            <div class="stats-chart__bar stats-chart__bar--filled" style="height: 85%;"></div>
-            <span class="stats-chart__label stats-chart__label--active">RAB</span>
+          <div class="stats-day stats-day--done">
+            <span class="stats-day__emoji">✅</span>
+            <span class="stats-day__label">Rab</span>
           </div>
-          <div class="stats-chart__bar-group" data-day="KAM">
-            <div class="stats-chart__bar stats-chart__bar--filled" style="height: 100%;"></div>
-            <span class="stats-chart__label stats-chart__label--active">KAM</span>
+          <div class="stats-day stats-day--done">
+            <span class="stats-day__emoji">✅</span>
+            <span class="stats-day__label">Kam</span>
           </div>
-          <div class="stats-chart__bar-group" data-day="JUM">
-            <div class="stats-chart__bar" style="height: 30%;"></div>
-            <span class="stats-chart__label">JUM</span>
+          <div class="stats-day stats-day--miss">
+            <span class="stats-day__emoji">😴</span>
+            <span class="stats-day__label">Jum</span>
           </div>
-          <div class="stats-chart__bar-group" data-day="SAB">
-            <div class="stats-chart__bar" style="height: 15%;"></div>
-            <span class="stats-chart__label">SAB</span>
+          <div class="stats-day stats-day--today">
+            <span class="stats-day__emoji">🎯</span>
+            <span class="stats-day__label">Sab</span>
           </div>
-          <div class="stats-chart__bar-group" data-day="MIN">
-            <div class="stats-chart__bar" style="height: 15%;"></div>
-            <span class="stats-chart__label">MIN</span>
+          <div class="stats-day">
+            <span class="stats-day__emoji">⏳</span>
+            <span class="stats-day__label">Min</span>
+          </div>
+        </div>
+
+        <!-- Mini stats row -->
+        <div class="stats-mini">
+          <div class="stats-mini__item">
+            <span class="stats-mini__icon">🔥</span>
+            <span class="stats-mini__value">4</span>
+            <span class="stats-mini__label">Streak</span>
+          </div>
+          <div class="stats-mini__divider"></div>
+          <div class="stats-mini__item">
+            <span class="stats-mini__icon">🦷</span>
+            <span class="stats-mini__value">12x</span>
+            <span class="stats-mini__label">Sikat</span>
+          </div>
+        </div>
+
+        <!-- Achievement progress -->
+        <div class="stats-achievement">
+          <div class="stats-achievement__info">
+            <span class="stats-achievement__text">🏆 7 hari berturut = Piala Baru!</span>
+            <span class="stats-achievement__count">4/7</span>
+          </div>
+          <div class="stats-achievement__bar">
+            <div class="stats-achievement__fill" style="width: 57%;"></div>
           </div>
         </div>
       </section>
 
-      <!-- ── Detail CTA ── -->
-      <button class="prof-cta" id="btn-detail-report" aria-label="Lihat detail laporan gigi"
-        data-a11y-read="Tombol Detail Laporan Gigi. Tekan untuk melihat statistik lengkap.">
-        <span aria-hidden="true">✨</span> DETAIL LAPORAN GIGI
-      </button>
+
 
       <div style="height: 90px;" aria-hidden="true"></div>
     </main>
@@ -196,14 +220,6 @@
         </svg>
         <span>MODUL</span>
       </a>
-      <a href="schedule.html" class="btm-nav__item" aria-label="Jadwal sikat gigi" id="nav-schedule">
-        <svg class="btm-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/>
-          <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-        </svg>
-        <span>JADWAL</span>
-      </a>
       <a href="profile.html" class="btm-nav__item btm-nav__item--active" aria-label="Profil, halaman aktif"
         aria-current="page" id="nav-profile">
         <svg class="btm-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -215,26 +231,60 @@
     </nav>
   </div>
 
-  <script src="../js/accessibility.js"></script>
-  <script src="../js/pwa.js"></script>
-  <script>
+  <script src="../js/accessibility.js?v=3"></script>
+  <script src="../js/pwa.js?v=3"></script>
+  <script type="module">
+    import { onUserChanged, getUserProfile } from '../js/firebase-config.js?v=3';
+
     document.addEventListener('DOMContentLoaded', () => {
       const mode = localStorage.getItem('dentavizion-mode');
       if (!mode) { window.location.href = '../index.html'; return; }
       document.documentElement.setAttribute('data-mode', mode);
+
+      const nameEl = document.querySelector('.prof-card__name');
+      const avatarEl = document.querySelector('.prof-card__avatar img');
+      const btnSettings = document.getElementById('btn-settings');
+
+      // ── Settings button ──
+      if (btnSettings) {
+        btnSettings.addEventListener('click', () => {
+          window.location.href = 'settings.html';
+        });
+      }
+
+      // ── Load user data from Firebase ──
+      onUserChanged(async (user) => {
+        if (!user) {
+          // Check localStorage fallback
+          if (!localStorage.getItem('dentavizion-user')) {
+            window.location.href = 'login.html';
+            return;
+          }
+          // Use localStorage data
+          const localUser = JSON.parse(localStorage.getItem('dentavizion-user') || '{}');
+          if (nameEl) nameEl.textContent = 'Hai, ' + (localUser.name || 'Jagoan') + '! 🌟';
+          return;
+        }
+
+        try {
+          const profile = await getUserProfile(user.uid);
+          if (profile) {
+            if (nameEl) nameEl.textContent = 'Hai, ' + (profile.name || 'Jagoan') + '! 🌟';
+            if (profile.photoURL && avatarEl) avatarEl.src = profile.photoURL;
+          }
+        } catch (e) {
+          console.error('Error loading profile:', e);
+          // Fallback to localStorage
+          const localUser = JSON.parse(localStorage.getItem('dentavizion-user') || '{}');
+          if (nameEl) nameEl.textContent = 'Hai, ' + (localUser.name || 'Jagoan') + '! 🌟';
+        }
+      });
 
       // Animate XP bar
       setTimeout(() => {
         const fill = document.querySelector('.prof-card__xp-fill');
         if (fill) fill.style.width = '83%';
       }, 300);
-
-      // Animate stats bars
-      document.querySelectorAll('.stats-chart__bar').forEach((bar, i) => {
-        const h = bar.style.height;
-        bar.style.height = '0%';
-        setTimeout(() => { bar.style.height = h; }, 400 + i * 80);
-      });
 
       // Trophy card hover haptic
       document.querySelectorAll('.trophy-card--unlocked').forEach(card => {
@@ -243,20 +293,9 @@
         });
       });
 
-      // Detail report button
-      document.getElementById('btn-detail-report').addEventListener('click', () => {
-        if (typeof DentaA11y !== 'undefined') DentaA11y.vibrate('tap');
-        // Future: navigate to detailed report
-        let t = document.getElementById('save-toast');
-        if (!t) { t = document.createElement('div'); t.id = 'save-toast'; t.className = 'toast'; t.setAttribute('role', 'alert'); document.body.appendChild(t); }
-        t.textContent = '🚧 Segera hadir! Laporan detail gigi.';
-        setTimeout(() => t.classList.add('toast--visible'), 50);
-        setTimeout(() => t.classList.remove('toast--visible'), 3000);
-      });
-
       // TTS
       if (typeof DentaA11y !== 'undefined' && mode === 'blind') {
-        DentaA11y.speak('Halaman Profil. Halo Arka! Level 12, Penjelajah Gigi Sehat. 1250 dari 1500 XP.', true);
+        DentaA11y.speak('Halaman Profil. Lihat statistik dan piala kamu di sini!', true);
       }
     });
   </script>

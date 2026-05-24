@@ -5,8 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 
-  <title>Beranda — DENTAVIZION</title>
-  <meta name="description" content="Halaman utama DENTAVIZION. Mulai petualangan kesehatan gigi dan mulutmu!">
+  <title>🦷 Beranda — DENTAVIZION</title>
+  <meta name="description" content="Yuk main dan belajar jaga gigi bareng DENTAVIZION! Seru banget!">
 
   <!-- PWA Meta -->
   <link rel="manifest" href="../manifest.json">
@@ -18,10 +18,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="../css/variables.css">
-  <link rel="stylesheet" href="../css/base.css">
-  <link rel="stylesheet" href="../css/components.css">
-  <link rel="stylesheet" href="../css/pages/home.css">
+  <link rel="stylesheet" href="../css/variables.css?v=3">
+  <link rel="stylesheet" href="../css/base.css?v=3">
+  <link rel="stylesheet" href="../css/components.css?v=3">
+  <link rel="stylesheet" href="../css/pages/home.css?v=3">
 </head>
 
 <body>
@@ -60,20 +60,20 @@
       <div class="home-header__greeting">
         <div class="home-header__level-badge">
           <span class="level-dot" aria-hidden="true"></span>
-          <span class="level-text">LEVEL 5: PENJAGA GIGI</span>
+          <span class="level-text">⭐ PEJUANG GIGI SUPER ⭐</span>
         </div>
-        <h1 class="home-header__name">Halo, Sahabat!</h1>
-        <p class="home-header__subtitle">Gigi kamu sudah 85% sehat minggu ini. Yuk, tuntaskan hari ini!</p>
+        <h1 class="home-header__name">Hai, Jagoan! 👋</h1>
+        <p class="home-header__subtitle">Wah gigi kamu makin keren! Yuk lanjutin petualangan hari ini! 🚀</p>
       </div>
 
       <!-- Today's Mission Pill -->
       <a href="brushing-guide.html" class="mission-pill" aria-label="Misi hari ini: Sikat Gigi Sore">
         <div class="mission-pill__icon-wrap">
-          <span class="mission-pill__icon">🎯</span>
+          <span class="mission-pill__icon">🌟</span>
         </div>
         <div class="mission-pill__content">
-          <span class="mission-pill__label">MISI HARI INI</span>
-          <span class="mission-pill__text">Sikat Gigi Sore</span>
+          <span class="mission-pill__label">MISI SERU HARI INI</span>
+          <span class="mission-pill__text">Yuk Sikat Gigi! 🪥</span>
         </div>
         <svg class="mission-pill__arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
           stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -85,124 +85,248 @@
     <!-- ─── Main Content ─── -->
     <main id="main-content" class="home-main" role="main">
 
-      <!-- ── Hero CTA Card ── -->
-      <section class="hero-card" aria-labelledby="hero-title">
-        <div class="hero-card__visual">
-          <img src="../assets/images/hero-brushing.png" alt="Maskot gigi pahlawan" class="hero-card__img" width="160"
-            height="160" loading="eager">
+      <!-- ── Trivia Card ── -->
+      <section class="trivia-card" aria-labelledby="trivia-title" aria-live="polite">
+        <!-- Decorative elements -->
+        <div class="trivia-card__decor-circle trivia-card__decor-circle--1" aria-hidden="true"></div>
+        <div class="trivia-card__decor-circle trivia-card__decor-circle--2" aria-hidden="true"></div>
+        <div class="trivia-card__decor-circle trivia-card__decor-circle--3" aria-hidden="true"></div>
+
+        <!-- Header -->
+        <div class="trivia-card__header">
+          <div class="trivia-card__icon-wrap">
+            <span class="trivia-card__icon" id="trivia-icon" aria-hidden="true">💡</span>
+          </div>
+          <div>
+            <h2 id="trivia-title" class="trivia-card__label">Wah, Tau Nggak? 🤔</h2>
+            <span class="trivia-card__category" id="trivia-category">Tips Keren</span>
+          </div>
         </div>
-        <div class="hero-card__body">
-          <h2 id="hero-title" class="hero-card__title">
-            Waktunya menjaga<br>senyummu!
-          </h2>
-          <p class="hero-card__desc">
-            Ayo pelajari cara menyikat gigi yang benar melalui petualangan seru hari ini.
+
+        <!-- Trivia text -->
+        <div class="trivia-card__content">
+          <p class="trivia-card__text" id="trivia-text">
+            Sikat gigi paling penting adalah malam hari sebelum tidur, lho!
           </p>
-          <a href="modules.html" class="hero-card__btn" id="btn-start-learning" aria-label="Mulai belajar menyikat gigi"
-            data-a11y-read="Tombol mulai belajar. Tekan untuk memulai petualangan menyikat gigi.">
-            Mulai Belajar
+        </div>
+
+        <!-- Bottom bar -->
+        <div class="trivia-card__footer">
+          <div class="trivia-card__dots" id="trivia-dots" aria-hidden="true">
+            <!-- dots injected by JS -->
+          </div>
+          <button class="trivia-card__next-btn" id="trivia-next-btn" 
+                  aria-label="Lihat trivia berikutnya"
+                  data-a11y-read="Tombol trivia selanjutnya">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <line x1="5" y1="12" x2="19" y2="12" />
-              <polyline points="12 5 19 12 12 19" />
+              <polyline points="9 18 15 12 9 6" />
             </svg>
-          </a>
+          </button>
+        </div>
+
+        <!-- Timer progress bar -->
+        <div class="trivia-card__timer" aria-hidden="true">
+          <div class="trivia-card__timer-fill" id="trivia-timer-fill"></div>
         </div>
       </section>
 
       <!-- ── Materi Seru ── -->
       <section class="section-block" aria-labelledby="materials-title">
         <div class="section-header">
-          <h2 id="materials-title" class="section-header__title">Materi Seru</h2>
+          <h2 id="materials-title" class="section-header__title">🎮 Materi Seru</h2>
           <a href="modules.html" class="section-header__link" aria-label="Lihat semua materi belajar">
             Lihat Semua <span aria-hidden="true">›</span>
           </a>
         </div>
         <div class="materials-rail" role="list">
-          <!-- Card 1: Brushing -->
-          <a href="brushing-guide.html" class="mat-card" role="listitem" aria-label="Cara Sikat Gigi 2 Menit">
+          <!-- Card 1: Sikat Gigi -->
+          <a href="brushing-guide.html" class="mat-card" role="listitem" aria-label="Ayo Sikat Gigi">
             <div class="mat-card__thumb">
               <img src="../assets/images/material-brushing.png" alt="" loading="lazy">
-              <span class="mat-card__tag mat-card__tag--teal">TIPS</span>
+              <span class="mat-card__tag mat-card__tag--teal">MODUL 1</span>
             </div>
             <div class="mat-card__body">
-              <h3 class="mat-card__title">Cara Sikat Gigi 2 Menit</h3>
-              <p class="mat-card__desc">Ikuti langkah ini agar sikat gigi jadi lebih seru!</p>
+              <h3 class="mat-card__title">Ayo Sikat Gigi! 🪥</h3>
+              <p class="mat-card__desc">Belajar sikat gigi yang seru dan benar yuk!</p>
             </div>
           </a>
-          <!-- Card 2: Food -->
-          <a href="#" class="mat-card" role="listitem" aria-label="Makanan Sehat untuk Gigi">
+          <!-- Card 2: Scaling -->
+          <a href="scaling-guide.html" class="mat-card" role="listitem" aria-label="Scaling Gigi">
             <div class="mat-card__thumb">
               <img src="../assets/images/material-food.png" alt="" loading="lazy">
-              <span class="mat-card__tag mat-card__tag--coral">BARU</span>
+              <span class="mat-card__tag mat-card__tag--coral">MODUL 2</span>
             </div>
             <div class="mat-card__body">
-              <h3 class="mat-card__title">Makanan Sehat Gigi</h3>
-              <p class="mat-card__desc">Cari tahu makanan yang bikin gigimu super kuat!</p>
+              <h3 class="mat-card__title">Scaling Gigi ✨</h3>
+              <p class="mat-card__desc">Bikin gigi bersih kinclong kayak bintang!</p>
             </div>
           </a>
-          <!-- Card 3: Clinic -->
-          <a href="#" class="mat-card" role="listitem" aria-label="Kunjungan ke Dokter Gigi">
+          <!-- Card 3: Penambalan -->
+          <a href="filling-guide.html" class="mat-card" role="listitem" aria-label="Penambalan Gigi">
+            <div class="mat-card__thumb">
+              <img src="../assets/images/material-clinic.png" alt="" loading="lazy">
+              <span class="mat-card__tag mat-card__tag--green">MODUL 3</span>
+            </div>
+            <div class="mat-card__body">
+              <h3 class="mat-card__title">Tambal Gigi 🦷</h3>
+              <p class="mat-card__desc">Gigi bolong? Tenang, bisa ditambal kok!</p>
+            </div>
+          </a>
+          <!-- Card 4: Pencabutan -->
+          <a href="extraction-guide.html" class="mat-card" role="listitem" aria-label="Pencabutan Gigi">
             <div class="mat-card__thumb">
               <img src="../assets/images/mascot-tooth.png" alt="" loading="lazy">
-              <span class="mat-card__tag mat-card__tag--green">MODUL</span>
+              <span class="mat-card__tag mat-card__tag--teal">MODUL 4</span>
             </div>
             <div class="mat-card__body">
-              <h3 class="mat-card__title">Dokter Gigi Temanmu</h3>
-              <p class="mat-card__desc">Ayo lihat apa saja di ruang periksa.</p>
+              <h3 class="mat-card__title">Cabut Gigi 💪</h3>
+              <p class="mat-card__desc">Jangan takut! Cabut gigi itu nggak serem kok!</p>
             </div>
           </a>
         </div>
       </section>
 
-      <!-- ── Progress Card ── -->
-      <section class="section-block" aria-labelledby="progress-title">
-        <div class="progress-card">
-          <!-- Circular Progress -->
-          <div class="progress-card__ring-wrap" aria-label="85 persen">
-            <svg viewBox="0 0 120 120" class="progress-ring" aria-hidden="true">
-              <circle cx="60" cy="60" r="50" class="progress-ring__track" />
-              <circle cx="60" cy="60" r="50" class="progress-ring__bar"
-                style="stroke-dasharray: 314; stroke-dashoffset: 47;" />
-            </svg>
-            <div class="progress-ring__label">
-              <span class="progress-ring__pct">85%</span>
-              <span class="progress-ring__sub">Skor Gigiku</span>
+      <!-- ── AR Sikat Gigi Preview ── -->
+      <section class="section-block" aria-labelledby="ar-title">
+        <div class="ar-card" id="ar-card">
+          <!-- Fake camera background -->
+          <div class="ar-card__camera">
+            <!-- Animated scan line -->
+            <div class="ar-card__scanline" aria-hidden="true"></div>
+
+            <!-- Corner brackets -->
+            <div class="ar-card__corner ar-card__corner--tl" aria-hidden="true"></div>
+            <div class="ar-card__corner ar-card__corner--tr" aria-hidden="true"></div>
+            <div class="ar-card__corner ar-card__corner--bl" aria-hidden="true"></div>
+            <div class="ar-card__corner ar-card__corner--br" aria-hidden="true"></div>
+
+            <!-- 3D Tooth model placeholder -->
+            <div class="ar-card__model">
+              <div class="ar-card__tooth" aria-hidden="true">
+                <img src="../assets/images/mascot-tooth.png" alt="" class="ar-card__tooth-img">
+              </div>
+              <div class="ar-card__model-ring" aria-hidden="true"></div>
+              <div class="ar-card__model-ring ar-card__model-ring--2" aria-hidden="true"></div>
+            </div>
+
+            <!-- AR UI overlay -->
+            <div class="ar-card__hud">
+              <div class="ar-card__hud-badge">
+                <span class="ar-card__hud-dot" aria-hidden="true"></span>
+                AR MODE
+              </div>
+              <span class="ar-card__hud-fps" aria-hidden="true">60 FPS</span>
+            </div>
+
+            <!-- Bottom info -->
+            <div class="ar-card__info">
+              <span class="ar-card__info-icon" aria-hidden="true">🦷</span>
+              <span class="ar-card__info-text">Wah, arahkan kamera ke gigimu ya!</span>
             </div>
           </div>
-          <!-- Text -->
-          <h2 id="progress-title" class="progress-card__heading">Luar Biasa!</h2>
-          <p class="progress-card__text">
-            Satu langkah lagi untuk mendapatkan lencana <strong>Pahlawan Dental</strong>.
-            Kamu sudah rajin menyikat gigi? Hebat banget!
-          </p>
-          <!-- Stat Chips -->
-          <div class="progress-card__chips">
-            <div class="chip chip--green">
-              <span aria-hidden="true">🔥</span> 12 Hari Beruntun
+
+          <!-- Card body -->
+          <div class="ar-card__body">
+            <div class="ar-card__label-row">
+              <span class="ar-card__new-badge">SEGERA HADIR 🎉</span>
+              <span class="ar-card__tech-badge">AR + 3D</span>
             </div>
-            <div class="chip chip--mint">
-              <span aria-hidden="true">🦷</span> 42 Gigi Bersih
-            </div>
+            <h2 id="ar-title" class="ar-card__title">Simulasi Sikat Gigi AR 🎮</h2>
+            <p class="ar-card__desc">
+              Seru banget! Nanti kamu bisa latihan sikat gigi pakai kamera 3D yang keren!
+            </p>
+            <button class="ar-card__btn" id="btn-try-ar" aria-label="Coba fitur AR Sikat Gigi">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+              </svg>
+              📸 Buka Kamera AR
+            </button>
           </div>
         </div>
       </section>
 
-      <!-- ── Weekly Challenge ── -->
-      <section class="section-block" aria-labelledby="challenge-title">
-        <div class="challenge-card">
-          <div class="challenge-card__accent" aria-hidden="true"></div>
-          <div class="challenge-card__inner">
-            <div class="challenge-card__icon" aria-hidden="true">🏆</div>
-            <div class="challenge-card__content">
-              <h2 id="challenge-title" class="challenge-card__title">Tantangan Mingguan</h2>
-              <p class="challenge-card__text">Kumpulkan 500 coin untuk membuka stiker baru!</p>
+      <!-- ── Report Progres Sikat Gigi ── -->
+      <section class="section-block" aria-labelledby="report-title">
+        <div class="section-header">
+          <h2 id="report-title" class="section-header__title">📸 Laporan Sikat Gigi</h2>
+          <button class="section-header__link" id="btn-history" aria-label="Lihat riwayat laporan">
+            Riwayat <span aria-hidden="true">›</span>
+          </button>
+        </div>
+
+        <div class="report-card" id="report-card">
+          <!-- Upload area -->
+          <div class="report-card__upload" id="upload-zone" role="button" tabindex="0" aria-label="Upload foto sikat gigi">
+            <input type="file" id="photo-input" accept="image/*" capture="environment" class="report-card__file-input" aria-hidden="true">
+            <input type="file" id="camera-input" accept="image/*" capture="environment" class="report-card__file-input" aria-hidden="true">
+            <input type="file" id="gallery-input" accept="image/*" class="report-card__file-input" aria-hidden="true">
+
+            <!-- Default state -->
+            <div class="report-card__upload-default" id="upload-default">
+              <div class="report-card__upload-icon" aria-hidden="true">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+                  <circle cx="12" cy="13" r="4"/>
+                </svg>
+              </div>
+              <p class="report-card__upload-text">Foto gigi kamu dong! 😁</p>
+              <p class="report-card__upload-hint">Ketuk di sini buat foto atau pilih dari galeri ya!</p>
+            </div>
+
+            <!-- Preview state (hidden initially) -->
+            <div class="report-card__preview" id="upload-preview" style="display: none;">
+              <img id="preview-img" src="" alt="Preview foto sikat gigi" class="report-card__preview-img">
+              <button class="report-card__preview-remove" id="btn-remove-photo" aria-label="Hapus foto">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
             </div>
           </div>
-          <button class="challenge-card__btn" id="btn-leaderboard" aria-label="Lihat papan skor tantangan mingguan"
-            data-a11y-read="Tombol papan skor. Tekan untuk melihat peringkatmu.">
-            Lihat Papan Skor
+
+          <div class="report-card__actions">
+            <button class="report-card__action" id="btn-camera" aria-label="Ambil foto dari kamera">
+              <span class="report-card__action-icon" aria-hidden="true">📷</span>
+              <span>Kamera</span>
+            </button>
+            <button class="report-card__action" id="btn-gallery" aria-label="Pilih dari galeri">
+              <span class="report-card__action-icon" aria-hidden="true">🖼️</span>
+              <span>Galeri</span>
+            </button>
+          </div>
+
+          <!-- Report details -->
+          <div class="report-card__details">
+            <div class="report-card__field">
+              <label class="report-card__label" for="report-date">📅 Tanggal</label>
+              <input type="date" id="report-date" class="report-card__input" aria-label="Pilih tanggal sikat gigi">
+            </div>
+            <div class="report-card__field">
+              <label class="report-card__label" for="report-time">🕰️ Kapan sikat giginya?</label>
+              <div class="report-card__time-pills" role="radiogroup" aria-label="Pilih waktu sikat gigi">
+                <button class="report-card__pill report-card__pill--active" data-time="pagi" role="radio" aria-checked="true">🌅 Pagi</button>
+                <button class="report-card__pill" data-time="malam" role="radio" aria-checked="false">🌙 Malam</button>
+              </div>
+            </div>
+            <div class="report-card__field">
+              <label class="report-card__label" for="report-notes">📝 Ceritain dong! (boleh kosong)</label>
+              <textarea id="report-notes" class="report-card__textarea" rows="2" placeholder="Misal: Aku sikat gigi 2 menit sambil nyanyi! 🎶" maxlength="150"></textarea>
+            </div>
+          </div>
+
+          <!-- Submit -->
+          <button class="report-card__submit" id="btn-submit-report" aria-label="Kirim laporan sikat gigi">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+            Kirim Yuk! 🚀
           </button>
+
+          <!-- Streak info -->
+          <div class="report-card__streak" id="report-streak">
+            <span class="report-card__streak-fire" aria-hidden="true">🔥</span>
+            <span class="report-card__streak-text" id="streak-text">0 hari berturut-turut — Ayo mulai!</span>
+          </div>
         </div>
       </section>
 
@@ -229,16 +353,6 @@
         </svg>
         <span>MODUL</span>
       </a>
-      <a href="schedule.html" class="btm-nav__item" aria-label="Jadwal sikat gigi" id="nav-schedule">
-        <svg class="btm-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-          <line x1="16" y1="2" x2="16" y2="6" />
-          <line x1="8" y1="2" x2="8" y2="6" />
-          <line x1="3" y1="10" x2="21" y2="10" />
-        </svg>
-        <span>JADWAL</span>
-      </a>
       <a href="profile.html" class="btm-nav__item" aria-label="Profil pengguna" id="nav-profile">
         <svg class="btm-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -251,10 +365,21 @@
   </div>
 
   <!-- Scripts -->
-  <script src="../js/accessibility.js"></script>
-  <script src="../js/pwa.js"></script>
-  <script>
+  <script src="../js/accessibility.js?v=3"></script>
+  <script src="../js/pwa.js?v=3"></script>
+  <script type="module">
+    import { getCurrentUser, onUserChanged, uploadReportPhoto, saveReport, getUserReports } from '../js/firebase-config.js?v=3';
     document.addEventListener('DOMContentLoaded', () => {
+      // Guard: redirect to login if not authenticated
+      if (!localStorage.getItem('dentavizion-user')) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Track Firebase auth user
+      let firebaseUser = null;
+      onUserChanged((user) => { firebaseUser = user; });
+
       const mode = localStorage.getItem('dentavizion-mode');
 
       // Guard: redirect to mode selection if not chosen
@@ -271,18 +396,442 @@
         DentaA11y.speak('Selamat datang di Beranda DENTAVIZION. Kamu bisa mulai belajar, melihat materi seru, atau cek tantangan mingguan.', true);
       }
 
-      // Animate progress ring on scroll
-      const ring = document.querySelector('.progress-ring__bar');
-      if (ring) {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(e => {
-            if (e.isIntersecting) {
-              ring.classList.add('progress-ring__bar--animate');
-              observer.unobserve(e.target);
+      // ── Report Card Logic ──
+      const photoInput = document.getElementById('photo-input');
+      const cameraInput = document.getElementById('camera-input');
+      const galleryInput = document.getElementById('gallery-input');
+      const uploadDefault = document.getElementById('upload-default');
+      const uploadPreview = document.getElementById('upload-preview');
+      const previewImg = document.getElementById('preview-img');
+      const btnRemove = document.getElementById('btn-remove-photo');
+      const reportDate = document.getElementById('report-date');
+      const pills = document.querySelectorAll('.report-card__pill');
+      const btnSubmit = document.getElementById('btn-submit-report');
+      const streakText = document.getElementById('streak-text');
+      const btnCamera = document.getElementById('btn-camera');
+      const btnGallery = document.getElementById('btn-gallery');
+
+      // Set today's date
+      if (reportDate) {
+        const today = new Date().toISOString().split('T')[0];
+        reportDate.value = today;
+      }
+
+      // Load streak
+      const streak = parseInt(localStorage.getItem('dentavizion-streak') || '0');
+      if (streakText) streakText.textContent = streak + ' hari berturut-turut';
+
+      // Shared photo handler
+      function handlePhoto(e) {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            previewImg.src = ev.target.result;
+            uploadDefault.style.display = 'none';
+            uploadPreview.style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+
+      // Attach handler to all file inputs
+      if (photoInput) photoInput.addEventListener('change', handlePhoto);
+      if (cameraInput) cameraInput.addEventListener('change', handlePhoto);
+      if (galleryInput) galleryInput.addEventListener('change', handlePhoto);
+
+      // Remove photo
+      if (btnRemove) {
+        btnRemove.addEventListener('click', (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          previewImg.src = '';
+          uploadDefault.style.display = 'block';
+          uploadPreview.style.display = 'none';
+          if (photoInput) photoInput.value = '';
+          if (cameraInput) cameraInput.value = '';
+          if (galleryInput) galleryInput.value = '';
+        });
+      }
+
+      // Camera button → opens camera
+      if (btnCamera) btnCamera.addEventListener('click', () => { cameraInput.click(); });
+      // Gallery button → opens file picker (gallery)
+      if (btnGallery) btnGallery.addEventListener('click', () => { galleryInput.click(); });
+
+      // Time pills
+      pills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          pills.forEach(p => { p.classList.remove('report-card__pill--active'); p.setAttribute('aria-checked', 'false'); });
+          pill.classList.add('report-card__pill--active');
+          pill.setAttribute('aria-checked', 'true');
+        });
+      });
+
+      // Submit report
+      if (btnSubmit) {
+        btnSubmit.addEventListener('click', async () => {
+          const activePill = document.querySelector('.report-card__pill--active');
+          const time = activePill ? activePill.dataset.time : 'pagi';
+          const notes = document.getElementById('report-notes').value;
+          const date = reportDate.value;
+
+          // Loading state
+          btnSubmit.disabled = true;
+          btnSubmit.textContent = '⏳ Mengirim...';
+
+          try {
+            const user = firebaseUser || getCurrentUser();
+            let photoURL = null;
+
+            // Upload photo to Firebase Storage if available (non-blocking)
+            const activeFile = cameraInput.files[0] || galleryInput.files[0] || photoInput.files[0];
+            if (user && activeFile) {
+              try {
+                console.log('Uploading photo for user:', user.uid);
+                photoURL = await uploadReportPhoto(user.uid, activeFile);
+                console.log('Photo uploaded:', photoURL);
+              } catch (uploadErr) {
+                console.warn('Photo upload failed (CORS?), saving report without photo:', uploadErr);
+                photoURL = null;
+              }
             }
+
+            // Save report to Firestore
+            if (user && user.email) {
+              await saveReport({
+                userId: user.uid,
+                userEmail: user.email,
+                photoURL: photoURL,
+                date: date,
+                time: time,
+                notes: notes
+              });
+              console.log('Report saved to Firestore');
+            } else {
+              console.log('No Firebase user, saving to localStorage only');
+            }
+
+            // Also save to localStorage
+            const reports = JSON.parse(localStorage.getItem('dentavizion-reports') || '[]');
+            reports.push({ date, time, notes, photoURL, timestamp: Date.now() });
+            localStorage.setItem('dentavizion-reports', JSON.stringify(reports));
+
+            // Update streak
+            const newStreak = streak + 1;
+            localStorage.setItem('dentavizion-streak', newStreak.toString());
+            if (streakText) streakText.textContent = newStreak + ' hari berturut-turut';
+
+            // Show toast
+            showReportToast('✅ Laporan terkirim! Kamu hebat! 🦷');
+
+            // Reset form
+            previewImg.src = '';
+            uploadDefault.style.display = 'block';
+            uploadPreview.style.display = 'none';
+            if (photoInput) photoInput.value = '';
+            if (cameraInput) cameraInput.value = '';
+            if (galleryInput) galleryInput.value = '';
+            document.getElementById('report-notes').value = '';
+            if (typeof DentaA11y !== 'undefined') DentaA11y.vibrate('confirm');
+          } catch (e) {
+            console.error('Report submit error:', e);
+            showReportToast('❌ Gagal mengirim, coba lagi ya!');
+          } finally {
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Kirim Yuk! 🚀';
+          }
+        });
+      }
+
+      function showReportToast(msg) {
+        let t = document.getElementById('report-toast');
+        if (!t) {
+          t = document.createElement('div'); t.id = 'report-toast';
+          t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,#2BAA8E,#3DC4A8);color:#fff;padding:12px 24px;border-radius:16px;font-size:14px;font-weight:700;z-index:9999;opacity:0;transition:all 0.3s ease;box-shadow:0 4px 20px rgba(43,170,142,0.4);font-family:var(--font-family);';
+          document.body.appendChild(t);
+        }
+        t.textContent = msg;
+        requestAnimationFrame(() => { t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)'; });
+        setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(20px)'; }, 3000);
+      }
+
+      // ── History Button ──
+      const btnHistory = document.getElementById('btn-history');
+      if (btnHistory) {
+        btnHistory.addEventListener('click', async () => {
+          const user = firebaseUser || getCurrentUser();
+          if (!user || !user.email) {
+            showReportToast('⚠️ Login dulu untuk lihat riwayat!');
+            return;
+          }
+
+          // Create modal
+          let modal = document.getElementById('history-modal');
+          if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'history-modal';
+            modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9998;display:flex;align-items:flex-end;justify-content:center;opacity:0;transition:opacity 0.3s ease;';
+            modal.innerHTML = `
+              <div id="history-sheet" style="background:#F5FFFB;width:100%;max-width:480px;max-height:85vh;border-radius:24px 24px 0 0;padding:20px;overflow-y:auto;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);font-family:var(--font-family);">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                  <h3 style="font-size:18px;font-weight:800;color:#1A3B34;">📋 Riwayat Laporan</h3>
+                  <button id="close-history" style="width:32px;height:32px;border-radius:50%;background:rgba(0,201,167,0.1);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;">✕</button>
+                </div>
+                <div id="history-content" style="display:flex;flex-direction:column;gap:12px;">
+                  <div style="text-align:center;padding:30px;color:#5A7A72;">⏳ Memuat riwayat...</div>
+                </div>
+              </div>
+            `;
+            document.body.appendChild(modal);
+
+            // Close handlers
+            modal.querySelector('#close-history').addEventListener('click', () => closeHistoryModal());
+            modal.addEventListener('click', (e) => { if (e.target === modal) closeHistoryModal(); });
+          }
+
+          // Show modal
+          modal.style.display = 'flex';
+          requestAnimationFrame(() => {
+            modal.style.opacity = '1';
+            modal.querySelector('#history-sheet').style.transform = 'translateY(0)';
           });
-        }, { threshold: 0.5 });
-        observer.observe(ring.closest('.progress-card'));
+
+          // Load reports from Firebase
+          const content = modal.querySelector('#history-content');
+          try {
+            const reports = await getUserReports(user.email);
+
+            if (reports.length === 0) {
+              content.innerHTML = `
+                <div style="text-align:center;padding:40px 20px;">
+                  <div style="font-size:48px;margin-bottom:12px;">🦷</div>
+                  <p style="font-size:14px;font-weight:700;color:#1A3B34;">Belum ada laporan</p>
+                  <p style="font-size:12px;color:#5A7A72;margin-top:4px;">Yuk mulai kirim laporan sikat gigimu!</p>
+                </div>
+              `;
+            } else {
+              content.innerHTML = reports.map(r => {
+                const timeEmoji = r.time === 'pagi' ? '🌅' : '🌙';
+                const timeLabel = r.time === 'pagi' ? 'Pagi' : 'Malam';
+                const dateStr = r.date || '-';
+                const photoHtml = r.photoURL 
+                  ? `<img src="${r.photoURL}" style="width:60px;height:60px;border-radius:12px;object-fit:cover;border:2px solid #E0FFF7;" alt="Foto laporan">`
+                  : `<div style="width:60px;height:60px;border-radius:12px;background:#E0FFF7;display:flex;align-items:center;justify-content:center;font-size:24px;">📸</div>`;
+                return `
+                  <div style="display:flex;gap:12px;padding:14px;background:white;border-radius:16px;box-shadow:0 2px 8px rgba(0,201,167,0.08);border:1px solid rgba(0,201,167,0.06);">
+                    ${photoHtml}
+                    <div style="flex:1;min-width:0;">
+                      <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+                        <span style="font-size:13px;">${timeEmoji}</span>
+                        <span style="font-size:13px;font-weight:700;color:#1A3B34;">${timeLabel}</span>
+                        <span style="font-size:11px;color:#5A7A72;margin-left:auto;">${dateStr}</span>
+                      </div>
+                      <p style="font-size:12px;color:#5A7A72;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.notes || 'Tidak ada catatan'}</p>
+                    </div>
+                  </div>
+                `;
+              }).join('');
+            }
+          } catch (e) {
+            console.error('Load history error:', e);
+            content.innerHTML = `<div style="text-align:center;padding:30px;color:#E74C3C;">❌ Gagal memuat riwayat</div>`;
+          }
+        });
+      }
+
+      function closeHistoryModal() {
+        const modal = document.getElementById('history-modal');
+        if (modal) {
+          modal.querySelector('#history-sheet').style.transform = 'translateY(100%)';
+          modal.style.opacity = '0';
+          setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+      }
+
+      // ── Trivia Engine ──
+      const TRIVIA = [
+        { cat: 'Kebiasaan Sehari-hari', icon: '🪥', items: [
+          'Sikat gigi paling penting adalah malam hari sebelum tidur, lho!',
+          'Kita harus menyikat gigi selama 2 menit agar kuman benar-benar pergi.',
+          'Sikat gigi dua kali sehari: pagi 30 menit setelah sarapan dan malam sebelum tidur.',
+          'Gantilah sikat gigimu jika bulunya sudah mulai mekar atau rusak.',
+          'Gunakan pasta gigi hanya sebesar biji jagung saja ya, tidak perlu banyak-banyak.',
+          'Sikatlah lidahmu dengan lembut agar napasmu selalu segar.',
+          'Jangan lupa berkumur dengan air putih setelah makan makanan manis.'
+        ]},
+        { cat: 'Makanan & Nutrisi', icon: '🍎', items: [
+          'Apel dan wortel yang garing adalah "sikat gigi alami" untuk gigimu.',
+          'Minum air putih lebih baik daripada minum sirup yang sangat manis.',
+          'Susu mengandung kalsium yang membuat tulang gigi menjadi kuat.',
+          'Permen dan cokelat boleh dimakan, tapi jangan lupa sikat gigi setelahnya!',
+          'Kuman sangat suka memakan sisa gula yang menempel di gigimu.',
+          'Sayuran hijau membantu menjaga gusimu tetap sehat dan tidak mudah berdarah.'
+        ]},
+        { cat: 'Pengetahuan Klinis', icon: '🔬', items: [
+          'Email gigi adalah bagian tubuh yang paling keras, bahkan lebih keras dari tulang!',
+          'Gigi berlubang terjadi karena kuman mengubah gula menjadi asam.',
+          'Gigi merupakan bagian kuat pada tubuh kita, namun sangat rapuh oleh asam.',
+          'Gigi yang sehat berwarna putih bersih atau sedikit krem, tidak ada noda hitam.',
+          'Karang gigi adalah plak yang sudah mengeras dan tidak bisa hilang hanya dengan disikat.',
+          'Fluoride dalam pasta gigi adalah "perisai" sakti yang melindungi gigimu.',
+          'Gusi yang sehat berwarna merah muda dan tidak sakit saat disentuh.'
+        ]},
+        { cat: 'Pengenalan Dokter Gigi', icon: '🏥', items: [
+          'Dokter gigi adalah sahabat yang akan membantu gigimu tetap cantik dan kuat.',
+          'Periksa gigi ke dokter setiap 6 bulan sekali ya, meskipun gigimu tidak sakit.',
+          'Alat "ngiiiing" di dokter gigi itu sebenarnya sedang menyemprot air sejuk.',
+          'Kaca mulut dokter gigi digunakan untuk melihat kuman yang bersembunyi di belakang.',
+          'Menambal gigi itu seperti memasang "payung" agar lubang tidak semakin besar.',
+          'Gigi yang dirawat sejak kecil akan menemanimu sampai kamu besar nanti!'
+        ]},
+        { cat: 'Rahasia Gigi Kuat', icon: '🛡️', items: [
+          'Gigi yang bersih tidak akan terasa "berpasir" saat diraba dengan lidah.',
+          'Bulu sikat gigi yang lembut lebih baik untuk gusi daripada bulu sikat gigi yang keras.',
+          'Pasta gigi dengan fluoride membantu menambal lubang-lubang kecil yang tidak terlihat.',
+          'Minum air putih setelah makan membantu menghanyutkan sisa makanan di sela gigi.',
+          'Jangan menggigit benda keras seperti pensil atau kuku, karena bisa membuat gigi retak.',
+          'Gigi bungsu adalah gigi paling belakang yang biasanya tumbuh saat kita sudah besar.',
+          'Menjaga gigi tetap bersih juga membuat jantung dan tubuhmu tetap sehat!'
+        ]},
+        { cat: 'Fakta Unik & Anatomi', icon: '🦷', items: [
+          'Setiap orang memiliki pola susunan gigi yang unik, sama seperti sidik jari.',
+          'Gigi susu akan tanggal satu per satu untuk digantikan oleh gigi dewasa yang lebih kuat.',
+          'Akar gigi tersembunyi di bawah gusi, ia bertugas memegang gigi agar tidak goyang.',
+          'Air liur di dalam mulutmu adalah pembersih alami yang melawan kuman jahat.',
+          'Gigi seri di depan gunanya untuk memotong makanan, seperti sebuah gunting.',
+          'Gigi geraham di belakang gunanya untuk menghaluskan makanan, seperti mesin penggiling.',
+          'Bagian dalam gigi mengandung saraf yang bisa merasakan dinginnya es krim.'
+        ]},
+        { cat: 'Tips & Trik Sikat Gigi', icon: '✨', items: [
+          'Mulailah menyikat dari bagian gigi yang paling sulit dijangkau di bagian belakang.',
+          'Sikatlah gigi dengan gerakan memutar kecil, bukan digosok keras ke kiri dan kanan.',
+          'Jangan lupa sikat bagian dalam gigi yang menghadap ke arah lidah, ya!',
+          'Simpan sikat gigimu di tempat yang kering dan jangan tertutup rapat agar tetap bersih.',
+          'Jangan berbagi sikat gigi dengan orang lain agar kuman tidak berpindah-pindah.',
+          'Berkumurlah satu kali saja setelah sikat gigi agar fluoride tetap menempel di gigi.'
+        ]},
+        { cat: 'Berani ke Dokter Gigi', icon: '💪', items: [
+          'Dokter gigi memakai lampu terang agar bisa melihat "monster kuman" yang bersembunyi.',
+          'Kursi dokter gigi bisa naik dan turun seperti sebuah wahana permainan yang seru!',
+          'Alat penyedot air di klinik gigi itu seperti "belalai gajah" kecil yang menyedot air liur.',
+          'Gigi yang ditambal oleh dokter akan menjadi kuat kembali untuk mengunyah makanan enak.',
+          'Tersenyum lebar setelah dari dokter gigi adalah tanda bahwa kamu anak yang hebat!'
+        ]}
+      ];
+
+      // Flatten and shuffle
+      let allTrivia = [];
+      TRIVIA.forEach(group => {
+        group.items.forEach(text => {
+          allTrivia.push({ text, cat: group.cat, icon: group.icon });
+        });
+      });
+
+      function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+      shuffle(allTrivia);
+
+      const VISIBLE_DOTS = 5;
+      let triviaIndex = 0;
+      let triviaTimer = null;
+
+      const triviaText = document.getElementById('trivia-text');
+      const triviaCategory = document.getElementById('trivia-category');
+      const triviaIcon = document.getElementById('trivia-icon');
+      const triviaDots = document.getElementById('trivia-dots');
+      const triviaTimerFill = document.getElementById('trivia-timer-fill');
+      const triviaNextBtn = document.getElementById('trivia-next-btn');
+
+      // Create dots
+      for (let i = 0; i < VISIBLE_DOTS; i++) {
+        const dot = document.createElement('span');
+        dot.className = 'trivia-dot' + (i === 0 ? ' trivia-dot--active' : '');
+        triviaDots.appendChild(dot);
+      }
+
+      function showTrivia(index, animate = true) {
+        const item = allTrivia[index % allTrivia.length];
+        const dotIndex = index % VISIBLE_DOTS;
+
+        if (animate) {
+          triviaText.classList.add('trivia-card__text--exit');
+          setTimeout(() => {
+            triviaText.textContent = item.text;
+            triviaCategory.textContent = item.cat;
+            triviaIcon.textContent = item.icon;
+            triviaText.classList.remove('trivia-card__text--exit');
+            triviaText.classList.add('trivia-card__text--enter');
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                triviaText.classList.remove('trivia-card__text--enter');
+              });
+            });
+          }, 350);
+        } else {
+          triviaText.textContent = item.text;
+          triviaCategory.textContent = item.cat;
+          triviaIcon.textContent = item.icon;
+        }
+
+        // Update dots
+        triviaDots.querySelectorAll('.trivia-dot').forEach((d, i) => {
+          d.classList.toggle('trivia-dot--active', i === dotIndex);
+        });
+      }
+
+      function resetTimer() {
+        triviaTimerFill.classList.remove('trivia-card__timer-fill--animate');
+        triviaTimerFill.style.width = '0%';
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            triviaTimerFill.classList.add('trivia-card__timer-fill--animate');
+          });
+        });
+      }
+
+      function nextTrivia() {
+        triviaIndex++;
+        if (triviaIndex >= allTrivia.length) {
+          shuffle(allTrivia);
+          triviaIndex = 0;
+        }
+        showTrivia(triviaIndex);
+        resetTimer();
+        if (typeof DentaA11y !== 'undefined') DentaA11y.vibrate('navigation');
+      }
+
+      function startAutoRotation() {
+        clearInterval(triviaTimer);
+        triviaTimer = setInterval(nextTrivia, 10000);
+      }
+
+      // Init
+      showTrivia(0, false);
+      resetTimer();
+      startAutoRotation();
+
+      // Manual next
+      triviaNextBtn.addEventListener('click', () => {
+        nextTrivia();
+        clearInterval(triviaTimer);
+        startAutoRotation();
+      });
+
+      // AR button: set mode to visual then open AR page
+      const btnTryAR = document.getElementById('btn-try-ar');
+      if (btnTryAR) {
+        btnTryAR.addEventListener('click', (e) => {
+          // Ensure app mode is set so AR pages won't redirect to mode selection
+          try { localStorage.setItem('dentavizion-mode', 'visual'); } catch (err) { /* ignore */ }
+          // Navigate to interactive practice AR page (same folder)
+          window.location.href = 'interactive-practice.html';
+        });
       }
     });
   </script>

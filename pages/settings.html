@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="id" dir="ltr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+
+  <title>⚙️ Pengaturan — DENTAVIZION</title>
+  <meta name="description" content="Atur profil kamu di DENTAVIZION!">
+
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#2BAA8E">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link rel="stylesheet" href="../css/variables.css?v=3">
+  <link rel="stylesheet" href="../css/base.css?v=3">
+  <link rel="stylesheet" href="../css/components.css?v=3">
+  <link rel="stylesheet" href="../css/pages/settings.css?v=3">
+</head>
+
+<body>
+  <div class="app-shell">
+
+    <!-- ── Header ── -->
+    <header class="settings-header">
+      <div class="settings-header__top">
+        <button id="btn-back" class="settings-header__back" aria-label="Kembali ke profil">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </button>
+        <h1 class="settings-header__title">⚙️ Pengaturan</h1>
+      </div>
+    </header>
+
+    <!-- ── Main ── -->
+    <main class="settings-main">
+
+      <!-- Avatar -->
+      <div class="settings-avatar">
+        <div class="settings-avatar__wrap">
+          <img id="avatar-img" class="settings-avatar__img" src="../assets/images/mascot-tooth.png" alt="Foto profil" width="100" height="100">
+          <button id="btn-change-avatar" class="settings-avatar__edit-btn" aria-label="Ganti foto profil">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+          </button>
+          <input type="file" id="avatar-input" accept="image/*" style="display:none" aria-hidden="true">
+        </div>
+        <p class="settings-avatar__hint">Ketuk kamera untuk ganti foto 📷</p>
+      </div>
+
+      <!-- Profile Info -->
+      <div class="settings-card">
+        <h2 class="settings-card__title">👤 Info Profil</h2>
+
+        <div class="settings-field">
+          <label class="settings-field__label" for="input-name">Nama Kamu</label>
+          <input type="text" id="input-name" class="settings-field__input" placeholder="Masukkan nama kamu..." maxlength="50">
+        </div>
+
+        <div class="settings-field">
+          <label class="settings-field__label" for="input-email">Email</label>
+          <input type="email" id="input-email" class="settings-field__input" disabled placeholder="Email kamu">
+        </div>
+      </div>
+
+      <!-- Save -->
+      <button id="btn-save" class="settings-save">
+        ✅ Simpan Perubahan
+      </button>
+
+      <!-- Logout -->
+      <button id="btn-logout" class="settings-logout">
+        🚪 Keluar dari Akun
+      </button>
+
+    </main>
+  </div>
+
+  <!-- Toast -->
+  <div id="settings-toast" class="settings-toast"></div>
+
+  <!-- Loading -->
+  <div id="settings-loading" class="settings-loading">
+    <div class="settings-loading__spinner"></div>
+  </div>
+
+  <script type="module">
+    import {
+      getCurrentUser, onUserChanged, logoutUser,
+      getUserProfile, saveUserProfile, uploadProfilePhoto
+    } from '../js/firebase-config.js?v=3';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const avatarImg = document.getElementById('avatar-img');
+      const avatarInput = document.getElementById('avatar-input');
+      const btnChangeAvatar = document.getElementById('btn-change-avatar');
+      const inputName = document.getElementById('input-name');
+      const inputEmail = document.getElementById('input-email');
+      const btnSave = document.getElementById('btn-save');
+      const btnLogout = document.getElementById('btn-logout');
+      const btnBack = document.getElementById('btn-back');
+      const toast = document.getElementById('settings-toast');
+      const loading = document.getElementById('settings-loading');
+
+      let currentUser = null;
+      let selectedAvatarFile = null;
+
+      // ── Show/hide loading ──
+      function showLoading() { loading.classList.add('settings-loading--visible'); }
+      function hideLoading() { loading.classList.remove('settings-loading--visible'); }
+
+      // ── Toast ──
+      function showToast(msg) {
+        toast.textContent = msg;
+        toast.classList.add('settings-toast--visible');
+        setTimeout(() => toast.classList.remove('settings-toast--visible'), 3000);
+      }
+
+      // ── Load user data ──
+      onUserChanged(async (user) => {
+        if (!user) {
+          window.location.href = 'login.html';
+          return;
+        }
+        currentUser = user;
+        inputEmail.value = user.email || '';
+
+        // Load profile from Firestore
+        try {
+          const profile = await getUserProfile(user.uid);
+          if (profile) {
+            inputName.value = profile.name || '';
+            if (profile.photoURL) {
+              avatarImg.src = profile.photoURL;
+            }
+          }
+        } catch (e) {
+          console.error('Error loading profile:', e);
+          // Fallback to localStorage
+          const localUser = JSON.parse(localStorage.getItem('dentavizion-user') || '{}');
+          inputName.value = localUser.name || '';
+        }
+      });
+
+      // ── Back button ──
+      btnBack.addEventListener('click', () => {
+        window.location.href = 'profile.html';
+      });
+
+      // ── Change avatar ──
+      btnChangeAvatar.addEventListener('click', () => {
+        avatarInput.click();
+      });
+
+      avatarInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          selectedAvatarFile = file;
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            avatarImg.src = ev.target.result;
+          };
+          reader.readAsDataURL(file);
+          showToast('📸 Foto dipilih! Tekan Simpan ya!');
+        }
+      });
+
+      // ── Save ──
+      btnSave.addEventListener('click', async () => {
+        if (!currentUser) return;
+
+        const name = inputName.value.trim();
+        if (!name) {
+          showToast('⚠️ Nama tidak boleh kosong!');
+          inputName.focus();
+          return;
+        }
+
+        showLoading();
+        btnSave.disabled = true;
+
+        try {
+          let photoURL = null;
+
+          // Upload avatar if selected
+          if (selectedAvatarFile) {
+            photoURL = await uploadProfilePhoto(currentUser.uid, selectedAvatarFile);
+            selectedAvatarFile = null;
+          }
+
+          // Save to Firestore
+          const profileData = { name };
+          if (photoURL) profileData.photoURL = photoURL;
+          await saveUserProfile(currentUser.uid, profileData);
+
+          // Also update localStorage for pages that use it
+          const localUser = JSON.parse(localStorage.getItem('dentavizion-user') || '{}');
+          localUser.name = name;
+          if (photoURL) localUser.photoURL = photoURL;
+          localStorage.setItem('dentavizion-user', JSON.stringify(localUser));
+
+          hideLoading();
+          showToast('✅ Profil berhasil disimpan!');
+        } catch (e) {
+          console.error('Save error:', e);
+          hideLoading();
+          showToast('❌ Gagal menyimpan. Coba lagi ya!');
+        } finally {
+          btnSave.disabled = false;
+        }
+      });
+
+      // ── Logout ──
+      btnLogout.addEventListener('click', async () => {
+        if (!confirm('Yakin mau keluar? 🥺')) return;
+        showLoading();
+        try {
+          await logoutUser();
+          window.location.href = 'login.html';
+        } catch (e) {
+          hideLoading();
+          showToast('❌ Gagal keluar. Coba lagi!');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

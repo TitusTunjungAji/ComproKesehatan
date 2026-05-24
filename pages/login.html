@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="id" dir="ltr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+
+  <!-- SEO & Meta -->
+  <title>🦷 Masuk — DENTAVIZION</title>
+  <meta name="description" content="Yuk masuk ke DENTAVIZION dan mulai petualangan gigi sehatmu!">
+  <meta name="robots" content="index, follow">
+
+  <!-- PWA Meta -->
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#2BAA8E">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/icon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/icon-192x192.png">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../css/variables.css?v=3">
+  <link rel="stylesheet" href="../css/base.css?v=3">
+  <link rel="stylesheet" href="../css/components.css?v=3">
+  <link rel="stylesheet" href="../css/pages/auth.css?v=3">
+</head>
+
+<body>
+  <!-- Skip Link -->
+  <a href="#main-content" class="skip-link" id="skip-link">
+    Langsung ke konten utama
+  </a>
+
+  <!-- Live Region -->
+  <div id="a11y-announcer" class="a11y-announcement" aria-live="polite" aria-atomic="true" role="status"></div>
+
+  <!-- ======================== -->
+  <!-- LOGIN PAGE               -->
+  <!-- ======================== -->
+  <main id="main-content" class="auth-page" role="main">
+
+    <!-- Hero Section -->
+    <section class="auth-hero" aria-label="Branding DENTAVIZION">
+      <span class="auth-hero__brand" aria-label="DENTAVIZION">DENTAVIZION</span>
+      <div class="auth-hero__mascot">
+        <img src="../assets/images/mascot-tooth.png" 
+             alt="Maskot DENTAVIZION — gigi pahlawan yang tersenyum" 
+             width="160" 
+             height="160" 
+             loading="eager">
+      </div>
+    </section>
+
+    <!-- Form Container -->
+    <div class="auth-form-container">
+      <!-- Heading -->
+      <div class="auth-heading">
+        <h1 class="auth-heading__title">Hai, Jagoan! 👋</h1>
+        <p class="auth-heading__subtitle">Masuk pakai email dan kata rahasiamu!</p>
+      </div>
+
+      <!-- Error Message -->
+      <div id="login-error" class="auth-error" role="alert">
+        <span class="auth-error__icon" aria-hidden="true">😕</span>
+        <span id="login-error-text">Hmm, kayaknya ada yang salah nih...</span>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" class="auth-form" novalidate>
+        <!-- Email -->
+        <div class="input-group">
+          <label class="input-group__label" for="login-email">📧 Email Kamu</label>
+          <div class="input-group__field">
+            <input type="text" 
+                   id="login-email" 
+                   class="input-group__input"
+                   placeholder="Ketik email kamu di sini ya..."
+                   autocomplete="username"
+                   required
+                   aria-required="true"
+                   data-a11y-read="Input Email. Masukkan email atau username kamu.">
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="input-group">
+          <label class="input-group__label" for="login-password">🔐 Kata Rahasia</label>
+          <div class="input-group__field">
+            <input type="password" 
+                   id="login-password" 
+                   class="input-group__input"
+                   placeholder="Shh... kata rahasia kamu"
+                   autocomplete="current-password"
+                   required
+                   aria-required="true"
+                   data-a11y-read="Input Kata Sandi. Masukkan kata sandi kamu.">
+            <button type="button" 
+                    class="input-group__toggle" 
+                    id="toggle-password"
+                    aria-label="Tampilkan kata sandi"
+                    tabindex="-1">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Forgot Password -->
+        <div class="auth-forgot">
+          <a href="#" class="auth-forgot__link" aria-label="Lupa kata sandi?">Lupa kata rahasia? 🤔</a>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="auth-submit" id="btn-login">
+          <span class="auth-submit__text">Ayo Masuk! 🚀</span>
+          <div class="auth-submit__spinner" aria-hidden="true"></div>
+        </button>
+      </form>
+
+      <!-- Footer Link -->
+      <div class="auth-footer">
+        <p class="auth-footer__text">
+          Belum punya akun? <a href="register.html" class="auth-footer__link">Daftar dulu yuk! ✨</a>
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="../js/accessibility.js?v=3"></script>
+  <script src="../js/pwa.js?v=3"></script>
+  <script type="module">
+    import { loginUser, onUserChanged, getUserProfile, saveUserProfile } from '../js/firebase-config.js?v=3';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // If already logged in via Firebase, sync localStorage and redirect
+      onUserChanged(async (user) => {
+        if (user) {
+          // Make sure localStorage is set (prevents loop with index.html)
+          if (!localStorage.getItem('dentavizion-user')) {
+            try {
+              const profile = await getUserProfile(user.uid);
+              localStorage.setItem('dentavizion-user', JSON.stringify({
+                uid: user.uid,
+                email: user.email,
+                name: profile?.name || user.email.split('@')[0],
+                photoURL: profile?.photoURL || null,
+                loggedInAt: new Date().toISOString()
+              }));
+            } catch (e) {
+              localStorage.setItem('dentavizion-user', JSON.stringify({
+                uid: user.uid,
+                email: user.email,
+                name: user.email.split('@')[0],
+                loggedInAt: new Date().toISOString()
+              }));
+            }
+          }
+          window.location.href = '../index.html';
+          return;
+        }
+      });
+
+      // Also check localStorage for demo fallback
+      const localUser = localStorage.getItem('dentavizion-user');
+      if (localUser) {
+        window.location.href = '../index.html';
+        return;
+      }
+
+      const form = document.getElementById('login-form');
+      const emailInput = document.getElementById('login-email');
+      const passwordInput = document.getElementById('login-password');
+      const errorBox = document.getElementById('login-error');
+      const errorText = document.getElementById('login-error-text');
+      const btnLogin = document.getElementById('btn-login');
+      const togglePassword = document.getElementById('toggle-password');
+
+      // Password visibility toggle
+      togglePassword.addEventListener('click', () => {
+        const isPassword = passwordInput.type === 'password';
+        passwordInput.type = isPassword ? 'text' : 'password';
+        togglePassword.setAttribute('aria-label',
+          isPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi');
+      });
+
+      // Clear error on input
+      emailInput.addEventListener('input', () => {
+        hideError();
+        emailInput.classList.remove('input-group__input--error');
+      });
+      passwordInput.addEventListener('input', () => {
+        hideError();
+        passwordInput.classList.remove('input-group__input--error');
+      });
+
+      // Form submit
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        // Validation
+        if (!email) {
+          showError('Isi email kamu dulu ya! 😊');
+          emailInput.classList.add('input-group__input--error');
+          emailInput.focus();
+          return;
+        }
+        if (!password) {
+          showError('Kata rahasianya juga ya! 🔐');
+          passwordInput.classList.add('input-group__input--error');
+          passwordInput.focus();
+          return;
+        }
+
+        // Loading state
+        btnLogin.classList.add('auth-submit--loading');
+        btnLogin.disabled = true;
+
+        try {
+          // Try Firebase Auth first
+          const user = await loginUser(email, password);
+
+          // Load profile from Firestore
+          const profile = await getUserProfile(user.uid);
+
+          // Save to localStorage for other pages
+          localStorage.setItem('dentavizion-user', JSON.stringify({
+            uid: user.uid,
+            email: user.email,
+            name: profile?.name || user.email.split('@')[0],
+            photoURL: profile?.photoURL || null,
+            loggedInAt: new Date().toISOString()
+          }));
+
+          if (typeof DentaA11y !== 'undefined') DentaA11y.vibrate('confirm');
+
+          // Redirect
+          document.body.style.opacity = '0.7';
+          document.body.style.transition = 'opacity 0.3s ease';
+          setTimeout(() => { window.location.href = '../index.html'; }, 300);
+
+        } catch (firebaseError) {
+          console.log('Firebase login failed, trying demo mode...', firebaseError.code);
+
+          // Fallback: demo account (admin/admin)
+          if (email === 'admin' && password === 'admin') {
+            localStorage.setItem('dentavizion-user', JSON.stringify({
+              username: 'admin',
+              name: 'Admin',
+              loggedInAt: new Date().toISOString()
+            }));
+            if (typeof DentaA11y !== 'undefined') DentaA11y.vibrate('confirm');
+            document.body.style.opacity = '0.7';
+            document.body.style.transition = 'opacity 0.3s ease';
+            setTimeout(() => { window.location.href = '../index.html'; }, 300);
+            return;
+          }
+
+          // Failed
+          btnLogin.classList.remove('auth-submit--loading');
+          btnLogin.disabled = false;
+          showError('Hmm, email atau kata rahasianya belum cocok nih 🤔');
+          emailInput.classList.add('input-group__input--error');
+          passwordInput.classList.add('input-group__input--error');
+          form.classList.add('shake');
+          setTimeout(() => form.classList.remove('shake'), 500);
+          if (typeof DentaA11y !== 'undefined') DentaA11y.vibrate('error');
+        }
+      });
+
+      function showError(msg) {
+        errorText.textContent = msg;
+        errorBox.classList.add('auth-error--visible');
+      }
+
+      function hideError() {
+        errorBox.classList.remove('auth-error--visible');
+      }
+    });
+  </script>
+</body>
+
+</html>

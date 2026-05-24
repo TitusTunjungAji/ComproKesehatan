@@ -1,0 +1,280 @@
+/* ============================================
+   DENTAVIZION — Settings Page
+   Edit profile name, photo, and logout
+   ============================================ */
+
+.app-shell {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--color-bg-primary);
+  max-width: var(--container-max);
+  margin: 0 auto;
+  position: relative;
+}
+
+/* ── Header ── */
+.settings-header {
+  padding: 14px var(--space-lg) 0;
+  background: linear-gradient(180deg, #E0FFF7 0%, var(--color-bg-primary) 100%);
+}
+
+.settings-header__top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.settings-header__back {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(0, 201, 167, 0.1);
+  color: var(--color-primary);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.settings-header__back:active {
+  transform: scale(0.9);
+}
+
+.settings-header__title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+/* ── Main Content ── */
+.settings-main {
+  padding: 20px var(--space-lg);
+}
+
+/* ── Avatar Section ── */
+.settings-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.settings-avatar__wrap {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin-bottom: 12px;
+}
+
+.settings-avatar__img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--color-primary);
+  box-shadow: 0 4px 16px rgba(0, 201, 167, 0.2);
+  background: #E0FFF7;
+}
+
+.settings-avatar__edit-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  border: 3px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 201, 167, 0.3);
+  transition: all var(--transition-fast);
+}
+
+.settings-avatar__edit-btn:active {
+  transform: scale(0.9);
+}
+
+.settings-avatar__hint {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  font-weight: 600;
+}
+
+/* ── Form Card ── */
+.settings-card {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 3px 16px rgba(0, 201, 167, 0.08);
+  border: 2px solid rgba(0, 201, 167, 0.06);
+  margin-bottom: 16px;
+}
+
+.settings-card__title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.settings-field {
+  margin-bottom: 16px;
+}
+
+.settings-field:last-child {
+  margin-bottom: 0;
+}
+
+.settings-field__label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  margin-bottom: 6px;
+}
+
+.settings-field__input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 2px solid rgba(0, 201, 167, 0.15);
+  background: var(--color-bg-primary);
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  transition: border-color var(--transition-fast);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.settings-field__input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(0, 201, 167, 0.1);
+}
+
+.settings-field__input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Buttons ── */
+.settings-save {
+  width: 100%;
+  padding: 14px;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #00C9A7 0%, #33E8C8 100%);
+  color: white;
+  font-size: 15px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-family);
+  box-shadow: 0 4px 16px rgba(0, 201, 167, 0.3);
+  transition: all var(--transition-spring);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.settings-save:active {
+  transform: scale(0.97);
+}
+
+.settings-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.settings-logout {
+  width: 100%;
+  padding: 14px;
+  border-radius: 50px;
+  background: white;
+  color: #E74C3C;
+  font-size: 14px;
+  font-weight: 700;
+  border: 2px solid #FDEAEA;
+  cursor: pointer;
+  font-family: var(--font-family);
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.settings-logout:active {
+  background: #FDEAEA;
+  transform: scale(0.97);
+}
+
+/* ── Toast ── */
+.settings-toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--color-text-primary);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: var(--font-family);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 999;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.settings-toast--visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ── Loading overlay ── */
+.settings-loading {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 900;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.settings-loading--visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.settings-loading__spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 201, 167, 0.2);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
