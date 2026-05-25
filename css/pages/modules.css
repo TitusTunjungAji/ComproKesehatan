@@ -18,7 +18,7 @@
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .mod-header {
   background: linear-gradient(180deg, #E0FFF7 0%, var(--color-bg-primary) 100%);
-  padding: var(--space-md) var(--space-lg) var(--space-lg);
+  padding: var(--space-xl) var(--space-lg) var(--space-lg);
 }
 
 .mod-header__top {
@@ -157,8 +157,8 @@
 /* Vertical connector line */
 .course-step {
   position: relative;
-  padding-left: 42px;
-  padding-bottom: 24px;
+  padding-left: 72px;
+  padding-bottom: 28px;
 }
 
 .course-step:last-child {
@@ -168,49 +168,50 @@
 /* Timeline node circle */
 .course-step__node {
   position: absolute;
-  left: -2px;
+  left: 12px;
   top: 0;
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 900;
   letter-spacing: -0.02em;
-  z-index: 2;
-  transition: all 0.4s ease;
+  z-index: 3;
+  transition: all 0.32s cubic-bezier(.2,.9,.2,1);
 }
 
 .course-step__node--completed {
   background: linear-gradient(135deg, #00C9A7 0%, #33E8C8 100%);
   color: white;
-  box-shadow: 0 3px 12px rgba(0, 201, 167, 0.35);
+  box-shadow: 0 6px 20px rgba(0, 201, 167, 0.22);
 }
 
 .course-step__node--active {
   background: white;
   color: var(--color-primary);
-  border: 3px solid var(--color-primary);
-  box-shadow: 0 0 0 6px rgba(0, 201, 167, 0.15);
-  animation: pulse 2s ease-in-out infinite;
+  border: 4px solid var(--color-primary);
+  box-shadow: 0 0 0 8px rgba(0, 201, 167, 0.08);
+  animation: pulse 2.6s ease-in-out infinite;
 }
 
 .course-step__node--locked {
-  background: #E0FFF7;
-  color: #8AADA3;
-  border: 2px solid #B3FFE9;
+  background: #F6FBF8;
+  color: #7B9088;
+  border: 2px solid #E6F5EE;
 }
 
 /* Connector line between nodes */
 .course-step__line {
   position: absolute;
-  left: 14px;
-  top: 30px;
-  width: 2px;
+  left: 34px;
+  top: 42px;
+  width: 4px;
   bottom: 0;
   z-index: 1;
+  border-radius: 3px;
 }
 
 .course-step:last-child .course-step__line {
@@ -222,12 +223,12 @@
 }
 
 .course-step__line--active {
-  background: linear-gradient(180deg, var(--color-primary) 0%, #D4D4D4 100%);
+  background: linear-gradient(180deg, var(--color-primary) 0%, #D9E9E4 100%);
 }
 
 .course-step__line--locked {
-  background: #E0E0E0;
-  border-style: dashed;
+  background: #E6ECE8;
+  opacity: 0.95;
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -257,8 +258,8 @@
 
 /* Thumbnail */
 .mod-card__thumb {
-  width: 90px;
-  height: 90px;
+  width: 100px;
+  height: 100px;
   border-radius: 18px;
   overflow: hidden;
   flex-shrink: 0;
@@ -317,10 +318,10 @@
 .mod-card__badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 3px 10px;
+  gap: 6px;
+  padding: 6px 12px;
   border-radius: 20px;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;

@@ -57,16 +57,16 @@
           <div class="prof-card__avatar">
             <img src="../assets/images/mascot-tooth.png" alt="Foto profil Arka" width="80" height="80">
           </div>
-          <div class="prof-card__level-badge" aria-label="Level 12">LVL 12</div>
+          <div class="prof-card__level-badge" id="profile-level-badge" aria-label="Level 1">LVL 1</div>
         </div>
-        <h1 class="prof-card__name">Hai, Jagoan! 🌟</h1>
-        <p class="prof-card__title">Penjelajah Gigi Super 🦷</p>
+        <h1 class="prof-card__name" id="profile-name">Hai, Jagoan! 🌟</h1>
+        <p class="prof-card__title" id="profile-title">Penjelajah Gigi Super 🦷</p>
         <!-- XP Bar -->
-        <div class="prof-card__xp" aria-label="1250 dari 1500 XP">
+        <div class="prof-card__xp" id="profile-xp-container" aria-label="0 dari 100 XP">
           <div class="prof-card__xp-bar">
-            <div class="prof-card__xp-fill" style="width: 83%;"></div>
+            <div class="prof-card__xp-fill" id="profile-xp-fill" style="width: 0%;"></div>
           </div>
-          <span class="prof-card__xp-text">1,250 / 1,500 XP</span>
+          <span class="prof-card__xp-text" id="profile-xp-text">0 / 100 XP</span>
         </div>
       </section>
 
@@ -77,112 +77,33 @@
           <button class="trophy-section__link" id="btn-see-all" aria-label="Lihat semua piala">LIHAT SEMUA</button>
         </div>
 
-        <div class="trophy-grid">
-          <!-- Unlocked 1 -->
-          <div class="trophy-card trophy-card--unlocked trophy-card--coral">
-            <div class="trophy-card__icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path d="M6 9H4.5a2.5 2.5 0 010-5H6"/><path d="M18 9h1.5a2.5 2.5 0 000-5H18"/>
-                <path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
-                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
-                <path d="M18 2H6v7a6 6 0 0012 0V2z"/>
-              </svg>
-            </div>
-            <h3 class="trophy-card__title">Pahlawan Sikat Gigi 🪥</h3>
-            <p class="trophy-card__sub">7 Hari Berturut-turut! Keren!</p>
-          </div>
-
-          <!-- Unlocked 2 -->
-          <div class="trophy-card trophy-card--unlocked trophy-card--teal">
-            <div class="trophy-card__icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
-                <polyline points="22 4 12 14.01 9 11.01"/>
-              </svg>
-            </div>
-            <h3 class="trophy-card__title">Gigi Super Kinclong ✨</h3>
-            <p class="trophy-card__sub">Bebas Lubang! Mantap!</p>
-          </div>
-
-          <!-- Locked 1 -->
-          <div class="trophy-card trophy-card--locked">
-            <div class="trophy-card__icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                <path d="M7 11V7a5 5 0 0110 0v4"/>
-              </svg>
-            </div>
-            <h3 class="trophy-card__title">Pakar Flossing 🧵</h3>
-            <p class="trophy-card__sub">Belum terbuka 🔒</p>
-          </div>
-
-          <!-- Locked 2 -->
-          <div class="trophy-card trophy-card--locked">
-            <div class="trophy-card__icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                <path d="M7 11V7a5 5 0 0110 0v4"/>
-              </svg>
-            </div>
-            <h3 class="trophy-card__title">Sahabat Dokter Gigi 👨‍⚕️</h3>
-            <p class="trophy-card__sub">Belum terbuka 🔒</p>
-          </div>
-        </div>
+        <div class="trophy-grid" id="trophy-grid" aria-live="polite"></div>
       </section>
 
       <!-- ── Statistik Mingguan (Game Style) ── -->
       <section class="stats-card" aria-labelledby="stats-title">
         <div class="stats-card__header">
           <h2 id="stats-title" class="stats-card__title">📅 Minggu Ini</h2>
+          <div class="stats-card__score-badge" id="weekly-score-badge" aria-label="0 hari aktif">
+            <span class="stats-card__score-number" id="weekly-score-number">0</span>
+            <span class="stats-card__score-label">HARI</span>
+          </div>
         </div>
 
         <!-- Day circles like a game calendar -->
-        <div class="stats-days" aria-label="Status sikat gigi per hari">
-          <div class="stats-day stats-day--done">
-            <span class="stats-day__emoji">✅</span>
-            <span class="stats-day__label">Sen</span>
-          </div>
-          <div class="stats-day stats-day--done">
-            <span class="stats-day__emoji">✅</span>
-            <span class="stats-day__label">Sel</span>
-          </div>
-          <div class="stats-day stats-day--done">
-            <span class="stats-day__emoji">✅</span>
-            <span class="stats-day__label">Rab</span>
-          </div>
-          <div class="stats-day stats-day--done">
-            <span class="stats-day__emoji">✅</span>
-            <span class="stats-day__label">Kam</span>
-          </div>
-          <div class="stats-day stats-day--miss">
-            <span class="stats-day__emoji">😴</span>
-            <span class="stats-day__label">Jum</span>
-          </div>
-          <div class="stats-day stats-day--today">
-            <span class="stats-day__emoji">🎯</span>
-            <span class="stats-day__label">Sab</span>
-          </div>
-          <div class="stats-day">
-            <span class="stats-day__emoji">⏳</span>
-            <span class="stats-day__label">Min</span>
-          </div>
-        </div>
+        <div class="stats-days" id="stats-days" aria-label="Status sikat gigi per hari"></div>
 
         <!-- Mini stats row -->
         <div class="stats-mini">
           <div class="stats-mini__item">
             <span class="stats-mini__icon">🔥</span>
-            <span class="stats-mini__value">4</span>
+            <span class="stats-mini__value" id="weekly-streak-value">0</span>
             <span class="stats-mini__label">Streak</span>
           </div>
           <div class="stats-mini__divider"></div>
           <div class="stats-mini__item">
             <span class="stats-mini__icon">🦷</span>
-            <span class="stats-mini__value">12x</span>
+            <span class="stats-mini__value" id="weekly-count-value">0x</span>
             <span class="stats-mini__label">Sikat</span>
           </div>
         </div>
@@ -190,11 +111,11 @@
         <!-- Achievement progress -->
         <div class="stats-achievement">
           <div class="stats-achievement__info">
-            <span class="stats-achievement__text">🏆 7 hari berturut = Piala Baru!</span>
-            <span class="stats-achievement__count">4/7</span>
+            <span class="stats-achievement__text" id="weekly-progress-text">🏆 7 hari berturut = Piala Baru!</span>
+            <span class="stats-achievement__count" id="weekly-progress-count">0/7</span>
           </div>
           <div class="stats-achievement__bar">
-            <div class="stats-achievement__fill" style="width: 57%;"></div>
+            <div class="stats-achievement__fill" id="weekly-progress-fill" style="width: 0%;"></div>
           </div>
         </div>
       </section>
@@ -235,15 +156,32 @@
   <script src="../js/pwa.js?v=3"></script>
   <script type="module">
     import { onUserChanged, getUserProfile } from '../js/firebase-config.js?v=3';
+    import { buildProgressSnapshot } from '../js/progression.js?v=3';
 
     document.addEventListener('DOMContentLoaded', () => {
       const mode = localStorage.getItem('dentavizion-mode');
       if (!mode) { window.location.href = '../index.html'; return; }
       document.documentElement.setAttribute('data-mode', mode);
 
-      const nameEl = document.querySelector('.prof-card__name');
+      const nameEl = document.getElementById('profile-name');
+      const titleEl = document.getElementById('profile-title');
       const avatarEl = document.querySelector('.prof-card__avatar img');
+      const levelBadgeEl = document.getElementById('profile-level-badge');
+      const xpContainerEl = document.getElementById('profile-xp-container');
+      const xpFillEl = document.getElementById('profile-xp-fill');
+      const xpTextEl = document.getElementById('profile-xp-text');
+      const trophyGridEl = document.getElementById('trophy-grid');
+      const weeklyScoreNumberEl = document.getElementById('weekly-score-number');
+      const weeklyScoreBadgeEl = document.getElementById('weekly-score-badge');
+      const weeklyDaysEl = document.getElementById('stats-days');
+      const weeklyStreakEl = document.getElementById('weekly-streak-value');
+      const weeklyCountEl = document.getElementById('weekly-count-value');
+      const weeklyProgressTextEl = document.getElementById('weekly-progress-text');
+      const weeklyProgressCountEl = document.getElementById('weekly-progress-count');
+      const weeklyProgressFillEl = document.getElementById('weekly-progress-fill');
       const btnSettings = document.getElementById('btn-settings');
+      let lastRenderedUser = null;
+      let lastRenderedProfile = null;
 
       // ── Settings button ──
       if (btnSettings) {
@@ -252,45 +190,152 @@
         });
       }
 
-      // ── Load user data from Firebase ──
-      onUserChanged(async (user) => {
-        if (!user) {
-          // Check localStorage fallback
-          if (!localStorage.getItem('dentavizion-user')) {
-            window.location.href = 'login.html';
-            return;
+      function getLocalUser() {
+        try {
+          return JSON.parse(localStorage.getItem('dentavizion-user') || '{}');
+        } catch (_error) {
+          return {};
+        }
+      }
+
+      function renderTrophies(snapshot) {
+        if (!trophyGridEl) return;
+
+        const moduleIcons = {
+          mod1: '🪥',
+          mod2: '✨',
+          mod3: '🦷',
+          mod4: '💪'
+        };
+
+        trophyGridEl.innerHTML = snapshot.moduleAchievements.map((module) => {
+          const unlockedClass = module.unlocked ? 'trophy-card--unlocked' : 'trophy-card--locked';
+          const statusText = module.unlocked ? `Terbuka • +${module.xp} XP` : 'Belum terbuka 🔒';
+          const detailText = module.unlocked ? module.description : `Selesaikan ${module.title} untuk membuka.`;
+
+          return `
+            <article class="trophy-card ${unlockedClass} trophy-card--${module.color}" data-module-id="${module.id}">
+              <div class="trophy-card__icon" aria-hidden="true">
+                <span style="font-size: 22px; line-height: 1;">${moduleIcons[module.id] || '🏆'}</span>
+              </div>
+              <h3 class="trophy-card__title">${module.subtitle}</h3>
+              <p class="trophy-card__sub">${statusText}<br>${detailText}</p>
+            </article>
+          `;
+        }).join('');
+
+        trophyGridEl.querySelectorAll('.trophy-card--unlocked').forEach((card) => {
+          card.addEventListener('click', () => {
+            if (typeof DentaA11y !== 'undefined') DentaA11y.vibrate('tap');
+          });
+        });
+      }
+
+      function renderWeeklyStats(snapshot) {
+        if (weeklyScoreNumberEl) weeklyScoreNumberEl.textContent = String(snapshot.reportCompletionCount);
+        if (weeklyScoreBadgeEl) weeklyScoreBadgeEl.setAttribute('aria-label', `${snapshot.reportCompletionCount} hari aktif`);
+        if (weeklyDaysEl) {
+          weeklyDaysEl.innerHTML = snapshot.weeklyState.dayItems.map((day) => {
+            const classes = ['stats-day'];
+            let emoji = '⏳';
+
+            if (day.done) {
+              classes.push('stats-day--done');
+              emoji = '✅';
+            } else if (day.state === 'miss') {
+              classes.push('stats-day--miss');
+              emoji = '😴';
+            } else if (day.isToday) {
+              classes.push('stats-day--today');
+              emoji = '🎯';
+            }
+
+            return `
+              <div class="${classes.join(' ')}">
+                <span class="stats-day__emoji">${emoji}</span>
+                <span class="stats-day__label">${day.label}</span>
+              </div>
+            `;
+          }).join('');
+        }
+
+        if (weeklyStreakEl) weeklyStreakEl.textContent = String(snapshot.weeklyState.currentStreak);
+        if (weeklyCountEl) weeklyCountEl.textContent = `${snapshot.weeklyState.completedDays}x`;
+        if (weeklyProgressTextEl) {
+          weeklyProgressTextEl.textContent = snapshot.weeklyState.completedDays >= 7
+            ? '🏆 Piala baru terbuka untuk streak sempurna!'
+            : '🏆 7 hari berturut = Piala Baru!';
+        }
+        if (weeklyProgressCountEl) weeklyProgressCountEl.textContent = `${snapshot.weeklyState.completedDays}/7`;
+        if (weeklyProgressFillEl) weeklyProgressFillEl.style.width = `${snapshot.weeklyState.progressPercent}%`;
+      }
+
+      async function renderProfile(user) {
+        const localUser = getLocalUser();
+        let profile = null;
+
+        try {
+          if (user) {
+            profile = await getUserProfile(user.uid);
           }
-          // Use localStorage data
-          const localUser = JSON.parse(localStorage.getItem('dentavizion-user') || '{}');
-          if (nameEl) nameEl.textContent = 'Hai, ' + (localUser.name || 'Jagoan') + '! 🌟';
+        } catch (error) {
+          console.error('Error loading profile:', error);
+        }
+
+        const snapshot = await buildProgressSnapshot({ user, profile });
+        const resolvedUser = profile || localUser || {};
+
+        if (nameEl) {
+          nameEl.textContent = `Hai, ${(resolvedUser.name || localUser.name || 'Jagoan')}! 🌟`;
+        }
+
+        if (titleEl) {
+          titleEl.textContent = snapshot.levelTitle;
+        }
+
+        if (avatarEl && (resolvedUser.photoURL || localUser.photoURL)) {
+          avatarEl.src = resolvedUser.photoURL || localUser.photoURL;
+        }
+
+        if (levelBadgeEl) {
+          levelBadgeEl.textContent = `LVL ${snapshot.level}`;
+          levelBadgeEl.setAttribute('aria-label', `Level ${snapshot.level}`);
+        }
+
+        if (xpContainerEl) {
+          xpContainerEl.setAttribute('aria-label', `${snapshot.xpIntoLevel} dari 100 XP`);
+        }
+
+        if (xpFillEl) xpFillEl.style.width = `${snapshot.progressPercent}%`;
+        if (xpTextEl) xpTextEl.textContent = `${snapshot.xpIntoLevel} / 100 XP`;
+
+        renderTrophies(snapshot);
+        renderWeeklyStats(snapshot);
+
+        lastRenderedUser = user || null;
+        lastRenderedProfile = profile || null;
+      }
+
+      // ── Load user data from Firebase + local fallback ──
+      onUserChanged(async (user) => {
+        if (!user && !localStorage.getItem('dentavizion-user')) {
+          window.location.href = 'login.html';
           return;
         }
 
-        try {
-          const profile = await getUserProfile(user.uid);
-          if (profile) {
-            if (nameEl) nameEl.textContent = 'Hai, ' + (profile.name || 'Jagoan') + '! 🌟';
-            if (profile.photoURL && avatarEl) avatarEl.src = profile.photoURL;
-          }
-        } catch (e) {
-          console.error('Error loading profile:', e);
-          // Fallback to localStorage
-          const localUser = JSON.parse(localStorage.getItem('dentavizion-user') || '{}');
-          if (nameEl) nameEl.textContent = 'Hai, ' + (localUser.name || 'Jagoan') + '! 🌟';
+        await renderProfile(user);
+      });
+
+      window.addEventListener('storage', (event) => {
+        if (!event.key || event.key.startsWith('dentavizion-progress:') || event.key.startsWith('dentavizion-reports:') || event.key === 'dentavizion-user') {
+          renderProfile(lastRenderedUser).catch((error) => console.error('Profile refresh failed:', error));
         }
       });
 
-      // Animate XP bar
-      setTimeout(() => {
-        const fill = document.querySelector('.prof-card__xp-fill');
-        if (fill) fill.style.width = '83%';
-      }, 300);
-
-      // Trophy card hover haptic
-      document.querySelectorAll('.trophy-card--unlocked').forEach(card => {
-        card.addEventListener('click', () => {
-          if (typeof DentaA11y !== 'undefined') DentaA11y.vibrate('tap');
-        });
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+          renderProfile(lastRenderedUser).catch((error) => console.error('Profile refresh failed:', error));
+        }
       });
 
       // TTS
