@@ -125,17 +125,24 @@
 
   <script src="../js/accessibility.js?v=3"></script>
   <script src="../js/pwa.js?v=3"></script>
-  <script>
+  <script type="module">
+    import { completeModuleProgress } from '../js/progression.js?v=3';
+
     document.addEventListener('DOMContentLoaded', () => {
       if (!localStorage.getItem('dentavizion-user')) { window.location.href = 'login.html'; return; }
       const mode = localStorage.getItem('dentavizion-mode');
       if (!mode) { window.location.href = '../index.html'; return; }
       document.documentElement.setAttribute('data-mode', mode);
       document.getElementById('btn-back').addEventListener('click', () => window.history.back());
-      document.getElementById('btn-save-progress').addEventListener('click', () => {
-        localStorage.setItem('dentavizion-mod3-done', 'true');
-        if (typeof DentaA11y !== 'undefined') DentaA11y.vibrate('confirm');
-        showToast('✅ Progress tersimpan! Kamu hebat!');
+      document.getElementById('btn-save-progress').addEventListener('click', async () => {
+        try {
+          const result = await completeModuleProgress('mod3');
+          if (typeof DentaA11y !== 'undefined') DentaA11y.vibrate('confirm');
+          showToast(result.message);
+        } catch (error) {
+          console.error('Save progress error:', error);
+          showToast('❌ Gagal menyimpan progress, coba lagi ya!');
+        }
       });
       if (typeof DentaA11y !== 'undefined' && mode === 'blind') {
         DentaA11y.speak('Modul Penambalan Gigi. Ada 4 langkah yang akan kamu pelajari.', true);

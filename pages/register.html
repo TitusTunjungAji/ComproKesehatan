@@ -275,6 +275,11 @@
             loggedInAt: new Date().toISOString()
           }));
 
+          // Ensure a default accessibility mode exists so pages won't redirect back
+          if (!localStorage.getItem('dentavizion-mode')) {
+            try { localStorage.setItem('dentavizion-mode', 'visual'); } catch (e) { /* ignore */ }
+          }
+
           // Save profile to Firestore (non-blocking)
           saveUserProfile(user.uid, {
             name: name,
@@ -289,7 +294,7 @@
           // Redirect to mode selection
           document.body.style.opacity = '0.7';
           document.body.style.transition = 'opacity 0.3s ease';
-          setTimeout(() => { window.location.href = '../index.html'; }, 300);
+          setTimeout(() => { window.location.href = 'home.html'; }, 300);
 
         } catch (error) {
           console.error('Register error:', error);

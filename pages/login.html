@@ -164,7 +164,7 @@
               }));
             }
           }
-          window.location.href = '../index.html';
+          window.location.href = 'home.html';
           return;
         }
       });
@@ -172,7 +172,7 @@
       // Also check localStorage for demo fallback
       const localUser = localStorage.getItem('dentavizion-user');
       if (localUser) {
-        window.location.href = '../index.html';
+        window.location.href = 'home.html';
         return;
       }
 
@@ -242,13 +242,20 @@
             photoURL: profile?.photoURL || null,
             loggedInAt: new Date().toISOString()
           }));
+          // Ensure a default accessibility mode exists so pages don't redirect back
+          if (!localStorage.getItem('dentavizion-mode')) {
+            try { localStorage.setItem('dentavizion-mode', 'visual'); } catch (e) { /* ignore */ }
+          }
+          if (!localStorage.getItem('dentavizion-mode')) {
+            try { localStorage.setItem('dentavizion-mode', 'visual'); } catch (e) { /* ignore */ }
+          }
 
           if (typeof DentaA11y !== 'undefined') DentaA11y.vibrate('confirm');
 
           // Redirect
           document.body.style.opacity = '0.7';
           document.body.style.transition = 'opacity 0.3s ease';
-          setTimeout(() => { window.location.href = '../index.html'; }, 300);
+          setTimeout(() => { window.location.href = 'home.html'; }, 300);
 
         } catch (firebaseError) {
           console.log('Firebase login failed, trying demo mode...', firebaseError.code);
@@ -260,10 +267,13 @@
               name: 'Admin',
               loggedInAt: new Date().toISOString()
             }));
+            if (!localStorage.getItem('dentavizion-mode')) {
+              try { localStorage.setItem('dentavizion-mode', 'visual'); } catch (e) { /* ignore */ }
+            }
             if (typeof DentaA11y !== 'undefined') DentaA11y.vibrate('confirm');
             document.body.style.opacity = '0.7';
             document.body.style.transition = 'opacity 0.3s ease';
-            setTimeout(() => { window.location.href = '../index.html'; }, 300);
+            setTimeout(() => { window.location.href = 'home.html'; }, 300);
             return;
           }
 

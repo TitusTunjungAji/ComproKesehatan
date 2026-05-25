@@ -395,6 +395,19 @@
   display: none;
 }
 
+/* Ensure submit text and icon are horizontally aligned */
+.auth-submit__text {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.auth-submit__text svg {
+  display: inline-block;
+  vertical-align: middle;
+}
+
 /* ── Checkbox ── */
 .auth-checkbox {
   display: flex;
