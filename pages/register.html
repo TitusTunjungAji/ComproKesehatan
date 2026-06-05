@@ -275,12 +275,30 @@
           }
           keysToClear.forEach(k => localStorage.removeItem(k));
 
-// Ensure a default accessibility mode exists so pages won't redirect back
+          // Save to localStorage FIRST (critical for redirect flow)
+          localStorage.setItem('dentavizion-user', JSON.stringify({
+            uid: user.uid,
+            email: user.email,
+            name: name,
+            loggedInAt: new Date().toISOString()
+          }));
+
+<<<<<<<<< Temporary merge branch 1
+          // Ensure a default accessibility mode exists so pages won't redirect back
           if (!localStorage.getItem('dentavizion-mode')) {
             try { localStorage.setItem('dentavizion-mode', 'visual'); } catch (e) { /* ignore */ }
           }
 
-          // Save profile to Firestore and warn if it fails
+          // Save profile to Firestore (non-blocking)
+          saveUserProfile(user.uid, {
+            name: name,
+            email: email,
+            level: 1,
+            xp: 0,
+            createdAt: new Date().toISOString()
+          }).catch(e => console.warn('Firestore save warning:', e));
+=========
+          // Save profile to Firestore (blocking to ensure it's saved)
           try {
             await saveUserProfile(user.uid, {
               name: name,
