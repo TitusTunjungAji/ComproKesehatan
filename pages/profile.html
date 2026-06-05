@@ -141,48 +141,28 @@
         </div>
 
         <!-- Day circles like a game calendar -->
-        <div class="stats-days" aria-label="Status sikat gigi per hari">
-          <div class="stats-day stats-day--done">
-            <span class="stats-day__emoji">✅</span>
-            <span class="stats-day__label">Sen</span>
-          </div>
-          <div class="stats-day stats-day--done">
-            <span class="stats-day__emoji">✅</span>
-            <span class="stats-day__label">Sel</span>
-          </div>
-          <div class="stats-day stats-day--done">
-            <span class="stats-day__emoji">✅</span>
-            <span class="stats-day__label">Rab</span>
-          </div>
-          <div class="stats-day stats-day--done">
-            <span class="stats-day__emoji">✅</span>
-            <span class="stats-day__label">Kam</span>
-          </div>
-          <div class="stats-day stats-day--miss">
-            <span class="stats-day__emoji">😴</span>
-            <span class="stats-day__label">Jum</span>
-          </div>
-          <div class="stats-day stats-day--today">
-            <span class="stats-day__emoji">🎯</span>
-            <span class="stats-day__label">Sab</span>
-          </div>
-          <div class="stats-day">
-            <span class="stats-day__emoji">⏳</span>
-            <span class="stats-day__label">Min</span>
-          </div>
+        <div class="stats-days" aria-label="Status sikat gigi per hari" id="weekly-checklist">
+          <!-- Diisi dinamis via JS -->
+          <div class="stats-day" data-day="1"><span class="stats-day__emoji">⏳</span><span class="stats-day__label">Sen</span></div>
+          <div class="stats-day" data-day="2"><span class="stats-day__emoji">⏳</span><span class="stats-day__label">Sel</span></div>
+          <div class="stats-day" data-day="3"><span class="stats-day__emoji">⏳</span><span class="stats-day__label">Rab</span></div>
+          <div class="stats-day" data-day="4"><span class="stats-day__emoji">⏳</span><span class="stats-day__label">Kam</span></div>
+          <div class="stats-day" data-day="5"><span class="stats-day__emoji">⏳</span><span class="stats-day__label">Jum</span></div>
+          <div class="stats-day" data-day="6"><span class="stats-day__emoji">⏳</span><span class="stats-day__label">Sab</span></div>
+          <div class="stats-day" data-day="0"><span class="stats-day__emoji">⏳</span><span class="stats-day__label">Min</span></div>
         </div>
 
         <!-- Mini stats row -->
         <div class="stats-mini">
           <div class="stats-mini__item">
             <span class="stats-mini__icon">🔥</span>
-            <span class="stats-mini__value">4</span>
+            <span class="stats-mini__value" id="stat-streak">0</span>
             <span class="stats-mini__label">Streak</span>
           </div>
           <div class="stats-mini__divider"></div>
           <div class="stats-mini__item">
             <span class="stats-mini__icon">🦷</span>
-            <span class="stats-mini__value">12x</span>
+            <span class="stats-mini__value" id="stat-total">0x</span>
             <span class="stats-mini__label">Sikat</span>
           </div>
         </div>
@@ -234,7 +214,7 @@
   <script src="../js/accessibility.js?v=3"></script>
   <script src="../js/pwa.js?v=3"></script>
   <script type="module">
-    import { onUserChanged, getUserProfile } from '../js/firebase-config.js?v=3';
+    import { onUserChanged, getUserProfile, getUserReports } from '../js/firebase-config.js?v=3';
 
     document.addEventListener('DOMContentLoaded', () => {
       const mode = localStorage.getItem('dentavizion-mode');
@@ -268,10 +248,20 @@
 
         try {
           const profile = await getUserProfile(user.uid);
+          const localUser = JSON.parse(localStorage.getItem('dentavizion-user') || '{}');
           if (profile) {
-            if (nameEl) nameEl.textContent = 'Hai, ' + (profile.name || 'Jagoan') + '! 🌟';
+            if (nameEl) nameEl.textContent = 'Hai, ' + (profile.name || localUser.name || 'Jagoan') + '! 🌟';
             if (profile.photoURL && avatarEl) avatarEl.src = profile.photoURL;
+          } else {
+            if (nameEl) nameEl.textContent = 'Hai, ' + (localUser.name || 'Jagoan') + '! 🌟';
           }
+
+          // Fetch reports & update stats
+          if (user.email) {
+            const reports = await getUserReports(user.email);
+            updateDynamicStats(reports);
+          }
+
         } catch (e) {
           console.error('Error loading profile:', e);
           // Fallback to localStorage
@@ -279,6 +269,85 @@
           if (nameEl) nameEl.textContent = 'Hai, ' + (localUser.name || 'Jagoan') + '! 🌟';
         }
       });
+
+      function updateDynamicStats(reports) {
+        // 1. Total Sikat
+        const statTotal = document.getElementById('stat-total');
+        if (statTotal) statTotal.textContent = reports.length + 'x';
+
+        // 2. Calculate Streak
+        // Get unique dates sorted descending
+        const uniqueDates = [...new Set(reports.map(r => r.date))].sort((a, b) => new Date(b) - new Date(a));
+        let streak = 0;
+        
+        const todayStr = new Date().toISOString().split('T')[0];
+        const yesterdayDate = new Date();
+        yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+        const yesterdayStr = yesterdayDate.toISOString().split('T')[0];
+
+        if (uniqueDates.length > 0) {
+          const latestDateStr = uniqueDates[0];
+          // If the latest report is today or yesterday, we count streak
+          if (latestDateStr === todayStr || latestDateStr === yesterdayStr) {
+            streak = 1;
+            for (let i = 0; i < uniqueDates.length - 1; i++) {
+              const d1 = new Date(uniqueDates[i]);
+              const d2 = new Date(uniqueDates[i+1]);
+              const diffTime = Math.abs(d1 - d2);
+              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+              if (diffDays === 1) {
+                streak++;
+              } else {
+                break;
+              }
+            }
+          }
+        }
+
+        const statStreak = document.getElementById('stat-streak');
+        if (statStreak) statStreak.textContent = streak;
+
+        // Save streak to localStorage for other pages
+        localStorage.setItem('dentavizion-streak', streak.toString());
+
+        // 3. Weekly Checklist
+        // Get start of current week (Monday) and end (Sunday)
+        const now = new Date();
+        const currentDay = now.getDay() === 0 ? 7 : now.getDay(); // 1 = Mon, 7 = Sun
+        
+        const dayElements = document.querySelectorAll('.stats-day');
+        
+        dayElements.forEach(el => {
+          const dayVal = parseInt(el.getAttribute('data-day'));
+          let jsDay = dayVal; // 1 to 6 (Mon-Sat), 0 (Sun)
+          
+          // Calculate the date for this day of the week
+          const diff = (jsDay === 0 ? 7 : jsDay) - currentDay;
+          const targetDate = new Date(now);
+          targetDate.setDate(now.getDate() + diff);
+          const targetDateStr = targetDate.toISOString().split('T')[0];
+
+          // Check if there is a report for this date
+          const hasReport = reports.some(r => r.date === targetDateStr);
+
+          // Reset classes
+          el.className = 'stats-day';
+          const emojiSpan = el.querySelector('.stats-day__emoji');
+
+          if (hasReport) {
+            el.classList.add('stats-day--done');
+            emojiSpan.textContent = '✅';
+          } else if (targetDateStr === todayStr) {
+            el.classList.add('stats-day--today');
+            emojiSpan.textContent = '🎯';
+          } else if (targetDate < now) {
+            el.classList.add('stats-day--miss');
+            emojiSpan.textContent = '😴';
+          } else {
+            emojiSpan.textContent = '⏳';
+          }
+        });
+      }
 
       // Animate XP bar
       setTimeout(() => {

@@ -194,9 +194,13 @@
 
   <!-- Auth Guard -->
   <script>
-    // Redirect to login if not authenticated
     if (!localStorage.getItem('dentavizion-user')) {
       window.location.href = 'pages/login.html';
+    } else {
+      if (!localStorage.getItem('dentavizion-mode')) {
+        localStorage.setItem('dentavizion-mode', 'visual'); // Default mode
+      }
+      window.location.href = 'pages/home.html';
     }
   </script>
 

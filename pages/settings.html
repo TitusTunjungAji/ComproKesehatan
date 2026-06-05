@@ -134,11 +134,14 @@
         // Load profile from Firestore
         try {
           const profile = await getUserProfile(user.uid);
+          const localUser = JSON.parse(localStorage.getItem('dentavizion-user') || '{}');
           if (profile) {
-            inputName.value = profile.name || '';
+            inputName.value = profile.name || localUser.name || '';
             if (profile.photoURL) {
               avatarImg.src = profile.photoURL;
             }
+          } else {
+            inputName.value = localUser.name || '';
           }
         } catch (e) {
           console.error('Error loading profile:', e);

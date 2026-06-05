@@ -234,6 +234,14 @@
           // Load profile from Firestore
           const profile = await getUserProfile(user.uid);
 
+          // Clear old local storage data to reset modules/streaks for new user
+          const keysToClear = [];
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('dentavizion-')) keysToClear.push(key);
+          }
+          keysToClear.forEach(k => localStorage.removeItem(k));
+
           // Save to localStorage for other pages
           localStorage.setItem('dentavizion-user', JSON.stringify({
             uid: user.uid,
