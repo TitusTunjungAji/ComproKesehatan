@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login — DENTAVIZION</title>
+  <link rel="stylesheet" href="../css/pages/admin-style.css?v=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="admin-login-container">
+    <div class="admin-login-header">
+      <div class="admin-login-logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2C9.24 2 7 4.24 7 7c0 1.47.5 2.83 1.33 3.92C9.08 12.05 10 14.42 10 17v2a2 2 0 004 0v-2c0-2.58.92-4.95 1.67-6.08A6.94 6.94 0 0017 7c0-2.76-2.24-5-5-5z"/>
+        </svg>
+      </div>
+      <h1 class="admin-login-title">Dentavizion</h1>
+      <p class="admin-login-subtitle">Admin Dashboard Access</p>
+    </div>
+
+    <div class="admin-login-card">
+      <!-- Error Message -->
+      <div id="login-error" class="admin-login-error" role="alert">
+        <span>⚠️</span>
+        <span id="login-error-text">Terjadi kesalahan</span>
+      </div>
+
+      <form id="admin-login-form" novalidate>
+        <!-- Email -->
+        <div class="admin-form-group">
+          <div class="admin-label-row">
+            <label class="admin-label" for="admin-email">Email Address</label>
+          </div>
+          <div class="admin-input-wrapper">
+            <span class="admin-input-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                <polyline points="22,6 12,13 2,6" />
+              </svg>
+            </span>
+            <input type="email" id="admin-email" class="admin-input" placeholder="admin@denticare.com" autocomplete="email" required>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="admin-form-group">
+          <div class="admin-label-row">
+            <label class="admin-label" for="admin-password">Password</label>
+            <a href="#" class="admin-forgot-link">Forgot password?</a>
+          </div>
+          <div class="admin-input-wrapper">
+            <span class="admin-input-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0110 0v4" />
+              </svg>
+            </span>
+            <input type="password" id="admin-password" class="admin-input" placeholder="••••••••" autocomplete="current-password" required>
+            <button type="button" class="admin-input-toggle" id="toggle-password" aria-label="Tampilkan kata sandi">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Remember Me -->
+        <div class="admin-checkbox-row">
+          <input type="checkbox" id="remember-me">
+          <label class="admin-checkbox-label" for="remember-me">Remember me</label>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="admin-btn-submit" id="btn-login">
+          <span>Login</span>
+        </button>
+      </form>
+    </div>
+
+    <div class="admin-login-footer">
+      <p>© 2026 DentiCare Systems. All rights reserved.</p>
+    </div>
+  </div>
+
+  <!-- Firebase Script Integration -->
+  <script type="module">
+    import { loginUser, getUserProfile } from '../js/firebase-config.js?v=3';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('admin-login-form');
+      const emailInput = document.getElementById('admin-email');
+      const passwordInput = document.getElementById('admin-password');
+      const togglePassword = document.getElementById('toggle-password');
+      const errorBox = document.getElementById('login-error');
+      const errorText = document.getElementById('login-error-text');
+      const btnLogin = document.getElementById('btn-login');
+
+      // Password visibility toggle
+      togglePassword.addEventListener('click', () => {
+        const isPassword = passwordInput.type === 'password';
+        passwordInput.type = isPassword ? 'text' : 'password';
+        togglePassword.setAttribute('aria-label', isPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi');
+      });
+
+      // Clear error on input
+      [emailInput, passwordInput].forEach(input => {
+        input.addEventListener('input', () => {
+          errorBox.classList.remove('admin-login-error--visible');
+        });
+      });
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        if (!email || !password) {
+          showError('Email dan Password harus diisi!');
+          return;
+        }
+
+        // Loading state
+        btnLogin.disabled = true;
+        btnLogin.textContent = 'Memproses...';
+
+        // Hardcoded Fallback for provided Admin credentials
+        if (email === 'admin@denticare.com' && password === 'admin') {
+          localStorage.setItem('dentavizion-admin-session', JSON.stringify({
+            uid: 'admin_hardcoded_id',
+            email: email,
+            name: 'Admin DENTAVIZION',
+            loggedInAt: new Date().toISOString()
+          }));
+          window.location.href = 'dashboard.html';
+          return;
+        }
+
+        try {
+          // 1. Authenticate user via Firebase Auth
+          const user = await loginUser(email, password);
+
+          // 2. Fetch User Profile to verify Role
+          const profile = await getUserProfile(user.uid);
+
+          if (profile && profile.role === 'admin') {
+            // Save admin session state locally (simple flag)
+            localStorage.setItem('dentavizion-admin-session', JSON.stringify({
+              uid: user.uid,
+              email: user.email,
+              name: profile.name || 'Administrator',
+              loggedInAt: new Date().toISOString()
+            }));
+
+            // Redirect to dashboard
+            window.location.href = 'dashboard.html';
+          } else {
+            // Unauthorized role
+            showError('Akses Ditolak! Akun Anda tidak memiliki hak akses Administrator.');
+            btnLogin.disabled = false;
+            btnLogin.textContent = 'Login';
+          }
+
+        } catch (error) {
+          console.error('Login error:', error);
+          btnLogin.disabled = false;
+          btnLogin.textContent = 'Login';
+
+          let msg = 'Email atau Kata Sandi salah! silakan periksa kembali.';
+          if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+            msg = 'Email atau Kata Sandi salah! silakan periksa kembali.';
+          } else if (error.code === 'auth/invalid-email') {
+            msg = 'Format email tidak valid!';
+          }
+          showError(msg);
+        }
+      });
+
+      function showError(msg) {
+        errorText.textContent = msg;
+        errorBox.classList.add('admin-login-error--visible');
+      }
+    });
+  </script>
+</body>
+</html>
