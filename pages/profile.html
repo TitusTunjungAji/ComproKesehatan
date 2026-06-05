@@ -19,6 +19,15 @@
   <link rel="stylesheet" href="../css/base.css?v=3">
   <link rel="stylesheet" href="../css/components.css?v=3">
   <link rel="stylesheet" href="../css/pages/profile.css?v=3">
+  <style>
+    .prof-main {
+      opacity: 0;
+      transition: opacity 0.25s ease-in-out;
+    }
+    .prof-main--loaded {
+      opacity: 1;
+    }
+  </style>
 </head>
 
 <body>
@@ -60,6 +69,14 @@
           <div class="prof-card__level-badge" id="profile-level-badge" aria-label="Level 1">LVL 1</div>
         </div>
         <h1 class="prof-card__name" id="profile-name">Hai, Jagoan! 🌟</h1>
+        <script>
+          try {
+            const localUser = JSON.parse(localStorage.getItem('dentavizion-user') || '{}');
+            if (localUser.name) {
+              document.getElementById('profile-name').textContent = "Hai, " + localUser.name + "! 🌟";
+            }
+          } catch (e) {}
+        </script>
         <p class="prof-card__title" id="profile-title">Penjelajah Gigi Super 🦷</p>
         <!-- XP Bar -->
         <div class="prof-card__xp" id="profile-xp-container" aria-label="0 dari 100 XP">
@@ -314,16 +331,30 @@
 
         lastRenderedUser = user || null;
         lastRenderedProfile = profile || null;
+
+        // Fade in the entire layout once it's fully populated
+        const mainEl = document.getElementById('main-content');
+        if (mainEl) {
+          mainEl.classList.add('prof-main--loaded');
+        }
       }
 
       // ── Load user data from Firebase + local fallback ──
+      let renderTimeout = null;
       onUserChanged(async (user) => {
         if (!user && !localStorage.getItem('dentavizion-user')) {
           window.location.href = 'login.html';
           return;
         }
 
-        await renderProfile(user);
+        if (user) {
+          if (renderTimeout) clearTimeout(renderTimeout);
+          await renderProfile(user);
+        } else {
+          renderTimeout = setTimeout(async () => {
+            await renderProfile(null);
+          }, 250);
+        }
       });
 
       window.addEventListener('storage', (event) => {

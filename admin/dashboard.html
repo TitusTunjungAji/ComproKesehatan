@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management — DENTAVIZION Admin</title>
+  <link rel="stylesheet" href="../css/pages/admin-style.css?v=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    // Route protection: Check session immediately before rendering body
+    if (!localStorage.getItem('dentavizion-admin-session')) {
+      window.location.href = 'index.html';
+    }
+  </script>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div>
+        <div class="admin-brand">
+          <div class="admin-brand-logo" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2C9.24 2 7 4.24 7 7c0 1.47.5 2.83 1.33 3.92C9.08 12.05 10 14.42 10 17v2a2 2 0 004 0v-2c0-2.58.92-4.95 1.67-6.08A6.94 6.94 0 0017 7c0-2.76-2.24-5-5-5z"/>
+            </svg>
+          </div>
+          <div>
+            <span class="admin-brand-name">Dentavizion</span>
+            <span class="admin-brand-sub">Admin Management</span>
+          </div>
+        </div>
+
+        <nav role="navigation" aria-label="Menu Admin">
+          <ul class="admin-menu">
+            <li class="admin-menu-item">
+              <a href="dashboard.html" class="admin-menu-link admin-menu-link--active">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+                <span>Users</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <button id="btn-logout" class="admin-logout-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" />
+        </svg>
+        <span>Logout</span>
+      </button>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="admin-main" role="main">
+      <header class="admin-header">
+        <div class="admin-search-bar">
+          <span class="admin-search-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </span>
+          <input type="text" id="search-input" class="admin-search-input" placeholder="Search patients by name or email...">
+        </div>
+
+        <div class="admin-profile-menu">
+          <span class="admin-profile-info">
+            <span class="admin-profile-name" id="admin-profile-name">Admin Profile</span>
+            <span class="admin-profile-role">Super User</span>
+          </span>
+          <div class="admin-profile-avatar" id="admin-avatar-initial">A</div>
+        </div>
+      </header>
+
+      <!-- User Management Card -->
+      <section class="admin-card" aria-labelledby="user-management-title">
+        <div class="admin-card-header">
+          <h1 id="user-management-title" class="admin-card-title">User Management</h1>
+          <p class="admin-card-desc">Manage patient records, access clinical photos, and monitor account status.</p>
+        </div>
+
+        <div class="admin-table-container">
+          <table class="admin-table" id="users-table">
+            <thead>
+              <tr>
+                <th scope="col">Patient Name</th>
+                <th scope="col">Contact Email</th>
+                <th scope="col">Join Date</th>
+                <th scope="col">Clinical Photos</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody">
+              <!-- Loading Row -->
+              <tr id="loading-row">
+                <td colspan="5" style="text-align: center; padding: 40px; color: var(--admin-text-muted);">
+                  Memuat data pengguna...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="admin-pagination">
+          <span id="pagination-info">Showing 0 of 0 users</span>
+          <div class="admin-pagination-pages" id="pagination-buttons">
+            <!-- Dynamic pages -->
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module">
+    import { db, getUserReports, logoutUser } from '../js/firebase-config.js?v=3';
+    import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const adminSession = JSON.parse(localStorage.getItem('dentavizion-admin-session') || '{}');
+      
+      // Update Admin Info
+      if (adminSession.name) {
+        document.getElementById('admin-profile-name').textContent = adminSession.name;
+        document.getElementById('admin-avatar-initial').textContent = adminSession.name.charAt(0).toUpperCase();
+      }
+
+      // Logout handler
+      document.getElementById('btn-logout').addEventListener('click', async () => {
+        if (confirm('Apakah Anda yakin ingin keluar?')) {
+          try {
+            await logoutUser();
+          } catch (e) {
+            console.error('Logout error:', e);
+          }
+          localStorage.removeItem('dentavizion-admin-session');
+          window.location.href = 'index.html';
+        }
+      });
+
+      // Data states
+      let allUsers = [];
+      let filteredUsers = [];
+      let currentPage = 1;
+      const usersPerPage = 8;
+
+      // Fetch users from Firestore
+      async function loadUsers() {
+        try {
+          const querySnapshot = await getDocs(collection(db, 'users'));
+          const userPromises = [];
+
+          querySnapshot.forEach((docSnap) => {
+            const userData = docSnap.data();
+            const email = userData.email;
+            
+            // Only show regular users, filter out admin role accounts to prevent admin table bloating
+            if (userData.role !== 'admin') {
+              const userPromise = (async () => {
+                let photoCount = 0;
+                if (email) {
+                  try {
+                    const reports = await getUserReports(email);
+                    // Filter reports that have valid photos
+                    photoCount = reports.filter(r => r.photoURL).length;
+                  } catch (err) {
+                    console.warn(`Failed fetching photo count for ${email}:`, err);
+                  }
+                }
+                return {
+                  id: docSnap.id,
+                  name: userData.name || 'Jagoan Tanpa Nama',
+                  email: email || '-',
+                  createdAt: userData.createdAt ? new Date(userData.createdAt).toLocaleDateString('id-ID', {
+                    day: 'numeric', month: 'short', year: 'numeric'
+                  }) : '-',
+                  photoCount: photoCount
+                };
+              })();
+              userPromises.push(userPromise);
+            }
+          });
+
+          allUsers = await Promise.all(userPromises);
+          filteredUsers = [...allUsers];
+          
+          renderTable();
+          setupSearch();
+
+        } catch (error) {
+          console.error('Error fetching users:', error);
+          const tbody = document.getElementById('users-tbody');
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="5" style="text-align: center; color: #ef4444; padding: 40px;">
+                Gagal memuat data pengguna: ${error.message}
+              </td>
+            </tr>
+          `;
+        }
+      }
+
+      function renderTable() {
+        const tbody = document.getElementById('users-tbody');
+        tbody.innerHTML = '';
+
+        if (filteredUsers.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 40px; color: var(--admin-text-muted);">
+                Tidak ada pengguna ditemukan.
+              </td>
+            </tr>
+          `;
+          updatePaginationInfo(0, 0);
+          return;
+        }
+
+        const startIndex = (currentPage - 1) * usersPerPage;
+        const endIndex = Math.min(startIndex + usersPerPage, filteredUsers.length);
+        const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
+
+        paginatedUsers.forEach((user) => {
+          const tr = document.createElement('tr');
+          const avatarLetter = user.name.charAt(0).toUpperCase();
+
+          // Highlight badge if they have uploaded photos
+          const photoBadgeClass = user.photoCount > 0 
+            ? 'admin-badge-count admin-badge-count--highlight' 
+            : 'admin-badge-count';
+
+          tr.innerHTML = `
+            <td>
+              <div class="admin-user-cell">
+                <div class="admin-user-avatar" aria-hidden="true">${avatarLetter}</div>
+                <div>
+                  <span class="admin-user-name">${user.name}</span>
+                  <span class="admin-user-id">ID: #PT-${user.id.substring(0, 6).toUpperCase()}</span>
+                </div>
+              </div>
+            </td>
+            <td>${user.email}</td>
+            <td>${user.createdAt}</td>
+            <td>
+              <span class="${photoBadgeClass}">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right: 4px;">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+                </svg>
+                ${user.photoCount}
+              </span>
+            </td>
+            <td>
+              <a href="user-details.html?email=${encodeURIComponent(user.email)}&name=${encodeURIComponent(user.name)}&id=${encodeURIComponent(user.id.substring(0, 6).toUpperCase())}" class="admin-link-action">View Details</a>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        updatePaginationInfo(startIndex + 1, endIndex);
+        renderPaginationButtons();
+      }
+
+      function updatePaginationInfo(start, end) {
+        document.getElementById('pagination-info').textContent = 
+          `Showing ${start} to ${end} of ${filteredUsers.length} users`;
+      }
+
+      function renderPaginationButtons() {
+        const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+        const container = document.getElementById('pagination-buttons');
+        container.innerHTML = '';
+
+        if (totalPages <= 1) return;
+
+        // Previous button
+        if (currentPage > 1) {
+          const prevBtn = createPageBtn('<', () => {
+            currentPage--;
+            renderTable();
+          });
+          container.appendChild(prevBtn);
+        }
+
+        // Page numbers
+        for (let i = 1; i <= totalPages; i++) {
+          const btn = createPageBtn(i, () => {
+            currentPage = i;
+            renderTable();
+          }, i === currentPage);
+          container.appendChild(btn);
+        }
+
+        // Next button
+        if (currentPage < totalPages) {
+          const nextBtn = createPageBtn('>', () => {
+            currentPage++;
+            renderTable();
+          });
+          container.appendChild(nextBtn);
+        }
+      }
+
+      function createPageBtn(text, onClick, isActive = false) {
+        const btn = document.createElement('button');
+        btn.className = `admin-pagination-btn ${isActive ? 'admin-pagination-btn--active' : ''}`;
+        btn.textContent = text;
+        btn.addEventListener('click', onClick);
+        return btn;
+      }
+
+      function setupSearch() {
+        const searchInput = document.getElementById('search-input');
+        searchInput.addEventListener('input', (e) => {
+          const query = e.target.value.toLowerCase().trim();
+          filteredUsers = allUsers.filter(user => 
+            user.name.toLowerCase().includes(query) || 
+            user.email.toLowerCase().includes(query)
+          );
+          currentPage = 1;
+          renderTable();
+        });
+      }
+
+      loadUsers();
+    });
+  </script>
+</body>
+</html>

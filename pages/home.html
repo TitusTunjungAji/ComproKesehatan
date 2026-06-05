@@ -257,14 +257,14 @@
         </div>
 
         <div class="report-card" id="report-card">
+          <!-- Hidden inputs for file uploads -->
+          <input type="file" id="photo-input" accept="image/*" capture="environment" style="display: none;" aria-hidden="true">
+          <input type="file" id="camera-input" accept="image/*" capture="environment" style="display: none;" aria-hidden="true">
+          <input type="file" id="gallery-input" accept="image/*" style="display: none;" aria-hidden="true">
+
           <!-- Upload area -->
           <div class="report-card__upload" id="upload-zone" role="button" tabindex="0"
-            aria-label="Upload foto sikat gigi">
-            <input type="file" id="photo-input" accept="image/*" capture="environment" class="report-card__file-input"
-              aria-hidden="true">
-            <input type="file" id="camera-input" accept="image/*" capture="environment" class="report-card__file-input"
-              aria-hidden="true">
-            <input type="file" id="gallery-input" accept="image/*" class="report-card__file-input" aria-hidden="true">
+            aria-label="Ambil foto sikat gigi menggunakan kamera">
 
             <!-- Default state -->
             <div class="report-card__upload-default" id="upload-default">
@@ -275,8 +275,8 @@
                   <circle cx="12" cy="13" r="4" />
                 </svg>
               </div>
-              <p class="report-card__upload-text">Foto gigi kamu dong! 😁</p>
-              <p class="report-card__upload-hint">Ketuk di sini buat foto atau pilih dari galeri ya!</p>
+              <p class="report-card__upload-text">Ketuk untuk Ambil Foto Gigi 📸</p>
+              <p class="report-card__upload-hint">Buka kamera langsung untuk foto gigi bersihmu!</p>
             </div>
 
             <!-- Preview state (hidden initially) -->
@@ -290,16 +290,20 @@
                 </svg>
               </button>
             </div>
+
+            <!-- Video preview for live camera -->
+            <div class="report-card__video-wrap" id="video-container" style="display: none; position: relative; width: 100%; height: 100%; min-height: 220px; background: #000; border-radius: 16px; overflow: hidden;">
+              <video id="webcam-video" autoplay playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
+              <button type="button" id="btn-capture-frame" style="position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); background: #2BAA8E; color: white; border: none; border-radius: 50%; width: 48px; height: 48px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(43,170,142,0.4); z-index: 10;" aria-label="Ambil foto">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
           </div>
 
           <div class="report-card__actions">
-            <button class="report-card__action" id="btn-camera" aria-label="Ambil foto dari kamera">
-              <span class="report-card__action-icon" aria-hidden="true">📷</span>
-              <span>Kamera</span>
-            </button>
             <button class="report-card__action" id="btn-gallery" aria-label="Pilih dari galeri">
               <span class="report-card__action-icon" aria-hidden="true">🖼️</span>
-              <span>Galeri</span>
+              <span>Pilih dari Galeri</span>
             </button>
           </div>
 
@@ -492,10 +496,45 @@
       const streak = parseInt(localStorage.getItem('dentavizion-streak') || '0');
       if (streakText) streakText.textContent = streak + ' hari berturut-turut';
 
+      let capturedFile = null;
+      let localStream = null;
+      const video = document.getElementById('webcam-video');
+      const videoContainer = document.getElementById('video-container');
+
+      function stopWebcam() {
+        if (localStream) {
+          localStream.getTracks().forEach(track => track.stop());
+          localStream = null;
+        }
+        if (videoContainer) videoContainer.style.display = 'none';
+      }
+
+      async function startWebcam() {
+        try {
+          // Request camera permission and start streaming
+          localStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'user' },
+            audio: false
+          });
+          if (video) {
+            video.srcObject = localStream;
+            uploadDefault.style.display = 'none';
+            uploadPreview.style.display = 'none';
+            videoContainer.style.display = 'block';
+          }
+        } catch (err) {
+          console.warn('Failed to access webcam (CORS, desktop, or denied permission), falling back to file dialog:', err);
+          showReportToast('Mengaktifkan kamera sistem...');
+          cameraInput.click();
+        }
+      }
+
       // Shared photo handler
       function handlePhoto(e) {
         const file = e.target.files[0];
         if (file) {
+          capturedFile = null;
+          stopWebcam();
           const reader = new FileReader();
           reader.onload = (ev) => {
             previewImg.src = ev.target.result;
@@ -519,16 +558,67 @@
           previewImg.src = '';
           uploadDefault.style.display = 'block';
           uploadPreview.style.display = 'none';
+          capturedFile = null;
+          stopWebcam();
           if (photoInput) photoInput.value = '';
           if (cameraInput) cameraInput.value = '';
           if (galleryInput) galleryInput.value = '';
         });
       }
 
-      // Camera button → opens camera
-      if (btnCamera) btnCamera.addEventListener('click', () => { cameraInput.click(); });
+      // Click upload zone (default state) → start live camera
+      const uploadZone = document.getElementById('upload-zone');
+      if (uploadZone) {
+        uploadZone.addEventListener('click', (e) => {
+          // Trigger camera only if default screen is showing
+          if (uploadDefault.style.display !== 'none') {
+            e.preventDefault();
+            e.stopPropagation();
+            startWebcam();
+          }
+        });
+      }
+
+      // Capture frame button inside video player
+      const btnCaptureFrame = document.getElementById('btn-capture-frame');
+      if (btnCaptureFrame) {
+        btnCaptureFrame.addEventListener('click', (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          if (localStream && video) {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+            const ctx = canvas.getContext('2d');
+            
+            // Mirror image for front camera feel
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            canvas.toBlob((blob) => {
+              const file = new File([blob], "laporan-sikatgigi.jpg", { type: "image/jpeg" });
+              capturedFile = file;
+              
+              const reader = new FileReader();
+              reader.onload = (ev) => {
+                previewImg.src = ev.target.result;
+                uploadPreview.style.display = 'block';
+                stopWebcam();
+              };
+              reader.readAsDataURL(file);
+            }, 'image/jpeg', 0.9);
+          }
+        });
+      }
+
       // Gallery button → opens file picker (gallery)
-      if (btnGallery) btnGallery.addEventListener('click', () => { galleryInput.click(); });
+      if (btnGallery) {
+        btnGallery.addEventListener('click', () => {
+          stopWebcam();
+          galleryInput.click();
+        });
+      }
 
       // Time pills
       pills.forEach(pill => {
@@ -546,7 +636,7 @@
           const time = activePill ? activePill.dataset.time : 'pagi';
           const notes = document.getElementById('report-notes').value.trim();
           const date = reportDate.value;
-          const activeFile = cameraInput.files[0] || galleryInput.files[0] || photoInput.files[0];
+          const activeFile = capturedFile || cameraInput.files[0] || galleryInput.files[0] || photoInput.files[0];
 
           // 1. Validation: Photo required
           if (!activeFile) {
