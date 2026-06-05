@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dental Photos — DENTAVIZION Admin</title>
+  <link rel="stylesheet" href="../css/pages/admin-style.css?v=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    // Route protection
+    if (!localStorage.getItem('dentavizion-admin-session')) {
+      window.location.href = 'index.html';
+    }
+  </script>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div>
+        <div class="admin-brand">
+          <div class="admin-brand-logo" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2C9.24 2 7 4.24 7 7c0 1.47.5 2.83 1.33 3.92C9.08 12.05 10 14.42 10 17v2a2 2 0 004 0v-2c0-2.58.92-4.95 1.67-6.08A6.94 6.94 0 0017 7c0-2.76-2.24-5-5-5z"/>
+            </svg>
+          </div>
+          <div>
+            <span class="admin-brand-name">Dentavizion</span>
+            <span class="admin-brand-sub">Admin Management</span>
+          </div>
+        </div>
+
+        <nav role="navigation" aria-label="Menu Admin">
+          <ul class="admin-menu">
+            <li class="admin-menu-item">
+              <a href="dashboard.html" class="admin-menu-link admin-menu-link--active">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+                <span>Users</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <button id="btn-logout" class="admin-logout-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" />
+        </svg>
+        <span>Logout</span>
+      </button>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="admin-main" role="main">
+      <header class="admin-header">
+        <a href="dashboard.html" class="admin-back-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
+          </svg>
+          Kembali ke User Management
+        </a>
+
+        <div class="admin-profile-menu">
+          <span class="admin-profile-info">
+            <span class="admin-profile-name" id="admin-profile-name">Admin Profile</span>
+            <span class="admin-profile-role">Super User</span>
+          </span>
+          <div class="admin-profile-avatar" id="admin-avatar-initial">A</div>
+        </div>
+      </header>
+
+      <!-- Details Card -->
+      <section class="admin-card" aria-labelledby="patient-details-title">
+        <div class="admin-gallery-header">
+          <div>
+            <h1 id="patient-details-title" class="admin-card-title">Dental Photos (<span id="user-display-name">Loading...</span>)</h1>
+            <p class="admin-card-desc">View and manage uploaded patient imagery for ID: <span id="user-display-id">-</span></p>
+          </div>
+
+          <label>
+            <span class="sr-only">Filter rentang waktu</span>
+            <select id="time-filter" class="admin-select-filter">
+              <option value="all">All Time</option>
+              <option value="30">Last 30 Days</option>
+              <option value="7">Last 7 Days</option>
+            </select>
+          </label>
+        </div>
+
+        <div id="gallery-loading" style="text-align: center; padding: 60px; color: var(--admin-text-muted);">
+          Memuat foto klinis pengguna...
+        </div>
+
+        <div id="gallery-empty" style="display: none; text-align: center; padding: 60px; color: var(--admin-text-muted);">
+          <div style="font-size: 48px; margin-bottom: 16px;">📸</div>
+          <p>Belum ada foto absensi atau laporan klinis yang diunggah oleh pengguna ini.</p>
+        </div>
+
+        <div class="admin-gallery-grid" id="gallery-grid" style="display: none;">
+          <!-- Photo cards injected dynamically -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module">
+    import { getUserReports, logoutUser } from '../js/firebase-config.js?v=3';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const adminSession = JSON.parse(localStorage.getItem('dentavizion-admin-session') || '{}');
+      if (adminSession.name) {
+        document.getElementById('admin-profile-name').textContent = adminSession.name;
+        document.getElementById('admin-avatar-initial').textContent = adminSession.name.charAt(0).toUpperCase();
+      }
+
+      // Logout handler
+      document.getElementById('btn-logout').addEventListener('click', async () => {
+        if (confirm('Apakah Anda yakin ingin keluar?')) {
+          try { await logoutUser(); } catch (e) { console.error(e); }
+          localStorage.removeItem('dentavizion-admin-session');
+          window.location.href = 'index.html';
+        }
+      });
+
+      // Parse Query Parameters
+      const params = new URLSearchParams(window.location.search);
+      const email = params.get('email');
+      const name = params.get('name') || 'Pengguna';
+      const id = params.get('id') || '-';
+
+      document.getElementById('user-display-name').textContent = name;
+      document.getElementById('user-display-id').textContent = `#PT-${id}`;
+
+      let allReports = [];
+
+      async function loadUserPhotos() {
+        if (!email) {
+          showError('Email pengguna tidak valid!');
+          return;
+        }
+
+        try {
+          const reports = await getUserReports(email);
+          // Only show entries that have photos
+          allReports = reports.filter(r => r.photoURL);
+          applyFilterAndRender();
+        } catch (error) {
+          console.error('Error fetching reports:', error);
+          showError(`Gagal mengambil foto: ${error.message}`);
+        }
+      }
+
+      function applyFilterAndRender() {
+        const filterVal = document.getElementById('time-filter').value;
+        const now = new Date();
+        let filtered = [...allReports];
+
+        if (filterVal !== 'all') {
+          const daysLimit = parseInt(filterVal);
+          const limitDate = new Date();
+          limitDate.setDate(now.getDate() - daysLimit);
+          
+          filtered = allReports.filter(r => {
+            const reportDate = new Date(r.date);
+            return reportDate >= limitDate;
+          });
+        }
+
+        renderGallery(filtered);
+      }
+
+      function renderGallery(reports) {
+        const loading = document.getElementById('gallery-loading');
+        const empty = document.getElementById('gallery-empty');
+        const grid = document.getElementById('gallery-grid');
+
+        loading.style.display = 'none';
+
+        if (reports.length === 0) {
+          empty.style.display = 'block';
+          grid.style.display = 'none';
+          return;
+        }
+
+        empty.style.display = 'none';
+        grid.style.display = 'grid';
+        grid.innerHTML = '';
+
+        reports.forEach((report) => {
+          const card = document.createElement('article');
+          card.className = 'admin-photo-card';
+
+          // Determine pagi/malam based on the time stamp (e.g. "08:30" vs "19:00")
+          let timeBadge = 'Pagi';
+          let timeBadgeClass = 'admin-photo-badge--pagi';
+          if (report.time) {
+            const hour = parseInt(report.time.split(':')[0]);
+            if (hour >= 12) {
+              timeBadge = 'Malam';
+              timeBadgeClass = 'admin-photo-badge--malam';
+            }
+          }
+
+          // Format Date to indonesian readable
+          let formattedDate = report.date;
+          try {
+            formattedDate = new Date(`${report.date}T12:00:00`).toLocaleDateString('id-ID', {
+              day: 'numeric', month: 'short', year: 'numeric'
+            });
+          } catch (e) {
+            console.warn(e);
+          }
+
+          card.innerHTML = `
+            <div class="admin-photo-img-wrapper">
+              <img src="${report.photoURL}" alt="Foto gigi ${name} tanggal ${formattedDate}" class="admin-photo-img" loading="lazy">
+              <span class="admin-photo-badge ${timeBadgeClass}">
+                ${timeBadge === 'Pagi' ? '☀️' : '🌙'} ${timeBadge}
+              </span>
+            </div>
+            <div class="admin-photo-info">
+              <h2 class="admin-photo-name">${name}</h2>
+              <span class="admin-photo-time">
+                ${formattedDate} • ${report.time || '-'}
+              </span>
+              ${report.notes ? `<p class="admin-photo-notes"><strong>Catatan:</strong> "${report.notes}"</p>` : ''}
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      }
+
+      function showError(msg) {
+        const loading = document.getElementById('gallery-loading');
+        loading.style.display = 'none';
+        const empty = document.getElementById('gallery-empty');
+        empty.style.display = 'block';
+        empty.innerHTML = `<p style="color: #ef4444;">${msg}</p>`;
+      }
+
+      // Filter change event listener
+      document.getElementById('time-filter').addEventListener('change', applyFilterAndRender);
+
+      loadUserPhotos();
+    });
+  </script>
+</body>
+</html>
