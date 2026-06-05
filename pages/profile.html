@@ -60,6 +60,14 @@
           <div class="prof-card__level-badge" id="profile-level-badge" aria-label="Level 1">LVL 1</div>
         </div>
         <h1 class="prof-card__name" id="profile-name">Hai, Jagoan! 🌟</h1>
+        <script>
+          try {
+            const localUser = JSON.parse(localStorage.getItem('dentavizion-user') || '{}');
+            if (localUser.name) {
+              document.getElementById('profile-name').textContent = "Hai, " + localUser.name + "! 🌟";
+            }
+          } catch (e) {}
+        </script>
         <p class="prof-card__title" id="profile-title">Penjelajah Gigi Super 🦷</p>
         <!-- XP Bar -->
         <div class="prof-card__xp" id="profile-xp-container" aria-label="0 dari 100 XP">
