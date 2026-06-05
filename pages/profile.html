@@ -317,13 +317,21 @@
       }
 
       // ── Load user data from Firebase + local fallback ──
+      let renderTimeout = null;
       onUserChanged(async (user) => {
         if (!user && !localStorage.getItem('dentavizion-user')) {
           window.location.href = 'login.html';
           return;
         }
 
-        await renderProfile(user);
+        if (user) {
+          if (renderTimeout) clearTimeout(renderTimeout);
+          await renderProfile(user);
+        } else {
+          renderTimeout = setTimeout(async () => {
+            await renderProfile(null);
+          }, 250);
+        }
       });
 
       window.addEventListener('storage', (event) => {
