@@ -19,6 +19,15 @@
   <link rel="stylesheet" href="../css/base.css?v=3">
   <link rel="stylesheet" href="../css/components.css?v=3">
   <link rel="stylesheet" href="../css/pages/profile.css?v=3">
+  <style>
+    .prof-main {
+      opacity: 0;
+      transition: opacity 0.25s ease-in-out;
+    }
+    .prof-main--loaded {
+      opacity: 1;
+    }
+  </style>
 </head>
 
 <body>
@@ -322,6 +331,12 @@
 
         lastRenderedUser = user || null;
         lastRenderedProfile = profile || null;
+
+        // Fade in the entire layout once it's fully populated
+        const mainEl = document.getElementById('main-content');
+        if (mainEl) {
+          mainEl.classList.add('prof-main--loaded');
+        }
       }
 
       // ── Load user data from Firebase + local fallback ──
