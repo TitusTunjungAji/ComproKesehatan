@@ -37,8 +37,15 @@ async function registerUser(email, password) {
 
 async function logoutUser() {
   await signOut(auth);
-  localStorage.removeItem('dentavizion-user');
-  localStorage.removeItem('dentavizion-mode');
+  // Clear all local storage data related to dentavizion to reset modules, streak, etc.
+  const keysToClear = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith('dentavizion-')) {
+      keysToClear.push(key);
+    }
+  }
+  keysToClear.forEach(k => localStorage.removeItem(k));
 }
 
 function getCurrentUser() {

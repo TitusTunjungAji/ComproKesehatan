@@ -267,27 +267,31 @@
           // Create Firebase Auth user
           const user = await registerUser(email, password);
 
-          // Save to localStorage FIRST (critical for redirect flow)
-          localStorage.setItem('dentavizion-user', JSON.stringify({
-            uid: user.uid,
-            email: user.email,
-            name: name,
-            loggedInAt: new Date().toISOString()
-          }));
+          // Clear old local storage data to reset modules/streaks for new user
+          const keysToClear = [];
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('dentavizion-')) keysToClear.push(key);
+          }
+          keysToClear.forEach(k => localStorage.removeItem(k));
 
-          // Ensure a default accessibility mode exists so pages won't redirect back
+// Ensure a default accessibility mode exists so pages won't redirect back
           if (!localStorage.getItem('dentavizion-mode')) {
             try { localStorage.setItem('dentavizion-mode', 'visual'); } catch (e) { /* ignore */ }
           }
 
-          // Save profile to Firestore (non-blocking)
-          saveUserProfile(user.uid, {
-            name: name,
-            email: email,
-            level: 1,
-            xp: 0,
-            createdAt: new Date().toISOString()
-          }).catch(e => console.warn('Firestore save warning:', e));
+          // Save profile to Firestore and warn if it fails
+          try {
+            await saveUserProfile(user.uid, {
+              name: name,
+              email: email,
+              level: 1,
+              xp: 0,
+              createdAt: new Date().toISOString()
+            });
+          } catch (e) {
+            console.warn('Firestore save warning:', e);
+          }
 
           if (typeof DentaA11y !== 'undefined') DentaA11y.vibrate('confirm');
 

@@ -62,7 +62,7 @@
           <span class="level-dot" aria-hidden="true"></span>
           <span class="level-text">⭐ PEJUANG GIGI SUPER ⭐</span>
         </div>
-        <h1 class="home-header__name">Hai, Jagoan! 👋</h1>
+        <h1 class="home-header__name" id="greeting-name">Hai, Jagoan! 👋</h1>
         <p class="home-header__subtitle">Wah gigi kamu makin keren! Yuk lanjutin petualangan hari ini! 🚀</p>
       </div>
 
@@ -115,9 +115,8 @@
           <div class="trivia-card__dots" id="trivia-dots" aria-hidden="true">
             <!-- dots injected by JS -->
           </div>
-          <button class="trivia-card__next-btn" id="trivia-next-btn" 
-                  aria-label="Lihat trivia berikutnya"
-                  data-a11y-read="Tombol trivia selanjutnya">
+          <button class="trivia-card__next-btn" id="trivia-next-btn" aria-label="Lihat trivia berikutnya"
+            data-a11y-read="Tombol trivia selanjutnya">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <polyline points="9 18 15 12 9 6" />
@@ -237,9 +236,10 @@
               Seru banget! Nanti kamu bisa latihan sikat gigi pakai kamera 3D yang keren!
             </p>
             <button class="ar-card__btn" id="btn-try-ar" aria-label="Coba fitur AR Sikat Gigi">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
-                <circle cx="12" cy="13" r="4"/>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" />
+                <circle cx="12" cy="13" r="4" />
               </svg>
               📸 Buka Kamera AR
             </button>
@@ -258,17 +258,21 @@
 
         <div class="report-card" id="report-card">
           <!-- Upload area -->
-          <div class="report-card__upload" id="upload-zone" role="button" tabindex="0" aria-label="Upload foto sikat gigi">
-            <input type="file" id="photo-input" accept="image/*" capture="environment" class="report-card__file-input" aria-hidden="true">
-            <input type="file" id="camera-input" accept="image/*" capture="environment" class="report-card__file-input" aria-hidden="true">
+          <div class="report-card__upload" id="upload-zone" role="button" tabindex="0"
+            aria-label="Upload foto sikat gigi">
+            <input type="file" id="photo-input" accept="image/*" capture="environment" class="report-card__file-input"
+              aria-hidden="true">
+            <input type="file" id="camera-input" accept="image/*" capture="environment" class="report-card__file-input"
+              aria-hidden="true">
             <input type="file" id="gallery-input" accept="image/*" class="report-card__file-input" aria-hidden="true">
 
             <!-- Default state -->
             <div class="report-card__upload-default" id="upload-default">
               <div class="report-card__upload-icon" aria-hidden="true">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
-                  <circle cx="12" cy="13" r="4"/>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" />
+                  <circle cx="12" cy="13" r="4" />
                 </svg>
               </div>
               <p class="report-card__upload-text">Foto gigi kamu dong! 😁</p>
@@ -279,7 +283,11 @@
             <div class="report-card__preview" id="upload-preview" style="display: none;">
               <img id="preview-img" src="" alt="Preview foto sikat gigi" class="report-card__preview-img">
               <button class="report-card__preview-remove" id="btn-remove-photo" aria-label="Hapus foto">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
               </button>
             </div>
           </div>
@@ -304,20 +312,24 @@
             <div class="report-card__field">
               <label class="report-card__label" for="report-time">🕰️ Kapan sikat giginya?</label>
               <div class="report-card__time-pills" role="radiogroup" aria-label="Pilih waktu sikat gigi">
-                <button class="report-card__pill report-card__pill--active" data-time="pagi" role="radio" aria-checked="true">🌅 Pagi</button>
+                <button class="report-card__pill report-card__pill--active" data-time="pagi" role="radio"
+                  aria-checked="true">🌅 Pagi</button>
                 <button class="report-card__pill" data-time="malam" role="radio" aria-checked="false">🌙 Malam</button>
               </div>
             </div>
             <div class="report-card__field">
-              <label class="report-card__label" for="report-notes">📝 Ceritain dong! (boleh kosong)</label>
-              <textarea id="report-notes" class="report-card__textarea" rows="2" placeholder="Misal: Aku sikat gigi 2 menit sambil nyanyi! 🎶" maxlength="150"></textarea>
+              <label class="report-card__label" for="report-notes">📝 Ceritain dong!</label>
+              <textarea id="report-notes" class="report-card__textarea" rows="2"
+                placeholder="Misal: Aku sikat gigi 2 menit sambil nyanyi! 🎶" maxlength="150"></textarea>
             </div>
           </div>
 
           <!-- Submit -->
           <button class="report-card__submit" id="btn-submit-report" aria-label="Kirim laporan sikat gigi">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="22" y1="2" x2="11" y2="13" />
+              <polygon points="22 2 15 22 11 13 2 9 22 2" />
             </svg>
             Kirim Yuk! 🚀
           </button>
@@ -376,9 +388,68 @@
         return;
       }
 
+      // Update greeting name
+      const userData = JSON.parse(localStorage.getItem('dentavizion-user') || '{}');
+      const greetingNameEl = document.getElementById('greeting-name');
+      if (greetingNameEl && userData.name) {
+        greetingNameEl.textContent = `Hai, ${userData.name}! 👋`;
+      }
+
+      // Add profile button redirect
+      const btnProfile = document.getElementById('btn-profile');
+      if (btnProfile) {
+        btnProfile.addEventListener('click', () => {
+          window.location.href = 'profile.html';
+        });
+      }
+
       // Track Firebase auth user
       let firebaseUser = null;
-      onUserChanged((user) => { firebaseUser = user; });
+
+      async function checkTodayReportsUI(userObj) {
+        if (!userObj || !userObj.email) return;
+        const reports = await getUserReports(userObj.email);
+        const todayStr = new Date().toISOString().split('T')[0];
+
+        const hasPagi = reports.some(r => r.date === todayStr && r.time === 'pagi');
+        const hasMalam = reports.some(r => r.date === todayStr && r.time === 'malam');
+
+        const pillPagi = document.querySelector('.report-card__pill[data-time="pagi"]');
+        const pillMalam = document.querySelector('.report-card__pill[data-time="malam"]');
+
+        if (hasPagi && pillPagi) {
+          pillPagi.innerHTML = '✅ Pagi (Selesai)';
+          pillPagi.style.opacity = '0.7';
+          pillPagi.style.pointerEvents = 'none';
+          pillPagi.classList.remove('report-card__pill--active');
+          pillPagi.style.background = '#E0FFF7';
+          pillPagi.style.borderColor = '#2BAA8E';
+          pillPagi.style.color = '#1A3B34';
+        }
+        if (hasMalam && pillMalam) {
+          pillMalam.innerHTML = '✅ Malam (Selesai)';
+          pillMalam.style.opacity = '0.7';
+          pillMalam.style.pointerEvents = 'none';
+          pillMalam.classList.remove('report-card__pill--active');
+          pillMalam.style.background = '#E0FFF7';
+          pillMalam.style.borderColor = '#2BAA8E';
+          pillMalam.style.color = '#1A3B34';
+        }
+
+        // Auto select the other one if only one is done
+        if (hasPagi && !hasMalam && pillMalam) {
+          pillMalam.classList.add('report-card__pill--active');
+          pillMalam.setAttribute('aria-checked', 'true');
+        } else if (hasMalam && !hasPagi && pillPagi) {
+          pillPagi.classList.add('report-card__pill--active');
+          pillPagi.setAttribute('aria-checked', 'true');
+        }
+      }
+
+      onUserChanged((user) => {
+        firebaseUser = user;
+        checkTodayReportsUI(user);
+      });
 
       const mode = localStorage.getItem('dentavizion-mode');
 
@@ -473,19 +544,54 @@
         btnSubmit.addEventListener('click', async () => {
           const activePill = document.querySelector('.report-card__pill--active');
           const time = activePill ? activePill.dataset.time : 'pagi';
-          const notes = document.getElementById('report-notes').value;
+          const notes = document.getElementById('report-notes').value.trim();
           const date = reportDate.value;
+          const activeFile = cameraInput.files[0] || galleryInput.files[0] || photoInput.files[0];
+
+          // 1. Validation: Photo required
+          if (!activeFile) {
+            showReportToast('⚠️ Jangan lupa foto gigi kinclongmu dong! 📸');
+            return;
+          }
+
+          // 2. Validation: Notes required
+          if (!notes) {
+            showReportToast('⚠️ Ceritain dikit dong sikat giginya gimana! 📝');
+            document.getElementById('report-notes').focus();
+            return;
+          }
+
+          // 3. Validation: Date must be today
+          const todayStr = new Date().toISOString().split('T')[0];
+          if (date !== todayStr) {
+            showReportToast('⚠️ Laporan hanya bisa untuk hari ini ya! 📅');
+            reportDate.value = todayStr; // reset to today
+            return;
+          }
 
           // Loading state
           btnSubmit.disabled = true;
-          btnSubmit.textContent = '⏳ Mengirim...';
+          btnSubmit.textContent = '⏳ Mengecek...';
 
           try {
             const user = firebaseUser || getCurrentUser();
             let photoURL = null;
 
-            // Upload photo to Firebase Storage if available (non-blocking)
-            const activeFile = cameraInput.files[0] || galleryInput.files[0] || photoInput.files[0];
+            // 4. Validation: Check existing submission for today + time slot
+            if (user && user.email) {
+              const existingReports = await getUserReports(user.email);
+              const alreadySubmitted = existingReports.some(r => r.date === todayStr && r.time === time);
+              if (alreadySubmitted) {
+                showReportToast(`⚠️ Kamu sudah laporan sikat gigi ${time === 'pagi' ? 'Pagi 🌅' : 'Malam 🌙'} hari ini!`);
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Kirim Yuk! 🚀';
+                return;
+              }
+            }
+
+            btnSubmit.textContent = '⏳ Mengunggah foto...';
+
+            // Upload photo to Firebase Storage
             if (user && activeFile) {
               try {
                 console.log('Uploading photo for user:', user.uid);
@@ -521,6 +627,9 @@
             const newStreak = streak + 1;
             localStorage.setItem('dentavizion-streak', newStreak.toString());
             if (streakText) streakText.textContent = newStreak + ' hari berturut-turut';
+
+            // Check UI for done
+            checkTodayReportsUI(user);
 
             // Show toast
             showReportToast('✅ Laporan terkirim! Kamu hebat! 🦷');
@@ -615,7 +724,7 @@
                 const timeEmoji = r.time === 'pagi' ? '🌅' : '🌙';
                 const timeLabel = r.time === 'pagi' ? 'Pagi' : 'Malam';
                 const dateStr = r.date || '-';
-                const photoHtml = r.photoURL 
+                const photoHtml = r.photoURL
                   ? `<img src="${r.photoURL}" style="width:60px;height:60px;border-radius:12px;object-fit:cover;border:2px solid #E0FFF7;" alt="Foto laporan">`
                   : `<div style="width:60px;height:60px;border-radius:12px;background:#E0FFF7;display:flex;align-items:center;justify-content:center;font-size:24px;">📸</div>`;
                 return `
@@ -651,73 +760,89 @@
 
       // ── Trivia Engine ──
       const TRIVIA = [
-        { cat: 'Kebiasaan Sehari-hari', icon: '🪥', items: [
-          'Sikat gigi paling penting adalah malam hari sebelum tidur, lho!',
-          'Kita harus menyikat gigi selama 2 menit agar kuman benar-benar pergi.',
-          'Sikat gigi dua kali sehari: pagi 30 menit setelah sarapan dan malam sebelum tidur.',
-          'Gantilah sikat gigimu jika bulunya sudah mulai mekar atau rusak.',
-          'Gunakan pasta gigi hanya sebesar biji jagung saja ya, tidak perlu banyak-banyak.',
-          'Sikatlah lidahmu dengan lembut agar napasmu selalu segar.',
-          'Jangan lupa berkumur dengan air putih setelah makan makanan manis.'
-        ]},
-        { cat: 'Makanan & Nutrisi', icon: '🍎', items: [
-          'Apel dan wortel yang garing adalah "sikat gigi alami" untuk gigimu.',
-          'Minum air putih lebih baik daripada minum sirup yang sangat manis.',
-          'Susu mengandung kalsium yang membuat tulang gigi menjadi kuat.',
-          'Permen dan cokelat boleh dimakan, tapi jangan lupa sikat gigi setelahnya!',
-          'Kuman sangat suka memakan sisa gula yang menempel di gigimu.',
-          'Sayuran hijau membantu menjaga gusimu tetap sehat dan tidak mudah berdarah.'
-        ]},
-        { cat: 'Pengetahuan Klinis', icon: '🔬', items: [
-          'Email gigi adalah bagian tubuh yang paling keras, bahkan lebih keras dari tulang!',
-          'Gigi berlubang terjadi karena kuman mengubah gula menjadi asam.',
-          'Gigi merupakan bagian kuat pada tubuh kita, namun sangat rapuh oleh asam.',
-          'Gigi yang sehat berwarna putih bersih atau sedikit krem, tidak ada noda hitam.',
-          'Karang gigi adalah plak yang sudah mengeras dan tidak bisa hilang hanya dengan disikat.',
-          'Fluoride dalam pasta gigi adalah "perisai" sakti yang melindungi gigimu.',
-          'Gusi yang sehat berwarna merah muda dan tidak sakit saat disentuh.'
-        ]},
-        { cat: 'Pengenalan Dokter Gigi', icon: '🏥', items: [
-          'Dokter gigi adalah sahabat yang akan membantu gigimu tetap cantik dan kuat.',
-          'Periksa gigi ke dokter setiap 6 bulan sekali ya, meskipun gigimu tidak sakit.',
-          'Alat "ngiiiing" di dokter gigi itu sebenarnya sedang menyemprot air sejuk.',
-          'Kaca mulut dokter gigi digunakan untuk melihat kuman yang bersembunyi di belakang.',
-          'Menambal gigi itu seperti memasang "payung" agar lubang tidak semakin besar.',
-          'Gigi yang dirawat sejak kecil akan menemanimu sampai kamu besar nanti!'
-        ]},
-        { cat: 'Rahasia Gigi Kuat', icon: '🛡️', items: [
-          'Gigi yang bersih tidak akan terasa "berpasir" saat diraba dengan lidah.',
-          'Bulu sikat gigi yang lembut lebih baik untuk gusi daripada bulu sikat gigi yang keras.',
-          'Pasta gigi dengan fluoride membantu menambal lubang-lubang kecil yang tidak terlihat.',
-          'Minum air putih setelah makan membantu menghanyutkan sisa makanan di sela gigi.',
-          'Jangan menggigit benda keras seperti pensil atau kuku, karena bisa membuat gigi retak.',
-          'Gigi bungsu adalah gigi paling belakang yang biasanya tumbuh saat kita sudah besar.',
-          'Menjaga gigi tetap bersih juga membuat jantung dan tubuhmu tetap sehat!'
-        ]},
-        { cat: 'Fakta Unik & Anatomi', icon: '🦷', items: [
-          'Setiap orang memiliki pola susunan gigi yang unik, sama seperti sidik jari.',
-          'Gigi susu akan tanggal satu per satu untuk digantikan oleh gigi dewasa yang lebih kuat.',
-          'Akar gigi tersembunyi di bawah gusi, ia bertugas memegang gigi agar tidak goyang.',
-          'Air liur di dalam mulutmu adalah pembersih alami yang melawan kuman jahat.',
-          'Gigi seri di depan gunanya untuk memotong makanan, seperti sebuah gunting.',
-          'Gigi geraham di belakang gunanya untuk menghaluskan makanan, seperti mesin penggiling.',
-          'Bagian dalam gigi mengandung saraf yang bisa merasakan dinginnya es krim.'
-        ]},
-        { cat: 'Tips & Trik Sikat Gigi', icon: '✨', items: [
-          'Mulailah menyikat dari bagian gigi yang paling sulit dijangkau di bagian belakang.',
-          'Sikatlah gigi dengan gerakan memutar kecil, bukan digosok keras ke kiri dan kanan.',
-          'Jangan lupa sikat bagian dalam gigi yang menghadap ke arah lidah, ya!',
-          'Simpan sikat gigimu di tempat yang kering dan jangan tertutup rapat agar tetap bersih.',
-          'Jangan berbagi sikat gigi dengan orang lain agar kuman tidak berpindah-pindah.',
-          'Berkumurlah satu kali saja setelah sikat gigi agar fluoride tetap menempel di gigi.'
-        ]},
-        { cat: 'Berani ke Dokter Gigi', icon: '💪', items: [
-          'Dokter gigi memakai lampu terang agar bisa melihat "monster kuman" yang bersembunyi.',
-          'Kursi dokter gigi bisa naik dan turun seperti sebuah wahana permainan yang seru!',
-          'Alat penyedot air di klinik gigi itu seperti "belalai gajah" kecil yang menyedot air liur.',
-          'Gigi yang ditambal oleh dokter akan menjadi kuat kembali untuk mengunyah makanan enak.',
-          'Tersenyum lebar setelah dari dokter gigi adalah tanda bahwa kamu anak yang hebat!'
-        ]}
+        {
+          cat: 'Kebiasaan Sehari-hari', icon: '🪥', items: [
+            'Sikat gigi paling penting adalah malam hari sebelum tidur, lho!',
+            'Kita harus menyikat gigi selama 2 menit agar kuman benar-benar pergi.',
+            'Sikat gigi dua kali sehari: pagi 30 menit setelah sarapan dan malam sebelum tidur.',
+            'Gantilah sikat gigimu jika bulunya sudah mulai mekar atau rusak.',
+            'Gunakan pasta gigi hanya sebesar biji jagung saja ya, tidak perlu banyak-banyak.',
+            'Sikatlah lidahmu dengan lembut agar napasmu selalu segar.',
+            'Jangan lupa berkumur dengan air putih setelah makan makanan manis.'
+          ]
+        },
+        {
+          cat: 'Makanan & Nutrisi', icon: '🍎', items: [
+            'Apel dan wortel yang garing adalah "sikat gigi alami" untuk gigimu.',
+            'Minum air putih lebih baik daripada minum sirup yang sangat manis.',
+            'Susu mengandung kalsium yang membuat tulang gigi menjadi kuat.',
+            'Permen dan cokelat boleh dimakan, tapi jangan lupa sikat gigi setelahnya!',
+            'Kuman sangat suka memakan sisa gula yang menempel di gigimu.',
+            'Sayuran hijau membantu menjaga gusimu tetap sehat dan tidak mudah berdarah.'
+          ]
+        },
+        {
+          cat: 'Pengetahuan Klinis', icon: '🔬', items: [
+            'Email gigi adalah bagian tubuh yang paling keras, bahkan lebih keras dari tulang!',
+            'Gigi berlubang terjadi karena kuman mengubah gula menjadi asam.',
+            'Gigi merupakan bagian kuat pada tubuh kita, namun sangat rapuh oleh asam.',
+            'Gigi yang sehat berwarna putih bersih atau sedikit krem, tidak ada noda hitam.',
+            'Karang gigi adalah plak yang sudah mengeras dan tidak bisa hilang hanya dengan disikat.',
+            'Fluoride dalam pasta gigi adalah "perisai" sakti yang melindungi gigimu.',
+            'Gusi yang sehat berwarna merah muda dan tidak sakit saat disentuh.'
+          ]
+        },
+        {
+          cat: 'Pengenalan Dokter Gigi', icon: '🏥', items: [
+            'Dokter gigi adalah sahabat yang akan membantu gigimu tetap cantik dan kuat.',
+            'Periksa gigi ke dokter setiap 6 bulan sekali ya, meskipun gigimu tidak sakit.',
+            'Alat "ngiiiing" di dokter gigi itu sebenarnya sedang menyemprot air sejuk.',
+            'Kaca mulut dokter gigi digunakan untuk melihat kuman yang bersembunyi di belakang.',
+            'Menambal gigi itu seperti memasang "payung" agar lubang tidak semakin besar.',
+            'Gigi yang dirawat sejak kecil akan menemanimu sampai kamu besar nanti!'
+          ]
+        },
+        {
+          cat: 'Rahasia Gigi Kuat', icon: '🛡️', items: [
+            'Gigi yang bersih tidak akan terasa "berpasir" saat diraba dengan lidah.',
+            'Bulu sikat gigi yang lembut lebih baik untuk gusi daripada bulu sikat gigi yang keras.',
+            'Pasta gigi dengan fluoride membantu menambal lubang-lubang kecil yang tidak terlihat.',
+            'Minum air putih setelah makan membantu menghanyutkan sisa makanan di sela gigi.',
+            'Jangan menggigit benda keras seperti pensil atau kuku, karena bisa membuat gigi retak.',
+            'Gigi bungsu adalah gigi paling belakang yang biasanya tumbuh saat kita sudah besar.',
+            'Menjaga gigi tetap bersih juga membuat jantung dan tubuhmu tetap sehat!'
+          ]
+        },
+        {
+          cat: 'Fakta Unik & Anatomi', icon: '🦷', items: [
+            'Setiap orang memiliki pola susunan gigi yang unik, sama seperti sidik jari.',
+            'Gigi susu akan tanggal satu per satu untuk digantikan oleh gigi dewasa yang lebih kuat.',
+            'Akar gigi tersembunyi di bawah gusi, ia bertugas memegang gigi agar tidak goyang.',
+            'Air liur di dalam mulutmu adalah pembersih alami yang melawan kuman jahat.',
+            'Gigi seri di depan gunanya untuk memotong makanan, seperti sebuah gunting.',
+            'Gigi geraham di belakang gunanya untuk menghaluskan makanan, seperti mesin penggiling.',
+            'Bagian dalam gigi mengandung saraf yang bisa merasakan dinginnya es krim.'
+          ]
+        },
+        {
+          cat: 'Tips & Trik Sikat Gigi', icon: '✨', items: [
+            'Mulailah menyikat dari bagian gigi yang paling sulit dijangkau di bagian belakang.',
+            'Sikatlah gigi dengan gerakan memutar kecil, bukan digosok keras ke kiri dan kanan.',
+            'Jangan lupa sikat bagian dalam gigi yang menghadap ke arah lidah, ya!',
+            'Simpan sikat gigimu di tempat yang kering dan jangan tertutup rapat agar tetap bersih.',
+            'Jangan berbagi sikat gigi dengan orang lain agar kuman tidak berpindah-pindah.',
+            'Berkumurlah satu kali saja setelah sikat gigi agar fluoride tetap menempel di gigi.'
+          ]
+        },
+        {
+          cat: 'Berani ke Dokter Gigi', icon: '💪', items: [
+            'Dokter gigi memakai lampu terang agar bisa melihat "monster kuman" yang bersembunyi.',
+            'Kursi dokter gigi bisa naik dan turun seperti sebuah wahana permainan yang seru!',
+            'Alat penyedot air di klinik gigi itu seperti "belalai gajah" kecil yang menyedot air liur.',
+            'Gigi yang ditambal oleh dokter akan menjadi kuat kembali untuk mengunyah makanan enak.',
+            'Tersenyum lebar setelah dari dokter gigi adalah tanda bahwa kamu anak yang hebat!'
+          ]
+        }
       ];
 
       // Flatten and shuffle

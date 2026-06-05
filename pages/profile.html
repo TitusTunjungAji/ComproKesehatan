@@ -338,6 +338,19 @@
         }
       });
 
+      // Animate XP bar
+      setTimeout(() => {
+        const fill = document.querySelector('.prof-card__xp-fill');
+        if (fill) fill.style.width = '83%';
+      }, 300);
+
+      // Trophy card hover haptic
+      document.querySelectorAll('.trophy-card--unlocked').forEach(card => {
+        card.addEventListener('click', () => {
+          if (typeof DentaA11y !== 'undefined') DentaA11y.vibrate('tap');
+        });
+      });
+
       // TTS
       if (typeof DentaA11y !== 'undefined' && mode === 'blind') {
         DentaA11y.speak('Halaman Profil. Lihat statistik dan piala kamu di sini!', true);
