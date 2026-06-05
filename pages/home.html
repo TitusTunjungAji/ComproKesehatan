@@ -257,14 +257,14 @@
         </div>
 
         <div class="report-card" id="report-card">
+          <!-- Hidden inputs for file uploads -->
+          <input type="file" id="photo-input" accept="image/*" capture="environment" style="display: none;" aria-hidden="true">
+          <input type="file" id="camera-input" accept="image/*" capture="environment" style="display: none;" aria-hidden="true">
+          <input type="file" id="gallery-input" accept="image/*" style="display: none;" aria-hidden="true">
+
           <!-- Upload area -->
           <div class="report-card__upload" id="upload-zone" role="button" tabindex="0"
-            aria-label="Upload foto sikat gigi">
-            <input type="file" id="photo-input" accept="image/*" capture="environment" class="report-card__file-input"
-              aria-hidden="true">
-            <input type="file" id="camera-input" accept="image/*" capture="environment" class="report-card__file-input"
-              aria-hidden="true">
-            <input type="file" id="gallery-input" accept="image/*" class="report-card__file-input" aria-hidden="true">
+            aria-label="Ambil foto sikat gigi menggunakan kamera">
 
             <!-- Default state -->
             <div class="report-card__upload-default" id="upload-default">
@@ -275,8 +275,8 @@
                   <circle cx="12" cy="13" r="4" />
                 </svg>
               </div>
-              <p class="report-card__upload-text">Foto gigi kamu dong! 😁</p>
-              <p class="report-card__upload-hint">Ketuk di sini buat foto atau pilih dari galeri ya!</p>
+              <p class="report-card__upload-text">Ketuk untuk Ambil Foto Gigi 📸</p>
+              <p class="report-card__upload-hint">Buka kamera langsung untuk foto gigi bersihmu!</p>
             </div>
 
             <!-- Preview state (hidden initially) -->
@@ -301,13 +301,9 @@
           </div>
 
           <div class="report-card__actions">
-            <button class="report-card__action" id="btn-camera" aria-label="Ambil foto dari kamera">
-              <span class="report-card__action-icon" aria-hidden="true">📷</span>
-              <span>Kamera</span>
-            </button>
             <button class="report-card__action" id="btn-gallery" aria-label="Pilih dari galeri">
               <span class="report-card__action-icon" aria-hidden="true">🖼️</span>
-              <span>Galeri</span>
+              <span>Pilih dari Galeri</span>
             </button>
           </div>
 
@@ -570,10 +566,16 @@
         });
       }
 
-      // Camera button → start live webcam
-      if (btnCamera) {
-        btnCamera.addEventListener('click', () => {
-          startWebcam();
+      // Click upload zone (default state) → start live camera
+      const uploadZone = document.getElementById('upload-zone');
+      if (uploadZone) {
+        uploadZone.addEventListener('click', (e) => {
+          // Trigger camera only if default screen is showing
+          if (uploadDefault.style.display !== 'none') {
+            e.preventDefault();
+            e.stopPropagation();
+            startWebcam();
+          }
         });
       }
 
