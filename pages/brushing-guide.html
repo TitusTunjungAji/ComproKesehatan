@@ -248,7 +248,9 @@
   <!-- Scripts -->
   <script src="../js/accessibility.js?v=3"></script>
   <script src="../js/pwa.js?v=3"></script>
-  <script>
+  <script type="module">
+    import { completeModuleProgress } from '../js/progression.js?v=3';
+
     document.addEventListener('DOMContentLoaded', () => {
       if (!localStorage.getItem('dentavizion-user')) {
         window.location.href = 'login.html';
@@ -264,15 +266,20 @@
       });
 
       // Save progress
-      document.getElementById('btn-save-progress').addEventListener('click', () => {
-        localStorage.setItem('dentavizion-mod1-done', 'true');
-        if (typeof DentaA11y !== 'undefined') {
-          DentaA11y.vibrate('confirm');
-          if (mode === 'blind') {
-            DentaA11y.speak('Progress tersimpan! Kamu hebat!', true);
+      document.getElementById('btn-save-progress').addEventListener('click', async () => {
+        try {
+          const result = await completeModuleProgress('mod1');
+          if (typeof DentaA11y !== 'undefined') {
+            DentaA11y.vibrate('confirm');
+            if (mode === 'blind') {
+              DentaA11y.speak(result.message, true);
+            }
           }
+          showToast(result.message);
+        } catch (error) {
+          console.error('Save progress error:', error);
+          showToast('❌ Gagal menyimpan progress, coba lagi ya!');
         }
-        showToast('✅ Progress tersimpan! Kamu hebat!');
       });
 
       // ── YouTube Video Embed ──

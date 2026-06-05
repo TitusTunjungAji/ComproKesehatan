@@ -141,7 +141,9 @@
   <!-- Scripts -->
   <script src="../js/accessibility.js?v=3"></script>
   <script src="../js/pwa.js?v=3"></script>
-  <script>
+  <script type="module">
+    import { completeModuleProgress } from '../js/progression.js?v=3';
+
     (() => {
       'use strict';
 
@@ -400,12 +402,12 @@
         renderQuestion();
       }
 
-      function showResults() {
+      async function showResults() {
         els.quizScreen.style.display = 'none';
         els.quizCta.style.display = 'none';
         els.resultScreen.style.display = 'flex';
 
-        localStorage.setItem('dentavizion-mod1-done', 'true');
+        await completeModuleProgress('mod1');
 
         const pct = score / QUESTIONS.length;
         let emoji, title, desc, stars;

@@ -87,10 +87,11 @@
 
   <script src="../js/accessibility.js?v=3"></script>
   <script src="../js/pwa.js?v=3"></script>
-  <script>
+  <script type="module">
+    import { completeModuleProgress } from '../js/progression.js?v=3';
+
     (() => {
       'use strict';
-      const MODULE_KEY = 'dentavizion-mod3-done';
       const QUESTIONS = [
         {
           question: 'Apa penyebab utama gigi berlubang?',
@@ -209,7 +210,7 @@
 
       function showResults() {
         els.quizScreen.style.display = 'none'; els.quizCta.style.display = 'none'; els.resultScreen.style.display = 'flex';
-        localStorage.setItem(MODULE_KEY, 'true');
+        await completeModuleProgress('mod3');
         const pct = score / QUESTIONS.length; let emoji, title, desc, stars;
         if (pct === 1) { emoji = '🏆'; title = 'Sempurna!'; desc = 'Kamu ahli penambalan gigi!'; stars = '⭐⭐⭐'; }
         else if (pct >= 0.6) { emoji = '🎉'; title = 'Luar Biasa!'; desc = 'Kerja bagus! Sedikit lagi sempurna!'; stars = '⭐⭐'; }

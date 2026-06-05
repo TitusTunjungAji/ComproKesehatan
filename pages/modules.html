@@ -51,13 +51,13 @@
         </button>
       </div>
 
-      <h1 class="mod-header__title">Petualangan Gigi Sehat! 🌟</h1>
-      <p class="mod-header__subtitle">Yuk belajar jaga gigi biar senyum kamu makin kece! 😁</p>
+      <h1 class="mod-header__title">Petualangan Gigi Sehat!</h1>
+      <p class="mod-header__subtitle">Yuk belajar jaga gigi biar senyum kamu makin kece!</p>
     </header>
     <!-- ── Overall Progress ── -->
     <div class="overall-progress" id="overall-progress">
       <div class="overall-progress__top">
-        <span class="overall-progress__label">🎮 Progres Petualangan</span>
+        <span class="overall-progress__label">Progres Petualangan</span>
         <span class="overall-progress__count" id="progress-count">0/4 Modul</span>
       </div>
       <div class="overall-progress__bar">
@@ -108,7 +108,9 @@
   <!-- Scripts -->
   <script src="../js/accessibility.js?v=3"></script>
   <script src="../js/pwa.js?v=3"></script>
-  <script>
+  <script type="module">
+    import { buildProgressSnapshot } from '../js/progression.js?v=3';
+
     document.addEventListener('DOMContentLoaded', () => {
       if (!localStorage.getItem('dentavizion-user')) {
         window.location.href = 'login.html';
@@ -120,10 +122,10 @@
 
       // ── Course Data ──
       const COURSES = [
-        {
+          {
           id: 'mod1',
           key: 'dentavizion-mod1-done',
-          title: 'Ayo Sikat Gigi! 🪥',
+          title: 'Ayo Sikat Gigi!',
           desc: 'Seru banget! Belajar cara sikat gigi yang bener biar gigi kamu kinclong!',
           img: '../assets/images/hero-brushing.png',
           href: 'brushing-guide.html'
@@ -131,7 +133,7 @@
         {
           id: 'mod2',
           key: 'dentavizion-mod2-done',
-          title: 'Scaling Gigi ✨',
+          title: 'Scaling Gigi',
           desc: 'Karang gigi bikin senyum kusam! Yuk tau cara bersihinnya!',
           img: '../assets/images/material-food.png',
           href: 'scaling-guide.html'
@@ -139,7 +141,7 @@
         {
           id: 'mod3',
           key: 'dentavizion-mod3-done',
-          title: 'Tambal Gigi 🦷',
+          title: 'Tambal Gigi',
           desc: 'Gigi bolong? Tenang aja, dokter bisa tambal biar kuat lagi!',
           img: '../assets/images/material-clinic.png',
           href: 'filling-guide.html'
@@ -147,7 +149,7 @@
         {
           id: 'mod4',
           key: 'dentavizion-mod4-done',
-          title: 'Cabut Gigi 💪',
+          title: 'Cabut Gigi',
           desc: 'Nggak usah takut! Cabut gigi itu aman banget kok. Yuk cari tau!',
           img: '../assets/images/mascot-tooth.png',
           href: 'extraction-guide.html'
@@ -157,15 +159,16 @@
       const coursePath = document.getElementById('course-path');
       const progressFill = document.getElementById('progress-fill');
       const progressCount = document.getElementById('progress-count');
+      let completedModuleIds = new Set();
 
       function getCompletedCount() {
-        return COURSES.filter(c => localStorage.getItem(c.key) === 'true').length;
+        return COURSES.filter((course) => completedModuleIds.has(course.id)).length;
       }
 
       function getCourseState(index) {
-        if (localStorage.getItem(COURSES[index].key) === 'true') return 'completed';
+        if (completedModuleIds.has(COURSES[index].id)) return 'completed';
         if (index === 0) return 'active';
-        if (localStorage.getItem(COURSES[index - 1].key) === 'true') return 'active';
+        if (completedModuleIds.has(COURSES[index - 1].id)) return 'active';
         return 'locked';
       }
 
@@ -204,28 +207,21 @@
           // Badge
           let badgeHTML = '';
           if (state === 'completed') {
-            badgeHTML = `<span class="mod-card__badge mod-card__badge--completed">✅ LEVEL SELESAI!</span>`;
+            badgeHTML = `<span class="mod-card__badge mod-card__badge--completed">LEVEL SELESAI!</span>`;
           } else if (state === 'active') {
-            badgeHTML = `<span class="mod-card__badge mod-card__badge--active">🎮 SIAP MAIN!</span>`;
+            badgeHTML = `<span class="mod-card__badge mod-card__badge--active">SIAP MAIN</span>`;
           } else {
-            badgeHTML = `<span class="mod-card__badge mod-card__badge--locked">🔒 Selesaikan Level ${i} dulu!</span>`;
+            badgeHTML = `<span class="mod-card__badge mod-card__badge--locked">Selesaikan Level ${i} dulu!</span>`;
           }
 
           // Button
           let btnHTML = '';
           if (state === 'completed') {
-            btnHTML = `<a href="${course.href}" class="mod-card__btn mod-card__btn--review" id="btn-${course.id}">
-              ⭐ Main Lagi
-            </a>`;
+            btnHTML = `<a href="${course.href}" class="mod-card__btn mod-card__btn--review" id="btn-${course.id}">Main Lagi</a>`;
           } else if (state === 'active') {
-            btnHTML = `<a href="${course.href}" class="mod-card__btn mod-card__btn--start" id="btn-${course.id}">
-              Main Yuk! 🎮
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            </a>`;
+            btnHTML = `<a href="${course.href}" class="mod-card__btn mod-card__btn--start" id="btn-${course.id}">Main Yuk! <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>`;
           } else {
-            btnHTML = `<button class="mod-card__btn mod-card__btn--locked" disabled aria-disabled="true">
-              🔒 Belum Terbuka
-            </button>`;
+            btnHTML = `<button class="mod-card__btn mod-card__btn--locked" disabled aria-disabled="true">Belum Terbuka</button>`;
           }
 
           // Thumbnail overlays
@@ -263,7 +259,24 @@
         });
       }
 
+      async function refreshProgress() {
+        try {
+          const snapshot = await buildProgressSnapshot();
+          completedModuleIds = new Set(snapshot.progress?.completedModuleIds || []);
+        } catch (_error) {
+          completedModuleIds = new Set();
+        }
+        renderCourses();
+      }
+
       renderCourses();
+      refreshProgress();
+
+      window.addEventListener('storage', (event) => {
+        if (!event.key || event.key.startsWith('dentavizion-progress:') || event.key.startsWith('dentavizion-reports:') || event.key === 'dentavizion-user') {
+          refreshProgress();
+        }
+      });
 
       if (typeof DentaA11y !== 'undefined' && mode === 'blind') {
         const completed = getCompletedCount();
