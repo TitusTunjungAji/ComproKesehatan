@@ -89,7 +89,7 @@
     opacity: 0;
   ">
     <img src="../assets/images/sikat gigi.png" alt="" aria-hidden="true"
-         style="width: 150px; height: auto; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));">
+         style="width: 220px; height: auto; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));">
   </div>
 
   <div class="app-shell">
@@ -234,6 +234,14 @@
       let brushAnchorX = 0;
       let brushAnchorY = 0;
       
+      // Brush rotation tracking
+      let prevBrushX = 0;
+      let currentBrushAngle = -30;      // current smoothed angle (degrees)
+      const BASE_ANGLE = -30;           // resting angle
+      const MAX_SWING = 20;             // max tilt away from base (±20°)
+      const LERP_SPEED = 0.25;          // how fast angle follows movement
+      const RETURN_SPEED = 0.08;        // how fast it returns to rest
+      
       // Debug mode
       let debugMode = false; // Set to true to show debugging tools
 
@@ -354,12 +362,35 @@
       }
 
       // ── Custom Brush Cursor ──
+      function updateBrushAngle(x) {
+        const dx = x - prevBrushX;
+        prevBrushX = x;
+        
+        if (Math.abs(dx) > 1) {
+          // Map horizontal delta to target angle within swing range
+          // dx > 0 = moving right = tilt right, dx < 0 = tilt left
+          const tiltFactor = Math.max(-1, Math.min(1, dx / 12));
+          const targetAngle = BASE_ANGLE + tiltFactor * MAX_SWING;
+          currentBrushAngle += (targetAngle - currentBrushAngle) * LERP_SPEED;
+        } else {
+          // Gradually return to resting angle when stationary
+          currentBrushAngle += (BASE_ANGLE - currentBrushAngle) * RETURN_SPEED;
+        }
+      }
+      
+      function applyBrushTransform() {
+        if (!brushCursor) return;
+        brushCursor.style.transform = 'rotate(' + currentBrushAngle.toFixed(1) + 'deg)';
+      }
+      
       function showBrushCursor(x, y) {
         if (!brushCursor) return;
         brushCursor.style.display = 'block';
         brushCursor.style.left = x + 'px';
         brushCursor.style.top = y + 'px';
         brushCursor.style.opacity = '1';
+        updateBrushAngle(x);
+        applyBrushTransform();
         brushAnchorX = x;
         brushAnchorY = y;
       }
@@ -686,6 +717,8 @@
             brushCursor.style.left = e.clientX + 'px';
             brushCursor.style.top = e.clientY + 'px';
             brushCursor.style.opacity = isInteracting ? '1' : '0.5';
+            updateBrushAngle(e.clientX);
+            applyBrushTransform();
             brushAnchorX = e.clientX;
             brushAnchorY = e.clientY;
             updateDebugInfo();
