@@ -223,7 +223,7 @@
 
       function nextQuestion() { currentQ++; renderQuestion(); }
 
-      function showResults() {
+      async function showResults() {
         els.quizScreen.style.display = 'none'; els.quizCta.style.display = 'none'; els.resultScreen.style.display = 'flex';
         await completeModuleProgress('mod2');
         const pct = score / QUESTIONS.length; let emoji, title, desc, stars;
