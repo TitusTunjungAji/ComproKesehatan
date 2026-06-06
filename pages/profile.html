@@ -27,6 +27,358 @@
     .prof-main--loaded {
       opacity: 1;
     }
+
+    /* ── Settings Bottom Sheet ── */
+    .settings-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0);
+      z-index: 9999;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      transition: background 0.35s ease;
+    }
+    .settings-overlay--active {
+      background: rgba(0, 0, 0, 0.45);
+      pointer-events: all;
+    }
+    .settings-sheet {
+      width: 100%;
+      max-width: 480px;
+      background: #FFFFFF;
+      border-radius: 28px 28px 0 0;
+      padding: 0 0 env(safe-area-inset-bottom);
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+      box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.12);
+    }
+    .settings-overlay--active .settings-sheet {
+      transform: translateY(0);
+    }
+    .settings-sheet__handle {
+      width: 40px;
+      height: 4px;
+      background: #D9D9D9;
+      border-radius: 4px;
+      margin: 12px auto 0;
+    }
+    .settings-sheet__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px 12px;
+    }
+    .settings-sheet__title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #1A3B34;
+    }
+    .settings-sheet__close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(0, 201, 167, 0.08);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #5A7A72;
+      transition: all 0.2s ease;
+    }
+    .settings-sheet__close:hover {
+      background: rgba(0, 201, 167, 0.15);
+      color: #1A3B34;
+    }
+    .settings-sheet__menu {
+      padding: 0 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .settings-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-family: var(--font-family);
+      font-size: 14px;
+      font-weight: 600;
+      color: #1A3B34;
+      transition: all 0.2s ease;
+      text-align: left;
+      text-decoration: none;
+    }
+    .settings-menu-item:hover {
+      background: rgba(0, 201, 167, 0.06);
+      transform: translateX(4px);
+    }
+    .settings-menu-item:active {
+      transform: scale(0.98);
+    }
+    .settings-menu-item__icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .settings-menu-item__icon--teal {
+      background: linear-gradient(135deg, rgba(0, 201, 167, 0.12), rgba(51, 232, 200, 0.18));
+    }
+    .settings-menu-item__icon--blue {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(96, 165, 250, 0.18));
+    }
+    .settings-menu-item__icon--amber {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(252, 211, 77, 0.18));
+    }
+    .settings-menu-item__icon--red {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.10), rgba(252, 129, 129, 0.16));
+    }
+    .settings-menu-item__content {
+      flex: 1;
+      min-width: 0;
+    }
+    .settings-menu-item__label {
+      display: block;
+      font-weight: 700;
+      font-size: 14px;
+      color: #1A3B34;
+      margin-bottom: 2px;
+    }
+    .settings-menu-item__desc {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      color: #8AADA3;
+    }
+    .settings-menu-item__arrow {
+      color: #C0D5CE;
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+    .settings-menu-item:hover .settings-menu-item__arrow {
+      transform: translateX(3px);
+    }
+    .settings-sheet__divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,201,167,0.12), transparent);
+      margin: 4px 16px;
+    }
+    .settings-menu-item--logout {
+      color: #EF4444;
+    }
+    .settings-menu-item--logout .settings-menu-item__label {
+      color: #EF4444;
+    }
+    .settings-menu-item--logout .settings-menu-item__desc {
+      color: rgba(239, 68, 68, 0.6);
+    }
+    .settings-menu-item--logout:hover {
+      background: rgba(239, 68, 68, 0.06);
+    }
+
+    /* Version text at bottom */
+    .settings-sheet__version {
+      text-align: center;
+      padding: 8px 0 16px;
+      font-size: 11px;
+      color: #B8CFC8;
+      font-weight: 600;
+    }
+
+    /* ── Edit Profile Bottom Sheet ── */
+    .edit-profile-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0);
+      z-index: 10000;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      transition: background 0.35s ease;
+    }
+    .edit-profile-overlay--active {
+      background: rgba(0, 0, 0, 0.45);
+    }
+    .edit-profile-sheet {
+      width: 100%;
+      max-width: 480px;
+      background: #FFFFFF;
+      border-radius: 28px 28px 0 0;
+      padding: 0 0 env(safe-area-inset-bottom);
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+      box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.12);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .edit-profile-overlay--active .edit-profile-sheet {
+      transform: translateY(0);
+    }
+    .edit-profile-sheet__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px 8px;
+      position: sticky;
+      top: 0;
+      background: #FFFFFF;
+      z-index: 1;
+    }
+    .edit-profile-sheet__title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #1A3B34;
+    }
+    .edit-profile-sheet__body {
+      padding: 0 24px 24px;
+    }
+    /* Avatar Section */
+    .edit-avatar {
+      text-align: center;
+      padding: 16px 0 24px;
+    }
+    .edit-avatar__wrap {
+      position: relative;
+      display: inline-block;
+    }
+    .edit-avatar__img {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #E0FFF7;
+      box-shadow: 0 4px 16px rgba(0, 201, 167, 0.2);
+      background: #F5FFFB;
+    }
+    .edit-avatar__btn {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00C9A7, #33E8C8);
+      border: 3px solid #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: white;
+      box-shadow: 0 3px 10px rgba(0, 201, 167, 0.3);
+      transition: all 0.2s ease;
+    }
+    .edit-avatar__btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 14px rgba(0, 201, 167, 0.4);
+    }
+    .edit-avatar__hint {
+      font-size: 12px;
+      color: #8AADA3;
+      margin-top: 8px;
+      font-weight: 500;
+    }
+    /* Form Fields */
+    .edit-field {
+      margin-bottom: 16px;
+    }
+    .edit-field__label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #5A7A72;
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+    }
+    .edit-field__input {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 2px solid rgba(0, 201, 167, 0.15);
+      background: #F5FFFB;
+      font-family: var(--font-family);
+      font-size: 14px;
+      font-weight: 600;
+      color: #1A3B34;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    .edit-field__input:focus {
+      border-color: #00C9A7;
+      background: #FFFFFF;
+      box-shadow: 0 0 0 4px rgba(0, 201, 167, 0.1);
+    }
+    .edit-field__input:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: #F0F0F0;
+    }
+    /* Save Button */
+    .edit-save-btn {
+      width: 100%;
+      padding: 15px;
+      border-radius: 50px;
+      border: none;
+      background: linear-gradient(135deg, #00C9A7 0%, #33E8C8 100%);
+      color: white;
+      font-family: var(--font-family);
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 20px rgba(0, 201, 167, 0.3);
+      transition: all 0.2s ease;
+      margin-top: 8px;
+    }
+    .edit-save-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(0, 201, 167, 0.4);
+    }
+    .edit-save-btn:active {
+      transform: scale(0.97);
+    }
+    .edit-save-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    /* Toast for edit profile */
+    .edit-toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: linear-gradient(135deg, #2BAA8E, #3DC4A8);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 700;
+      z-index: 10001;
+      opacity: 0;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(43, 170, 142, 0.4);
+      font-family: var(--font-family);
+      white-space: nowrap;
+    }
+    .edit-toast--visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
   </style>
 </head>
 
@@ -140,6 +492,118 @@
 
 
       <div style="height: 90px;" aria-hidden="true"></div>
+
+    <!-- ─── Settings Bottom Sheet ─── -->
+    <div class="settings-overlay" id="settings-overlay" aria-hidden="true">
+      <div class="settings-sheet" id="settings-sheet" role="dialog" aria-label="Menu Pengaturan">
+        <div class="settings-sheet__handle" aria-hidden="true"></div>
+        <div class="settings-sheet__header">
+          <h2 class="settings-sheet__title">⚙️ Pengaturan</h2>
+          <button class="settings-sheet__close" id="btn-close-settings" aria-label="Tutup pengaturan">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+        <div class="settings-sheet__menu">
+          <!-- Edit Profil -->
+          <button class="settings-menu-item" id="menu-edit-profile">
+            <div class="settings-menu-item__icon settings-menu-item__icon--teal">👤</div>
+            <div class="settings-menu-item__content">
+              <span class="settings-menu-item__label">Edit Profil</span>
+              <span class="settings-menu-item__desc">Ubah nama dan foto profil</span>
+            </div>
+            <svg class="settings-menu-item__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+
+          <!-- Tentang Aplikasi -->
+          <button class="settings-menu-item" id="menu-about">
+            <div class="settings-menu-item__icon settings-menu-item__icon--blue">ℹ️</div>
+            <div class="settings-menu-item__content">
+              <span class="settings-menu-item__label">Tentang Aplikasi</span>
+              <span class="settings-menu-item__desc">Info dan versi DENTAVIZION</span>
+            </div>
+            <svg class="settings-menu-item__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+
+          <!-- Bantuan -->
+          <button class="settings-menu-item" id="menu-help">
+            <div class="settings-menu-item__icon settings-menu-item__icon--amber">❓</div>
+            <div class="settings-menu-item__content">
+              <span class="settings-menu-item__label">Bantuan</span>
+              <span class="settings-menu-item__desc">Cara menggunakan aplikasi</span>
+            </div>
+            <svg class="settings-menu-item__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+
+          <div class="settings-sheet__divider"></div>
+
+          <!-- Logout -->
+          <button class="settings-menu-item settings-menu-item--logout" id="menu-logout">
+            <div class="settings-menu-item__icon settings-menu-item__icon--red">🚪</div>
+            <div class="settings-menu-item__content">
+              <span class="settings-menu-item__label">Keluar dari Akun</span>
+              <span class="settings-menu-item__desc">Logout dan kembali ke halaman login</span>
+            </div>
+            <svg class="settings-menu-item__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+        <div class="settings-sheet__version">DENTAVIZION v1.0.0 · Made with 💚</div>
+      </div>
+    </div>
+
+    <!-- ─── Edit Profile Bottom Sheet ─── -->
+    <div class="edit-profile-overlay" id="edit-profile-overlay" aria-hidden="true">
+      <div class="edit-profile-sheet" role="dialog" aria-label="Edit Profil">
+        <div class="settings-sheet__handle" aria-hidden="true"></div>
+        <div class="edit-profile-sheet__header">
+          <h2 class="edit-profile-sheet__title">✏️ Edit Profil</h2>
+          <button class="settings-sheet__close" id="btn-close-edit-profile" aria-label="Tutup edit profil">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+        <div class="edit-profile-sheet__body">
+          <!-- Avatar -->
+          <div class="edit-avatar">
+            <div class="edit-avatar__wrap">
+              <img id="edit-avatar-img" class="edit-avatar__img" src="../assets/images/mascot-tooth.png" alt="Foto profil" width="96" height="96">
+              <button class="edit-avatar__btn" id="btn-edit-avatar" aria-label="Ganti foto profil">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+                  <circle cx="12" cy="13" r="4"/>
+                </svg>
+              </button>
+              <input type="file" id="edit-avatar-input" accept="image/*" style="display:none" aria-hidden="true">
+            </div>
+            <p class="edit-avatar__hint">Ketuk kamera untuk ganti foto 📷</p>
+          </div>
+
+          <!-- Name -->
+          <div class="edit-field">
+            <label class="edit-field__label" for="edit-input-name">👤 Nama Kamu</label>
+            <input type="text" id="edit-input-name" class="edit-field__input" placeholder="Masukkan nama kamu..." maxlength="50">
+          </div>
+
+          <!-- Email (readonly) -->
+          <div class="edit-field">
+            <label class="edit-field__label" for="edit-input-email">📧 Email</label>
+            <input type="email" id="edit-input-email" class="edit-field__input" disabled placeholder="Email kamu">
+          </div>
+
+          <!-- Save -->
+          <button class="edit-save-btn" id="btn-edit-save">
+            ✅ Simpan Perubahan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Profile Toast -->
+    <div class="edit-toast" id="edit-toast"></div>
     </main>
 
     <!-- ─── Bottom Navigation ─── -->
@@ -172,7 +636,7 @@
   <script src="../js/accessibility.js?v=3"></script>
   <script src="../js/pwa.js?v=3"></script>
   <script type="module">
-    import { onUserChanged, getUserProfile } from '../js/firebase-config.js?v=3';
+    import { onUserChanged, getUserProfile, logoutUser, saveUserProfile, uploadProfilePhoto } from '../js/firebase-config.js?v=3';
     import { buildProgressSnapshot } from '../js/progression.js?v=3';
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -197,15 +661,241 @@
       const weeklyProgressCountEl = document.getElementById('weekly-progress-count');
       const weeklyProgressFillEl = document.getElementById('weekly-progress-fill');
       const btnSettings = document.getElementById('btn-settings');
+      const settingsOverlay = document.getElementById('settings-overlay');
+      const settingsSheet = document.getElementById('settings-sheet');
+      const btnCloseSettings = document.getElementById('btn-close-settings');
+      const menuLogout = document.getElementById('menu-logout');
+      const menuAbout = document.getElementById('menu-about');
+      const menuHelp = document.getElementById('menu-help');
+      const menuEditProfile = document.getElementById('menu-edit-profile');
+
+      // Edit profile elements
+      const editOverlay = document.getElementById('edit-profile-overlay');
+      const btnCloseEditProfile = document.getElementById('btn-close-edit-profile');
+      const editAvatarImg = document.getElementById('edit-avatar-img');
+      const editAvatarInput = document.getElementById('edit-avatar-input');
+      const btnEditAvatar = document.getElementById('btn-edit-avatar');
+      const editInputName = document.getElementById('edit-input-name');
+      const editInputEmail = document.getElementById('edit-input-email');
+      const btnEditSave = document.getElementById('btn-edit-save');
+      const editToast = document.getElementById('edit-toast');
+      let selectedEditAvatarFile = null;
       let lastRenderedUser = null;
       let lastRenderedProfile = null;
 
-      // ── Settings button ──
+      // ── Settings Bottom Sheet ──
+      function openSettings() {
+        if (settingsOverlay) {
+          settingsOverlay.style.display = 'flex';
+          settingsOverlay.setAttribute('aria-hidden', 'false');
+          requestAnimationFrame(() => {
+            settingsOverlay.classList.add('settings-overlay--active');
+          });
+          document.body.style.overflow = 'hidden';
+        }
+      }
+
+      function closeSettings() {
+        if (settingsOverlay) {
+          settingsOverlay.classList.remove('settings-overlay--active');
+          setTimeout(() => {
+            settingsOverlay.style.display = 'none';
+            settingsOverlay.setAttribute('aria-hidden', 'true');
+          }, 400);
+          document.body.style.overflow = '';
+        }
+      }
+
       if (btnSettings) {
-        btnSettings.addEventListener('click', () => {
-          window.location.href = 'settings.html';
+        btnSettings.addEventListener('click', openSettings);
+      }
+
+      if (btnCloseSettings) {
+        btnCloseSettings.addEventListener('click', closeSettings);
+      }
+
+      if (settingsOverlay) {
+        settingsOverlay.addEventListener('click', (e) => {
+          if (e.target === settingsOverlay) closeSettings();
         });
       }
+
+      // Logout handler
+      if (menuLogout) {
+        menuLogout.addEventListener('click', async () => {
+          if (!confirm('Yakin mau keluar? 🥺')) return;
+          try {
+            await logoutUser();
+            window.location.href = 'login.html';
+          } catch (e) {
+            alert('❌ Gagal keluar. Coba lagi!');
+          }
+        });
+      }
+
+      // About handler
+      if (menuAbout) {
+        menuAbout.addEventListener('click', () => {
+          closeSettings();
+          setTimeout(() => {
+            alert('🦷 DENTAVIZION v1.0.0\n\nAplikasi edukasi kesehatan gigi interaktif untuk anak-anak.\n\n© 2026 DentaVizion Team');
+          }, 300);
+        });
+      }
+
+      // Help handler
+      if (menuHelp) {
+        menuHelp.addEventListener('click', () => {
+          closeSettings();
+          setTimeout(() => {
+            alert('❓ Bantuan DENTAVIZION\n\n1. Buka modul untuk belajar\n2. Kerjakan kuis setelah membaca\n3. Laporkan sikat gigi harian\n4. Kumpulkan XP dan piala!\n\nHubungi: support@dentavizion.id');
+          }, 300);
+        });
+      }
+
+      // ── Edit Profile Bottom Sheet ──
+      function showEditToast(msg) {
+        if (!editToast) return;
+        editToast.textContent = msg;
+        editToast.classList.add('edit-toast--visible');
+        setTimeout(() => editToast.classList.remove('edit-toast--visible'), 3000);
+      }
+
+      function openEditProfile() {
+        // Pre-fill with current data
+        const localUser = getLocalUser();
+        const currentProfile = lastRenderedProfile || localUser || {};
+        if (editInputName) editInputName.value = currentProfile.name || localUser.name || '';
+        if (editInputEmail) editInputEmail.value = lastRenderedUser?.email || localUser.email || '';
+        if (editAvatarImg) {
+          editAvatarImg.src = currentProfile.photoURL || localUser.photoURL || '../assets/images/mascot-tooth.png';
+        }
+        selectedEditAvatarFile = null;
+
+        if (editOverlay) {
+          editOverlay.style.display = 'flex';
+          editOverlay.setAttribute('aria-hidden', 'false');
+          requestAnimationFrame(() => {
+            editOverlay.classList.add('edit-profile-overlay--active');
+          });
+          document.body.style.overflow = 'hidden';
+        }
+      }
+
+      function closeEditProfile() {
+        if (editOverlay) {
+          editOverlay.classList.remove('edit-profile-overlay--active');
+          setTimeout(() => {
+            editOverlay.style.display = 'none';
+            editOverlay.setAttribute('aria-hidden', 'true');
+          }, 400);
+          document.body.style.overflow = '';
+        }
+      }
+
+      // Edit Profile button in settings menu
+      if (menuEditProfile) {
+        menuEditProfile.addEventListener('click', (e) => {
+          e.preventDefault();
+          closeSettings();
+          setTimeout(() => openEditProfile(), 420);
+        });
+      }
+
+      if (btnCloseEditProfile) {
+        btnCloseEditProfile.addEventListener('click', closeEditProfile);
+      }
+
+      if (editOverlay) {
+        editOverlay.addEventListener('click', (e) => {
+          if (e.target === editOverlay) closeEditProfile();
+        });
+      }
+
+      // Avatar picker
+      if (btnEditAvatar) {
+        btnEditAvatar.addEventListener('click', () => editAvatarInput?.click());
+      }
+
+      if (editAvatarInput) {
+        editAvatarInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            selectedEditAvatarFile = file;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              if (editAvatarImg) editAvatarImg.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+            showEditToast('📸 Foto dipilih! Tekan Simpan ya!');
+          }
+        });
+      }
+
+      // Save handler
+      if (btnEditSave) {
+        btnEditSave.addEventListener('click', async () => {
+          const user = lastRenderedUser;
+          const name = editInputName?.value.trim();
+
+          if (!name) {
+            showEditToast('⚠️ Nama tidak boleh kosong!');
+            editInputName?.focus();
+            return;
+          }
+
+          btnEditSave.disabled = true;
+          btnEditSave.textContent = '⏳ Menyimpan...';
+
+          try {
+            let photoURL = null;
+
+            // Upload avatar if selected
+            if (selectedEditAvatarFile && user) {
+              photoURL = await uploadProfilePhoto(user.uid, selectedEditAvatarFile);
+              selectedEditAvatarFile = null;
+            }
+
+            // Save to Firestore
+            if (user) {
+              const profileData = { name };
+              if (photoURL) profileData.photoURL = photoURL;
+              await saveUserProfile(user.uid, profileData);
+            }
+
+            // Update localStorage
+            const localUser = getLocalUser();
+            localUser.name = name;
+            if (photoURL) localUser.photoURL = photoURL;
+            localStorage.setItem('dentavizion-user', JSON.stringify(localUser));
+
+            showEditToast('✅ Profil berhasil disimpan!');
+
+            // Refresh profile page
+            await renderProfile(user);
+
+            // Close after short delay
+            setTimeout(() => closeEditProfile(), 800);
+          } catch (e) {
+            console.error('Save profile error:', e);
+            showEditToast('❌ Gagal menyimpan. Coba lagi ya!');
+          } finally {
+            btnEditSave.disabled = false;
+            btnEditSave.textContent = '✅ Simpan Perubahan';
+          }
+        });
+      }
+
+      // Escape key to close any open sheet
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (editOverlay?.classList.contains('edit-profile-overlay--active')) {
+            closeEditProfile();
+          } else if (settingsOverlay?.classList.contains('settings-overlay--active')) {
+            closeSettings();
+          }
+        }
+      });
 
       function getLocalUser() {
         try {
