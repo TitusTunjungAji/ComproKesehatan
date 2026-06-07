@@ -11,19 +11,6 @@
 </head>
 <body>
 
-  <!-- Tombol Toggle Tema (pojok kanan atas) -->
-  <button id="theme-toggle-login" class="admin-theme-toggle admin-login-theme-toggle" aria-label="Ganti tema tampilan" title="Mode Gelap / Terang">
-    <svg id="theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-      <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-    </svg>
-    <svg id="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-    </svg>
-  </button>
-
   <div class="admin-login-container">
     <div class="admin-login-header">
       <div class="admin-login-logo" aria-hidden="true">
@@ -32,7 +19,7 @@
         </svg>
       </div>
       <h1 class="admin-login-title">Dentavizion</h1>
-      <p class="admin-login-subtitle">Akses Dasbor Admin</p>
+      <p class="admin-login-subtitle">Admin Dashboard Access</p>
     </div>
 
     <div class="admin-login-card">
@@ -46,7 +33,7 @@
         <!-- Email -->
         <div class="admin-form-group">
           <div class="admin-label-row">
-            <label class="admin-label" for="admin-email">Alamat Email</label>
+            <label class="admin-label" for="admin-email">Email Address</label>
           </div>
           <div class="admin-input-wrapper">
             <span class="admin-input-icon">
@@ -62,8 +49,8 @@
         <!-- Password -->
         <div class="admin-form-group">
           <div class="admin-label-row">
-            <label class="admin-label" for="admin-password">Kata Sandi</label>
-            <a href="#" class="admin-forgot-link" id="forgot-password-link">Lupa kata sandi?</a>
+            <label class="admin-label" for="admin-password">Password</label>
+            <a href="#" class="admin-forgot-link">Forgot password?</a>
           </div>
           <div class="admin-input-wrapper">
             <span class="admin-input-icon">
@@ -85,12 +72,12 @@
         <!-- Remember Me -->
         <div class="admin-checkbox-row">
           <input type="checkbox" id="remember-me">
-          <label class="admin-checkbox-label" for="remember-me">Ingat saya</label>
+          <label class="admin-checkbox-label" for="remember-me">Remember me</label>
         </div>
 
         <!-- Submit Button -->
         <button type="submit" class="admin-btn-submit" id="btn-login">
-          <span>Masuk</span>
+          <span>Login</span>
         </button>
       </form>
     </div>
@@ -100,40 +87,9 @@
     </div>
   </div>
 
-  <!-- Modal Lupa Kata Sandi -->
-  <div id="forgot-modal" class="admin-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <div class="admin-modal">
-      <div id="modal-form-view">
-        <h2 class="admin-modal-title" id="modal-title">🔑 Lupa Kata Sandi?</h2>
-        <p class="admin-modal-desc">Masukkan alamat email yang terdaftar. Kami akan mengirimkan tautan untuk mengatur ulang kata sandi Anda.</p>
-        <div class="admin-form-group" style="margin-bottom:0">
-          <label class="admin-label" for="reset-email">Alamat Email</label>
-          <div class="admin-input-wrapper" style="margin-top:8px">
-            <span class="admin-input-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
-              </svg>
-            </span>
-            <input type="email" id="reset-email" class="admin-input" placeholder="email@contoh.com" autocomplete="off">
-          </div>
-        </div>
-        <div class="admin-modal-actions">
-          <button type="button" class="admin-modal-btn-cancel" id="modal-cancel">Batal</button>
-          <button type="button" class="admin-modal-btn-submit" id="modal-submit">Kirim Tautan</button>
-        </div>
-      </div>
-      <div id="modal-success-view" class="admin-modal-success" style="display:none">
-        <div class="admin-modal-success-icon">✉️</div>
-        <h2 class="admin-modal-title">Email Terkirim!</h2>
-        <p class="admin-modal-desc">Tautan pengaturan ulang kata sandi telah dikirim ke alamat email Anda. Silakan periksa kotak masuk atau folder spam.</p>
-        <button type="button" class="admin-modal-btn-submit" id="modal-close-success" style="width:100%">Tutup</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Firebase Script Integration -->
   <script type="module">
-    import { loginUser, getUserProfile } from '../js/firebase-config.js?v=3';
+    import { loginUser, registerUser, getUserProfile, saveUserProfile } from '../js/firebase-config.js?v=3';
 
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('admin-login-form');
@@ -171,58 +127,75 @@
 
         // Loading state
         btnLogin.disabled = true;
-        btnLogin.querySelector('span').textContent = 'Memproses...';
-
-        // Hardcoded Fallback for provided Admin credentials
-        if (email === 'admin@denticare.com' && password === 'admin') {
-          localStorage.setItem('dentavizion-admin-session', JSON.stringify({
-            uid: 'admin_hardcoded_id',
-            email: email,
-            name: 'Admin DENTAVIZION',
-            role: 'Administrator Utama',
-            loggedInAt: new Date().toISOString()
-          }));
-          window.location.href = 'dashboard.html';
-          return;
-        }
+        btnLogin.textContent = 'Memproses...';
 
         try {
-          // 1. Authenticate user via Firebase Auth
-          const user = await loginUser(email, password);
+          let user;
 
-          // 2. Fetch User Profile to verify Role
+          // Try to login via Firebase Auth
+          try {
+            user = await loginUser(email, password);
+          } catch (loginErr) {
+            // If admin@denticare.com doesn't exist yet, auto-register it
+            if (email === 'admin@denticare.com' && password === 'admin123' &&
+                (loginErr.code === 'auth/user-not-found' || loginErr.code === 'auth/invalid-credential')) {
+              user = await registerUser(email, password);
+              // Set admin role in Firestore
+              await saveUserProfile(user.uid, {
+                name: 'Admin DENTAVIZION',
+                email: email,
+                role: 'admin',
+                createdAt: new Date().toISOString()
+              });
+            } else {
+              throw loginErr;
+            }
+          }
+
+          // Fetch User Profile to verify Role
           const profile = await getUserProfile(user.uid);
 
-          if (profile && profile.role === 'admin') {
-            // Save admin session state locally (simple flag)
+          // Allow admin@denticare.com OR users with role:admin
+          const isDefaultAdmin = email === 'admin@denticare.com';
+          const hasAdminRole = profile && profile.role === 'admin';
+
+          if (isDefaultAdmin || hasAdminRole) {
+            // Ensure admin role is set in Firestore
+            if (isDefaultAdmin && (!profile || profile.role !== 'admin')) {
+              await saveUserProfile(user.uid, {
+                name: profile?.name || 'Admin DENTAVIZION',
+                email: email,
+                role: 'admin',
+                createdAt: profile?.createdAt || new Date().toISOString()
+              });
+            }
+
             localStorage.setItem('dentavizion-admin-session', JSON.stringify({
               uid: user.uid,
               email: user.email,
-              name: profile.name || 'Administrator',
+              name: profile?.name || 'Admin DENTAVIZION',
               loggedInAt: new Date().toISOString()
             }));
 
-            // Redirect to dashboard
             window.location.href = 'dashboard.html';
           } else {
-            // Unauthorized role
             showError('Akses Ditolak! Akun Anda tidak memiliki hak akses Administrator.');
             btnLogin.disabled = false;
-            btnLogin.querySelector('span').textContent = 'Masuk';
+            btnLogin.textContent = 'Login';
           }
 
         } catch (error) {
           console.error('Login error:', error);
           btnLogin.disabled = false;
-          btnLogin.querySelector('span').textContent = 'Masuk';
+          btnLogin.textContent = 'Login';
 
-          let msg = 'Email atau Kata Sandi salah! Silakan periksa kembali.';
-          if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-            msg = 'Email atau Kata Sandi salah! Silakan periksa kembali.';
+          let msg = 'Email atau Kata Sandi salah! silakan periksa kembali.';
+          if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+            msg = 'Email atau Kata Sandi salah! silakan periksa kembali.';
           } else if (error.code === 'auth/invalid-email') {
             msg = 'Format email tidak valid!';
-          } else if (error.code === 'auth/too-many-requests') {
-            msg = 'Terlalu banyak percobaan masuk. Coba lagi beberapa saat.';
+          } else if (error.code === 'auth/weak-password') {
+            msg = 'Password terlalu lemah. Minimal 6 karakter.';
           }
           showError(msg);
         }
@@ -232,90 +205,6 @@
         errorText.textContent = msg;
         errorBox.classList.add('admin-login-error--visible');
       }
-    });
-
-    // ============================================================
-    // LUPA KATA SANDI — Modal Handler
-    // ============================================================
-    const forgotLink = document.getElementById('forgot-password-link');
-    const forgotModal = document.getElementById('forgot-modal');
-    const modalCancel = document.getElementById('modal-cancel');
-    const modalSubmit = document.getElementById('modal-submit');
-    const modalCloseSuccess = document.getElementById('modal-close-success');
-    const modalFormView = document.getElementById('modal-form-view');
-    const modalSuccessView = document.getElementById('modal-success-view');
-    const resetEmailInput = document.getElementById('reset-email');
-
-    forgotLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      resetEmailInput.value = '';
-      modalFormView.style.display = 'block';
-      modalSuccessView.style.display = 'none';
-      forgotModal.classList.add('admin-modal-overlay--visible');
-      setTimeout(() => resetEmailInput.focus(), 100);
-    });
-
-    function closeModal() {
-      forgotModal.classList.remove('admin-modal-overlay--visible');
-    }
-
-    modalCancel.addEventListener('click', closeModal);
-    modalCloseSuccess.addEventListener('click', closeModal);
-
-    forgotModal.addEventListener('click', (e) => {
-      if (e.target === forgotModal) closeModal();
-    });
-
-    modalSubmit.addEventListener('click', async () => {
-      const resetEmail = resetEmailInput.value.trim();
-      if (!resetEmail) {
-        resetEmailInput.style.borderColor = '#ef4444';
-        return;
-      }
-      resetEmailInput.style.borderColor = '';
-      modalSubmit.disabled = true;
-      modalSubmit.textContent = 'Mengirim...';
-      try {
-        const { sendPasswordReset } = await import('../js/firebase-config.js?v=3');
-        await sendPasswordReset(resetEmail);
-      } catch (e) {
-        console.warn('Pengiriman reset password:', e.message);
-      } finally {
-        modalFormView.style.display = 'none';
-        modalSuccessView.style.display = 'block';
-        modalSubmit.disabled = false;
-        modalSubmit.textContent = 'Kirim Tautan';
-      }
-    });
-
-    // ============================================================
-    // TOGGLE TEMA GELAP / TERANG
-    // ============================================================
-    const themeToggleLogin = document.getElementById('theme-toggle-login');
-    const sunIcon = document.getElementById('theme-icon-sun');
-    const moonIcon = document.getElementById('theme-icon-moon');
-
-    function applyTheme(theme) {
-      document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem('dentavizion-admin-theme', theme);
-      if (theme === 'dark') {
-        sunIcon.style.display = 'none';
-        moonIcon.style.display = 'block';
-        themeToggleLogin.setAttribute('aria-label', 'Ganti ke Mode Terang');
-      } else {
-        sunIcon.style.display = 'block';
-        moonIcon.style.display = 'none';
-        themeToggleLogin.setAttribute('aria-label', 'Ganti ke Mode Gelap');
-      }
-    }
-
-    // Terapkan tema tersimpan saat halaman dimuat
-    const savedTheme = localStorage.getItem('dentavizion-admin-theme') || 'light';
-    applyTheme(savedTheme);
-
-    themeToggleLogin.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme');
-      applyTheme(current === 'dark' ? 'light' : 'dark');
     });
   </script>
 </body>

@@ -115,7 +115,7 @@
 
         <!-- Forgot Password -->
         <div class="auth-forgot">
-          <a href="#" class="auth-forgot__link" aria-label="Lupa kata sandi?">Lupa kata rahasia? 🤔</a>
+          <button type="button" class="auth-forgot__link" id="btn-forgot" aria-label="Lupa kata sandi?">Lupa kata rahasia? 🤔</button>
         </div>
 
         <!-- Submit -->
@@ -138,7 +138,8 @@
   <script src="../js/accessibility.js?v=3"></script>
   <script src="../js/pwa.js?v=3"></script>
   <script type="module">
-    import { loginUser, onUserChanged, getUserProfile, saveUserProfile } from '../js/firebase-config.js?v=3';
+    import { loginUser, onUserChanged, getUserProfile, saveUserProfile, resetPassword } from '../js/firebase-config.js?v=3';
+    import { restoreProgressFromProfile } from '../js/progression.js?v=3';
 
     document.addEventListener('DOMContentLoaded', () => {
       // If already logged in via Firebase, sync localStorage and redirect
@@ -155,6 +156,8 @@
                 photoURL: profile?.photoURL || null,
                 loggedInAt: new Date().toISOString()
               }));
+              // Restore progress from Firestore to localStorage
+              restoreProgressFromProfile(profile, user);
             } catch (e) {
               localStorage.setItem('dentavizion-user', JSON.stringify({
                 uid: user.uid,
@@ -202,6 +205,42 @@
         passwordInput.classList.remove('input-group__input--error');
       });
 
+      // Forgot password
+      const btnForgot = document.getElementById('btn-forgot');
+      if (btnForgot) {
+        btnForgot.addEventListener('click', async () => {
+          const email = emailInput.value.trim();
+          if (!email || !email.includes('@')) {
+            showError('Isi email kamu dulu di atas ya, baru tekan lupa kata rahasia! 📧');
+            emailInput.classList.add('input-group__input--error');
+            emailInput.focus();
+            return;
+          }
+
+          btnForgot.disabled = true;
+          btnForgot.textContent = '⏳ Mengirim...';
+
+          try {
+            await resetPassword(email);
+            showError('✅ Link reset sudah dikirim ke email kamu! Cek inbox ya 📬');
+            errorBox.style.background = 'rgba(43, 170, 142, 0.08)';
+            errorBox.style.borderColor = '#2BAA8E';
+          } catch (err) {
+            console.error('Reset password error:', err);
+            if (err.code === 'auth/user-not-found') {
+              showError('Email ini belum terdaftar. Daftar dulu yuk! 🤔');
+            } else if (err.code === 'auth/invalid-email') {
+              showError('Format emailnya belum benar nih 📧');
+            } else {
+              showError('Gagal mengirim link reset. Coba lagi ya! 😅');
+            }
+          } finally {
+            btnForgot.disabled = false;
+            btnForgot.textContent = 'Lupa kata rahasia? 🤔';
+          }
+        });
+      }
+
       // Form submit
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -234,15 +273,7 @@
           // Load profile from Firestore
           const profile = await getUserProfile(user.uid);
 
-          // Clear old local storage data to reset modules/streaks for new user
-          const keysToClear = [];
-          for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key && key.startsWith('dentavizion-')) keysToClear.push(key);
-          }
-          keysToClear.forEach(k => localStorage.removeItem(k));
-
-          // Save to localStorage for other pages
+          // Save user info to localStorage for other pages
           localStorage.setItem('dentavizion-user', JSON.stringify({
             uid: user.uid,
             email: user.email,
@@ -250,10 +281,12 @@
             photoURL: profile?.photoURL || null,
             loggedInAt: new Date().toISOString()
           }));
+
+          // Restore progress from Firestore to localStorage
+          // This ensures completedModuleIds survive logout/login cycles
+          restoreProgressFromProfile(profile, user);
+
           // Ensure a default accessibility mode exists so pages don't redirect back
-          if (!localStorage.getItem('dentavizion-mode')) {
-            try { localStorage.setItem('dentavizion-mode', 'visual'); } catch (e) { /* ignore */ }
-          }
           if (!localStorage.getItem('dentavizion-mode')) {
             try { localStorage.setItem('dentavizion-mode', 'visual'); } catch (e) { /* ignore */ }
           }

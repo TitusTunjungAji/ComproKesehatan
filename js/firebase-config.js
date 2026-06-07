@@ -4,7 +4,7 @@
 // ============================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-storage.js";
 
@@ -37,7 +37,9 @@ async function registerUser(email, password) {
 
 async function logoutUser() {
   await signOut(auth);
-  // Clear all local storage data related to dentavizion to reset modules, streak, etc.
+  // Clear ALL local dentavizion data for user isolation
+  // When a different user logs in, they must NOT see previous user's data
+  // The login flow restores progress from Firestore via restoreProgressFromProfile()
   const keysToClear = [];
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
@@ -46,6 +48,10 @@ async function logoutUser() {
     }
   }
   keysToClear.forEach(k => localStorage.removeItem(k));
+}
+
+async function resetPassword(email) {
+  await sendPasswordResetEmail(auth, email);
 }
 
 function getCurrentUser() {
@@ -82,6 +88,7 @@ async function saveReport(reportData) {
     photoURL: reportData.photoURL || null,
     date: reportData.date,
     time: reportData.time,
+    dateTime: `${reportData.date}_${reportData.time}`,
     notes: reportData.notes || '',
     createdAt: serverTimestamp()
   });
@@ -106,19 +113,19 @@ async function uploadPhoto(path, file) {
   return await getDownloadURL(snap.ref);
 }
 
-async function uploadProfilePhoto(userId, file) {
-  return await uploadPhoto(`profiles/${userId}/avatar.jpg`, file);
+async function uploadProfilePhoto(userEmail, file) {
+  return await uploadPhoto(`profiles/${userEmail}/avatar.jpg`, file);
 }
 
-async function uploadReportPhoto(userId, file) {
+async function uploadReportPhoto(userEmail, file) {
   const timestamp = Date.now();
-  return await uploadPhoto(`reports/${userId}/${timestamp}.jpg`, file);
+  return await uploadPhoto(`reports/${userEmail}/${timestamp}.jpg`, file);
 }
 
 // Export everything
 export {
   auth, db, storage,
-  loginUser, registerUser, logoutUser, getCurrentUser, onUserChanged,
+  loginUser, registerUser, logoutUser, resetPassword, getCurrentUser, onUserChanged,
   saveUserProfile, getUserProfile,
   saveReport, getUserReports,
   uploadPhoto, uploadProfilePhoto, uploadReportPhoto

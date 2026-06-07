@@ -3,21 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manajemen Peserta — Admin DENTAVIZION</title>
-  <link rel="stylesheet" href="../css/pages/admin-style.css?v=2">
+  <title>User Management — DENTAVIZION Admin</title>
+  <link rel="stylesheet" href="../css/pages/admin-style.css?v=1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script>
-    // Proteksi rute: cek sesi sebelum render
+    // Route protection: Check session immediately before rendering body
     if (!localStorage.getItem('dentavizion-admin-session')) {
       window.location.href = 'index.html';
     }
-    // Terapkan tema tersimpan sebelum render untuk mencegah kedip
-    (function() {
-      const t = localStorage.getItem('dentavizion-admin-theme') || 'light';
-      document.documentElement.setAttribute('data-theme', t);
-    })();
   </script>
 </head>
 <body>
@@ -34,7 +29,7 @@
           </div>
           <div>
             <span class="admin-brand-name">Dentavizion</span>
-            <span class="admin-brand-sub">Panel Admin</span>
+            <span class="admin-brand-sub">Admin Management</span>
           </div>
         </div>
 
@@ -45,7 +40,7 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
                 </svg>
-                <span>Peserta</span>
+                <span>Users</span>
               </a>
             </li>
           </ul>
@@ -56,7 +51,7 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" />
         </svg>
-        <span>Keluar</span>
+        <span>Logout</span>
       </button>
     </aside>
 
@@ -69,44 +64,42 @@
               <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
           </span>
-          <input type="text" id="search-input" class="admin-search-input" placeholder="Cari peserta berdasarkan nama atau email...">
+          <input type="text" id="search-input" class="admin-search-input" placeholder="Search patients by name or email...">
         </div>
 
         <div class="admin-profile-menu">
           <span class="admin-profile-info">
-            <span class="admin-profile-name" id="admin-profile-name">Profil Admin</span>
-            <span class="admin-profile-role" id="admin-profile-role">Administrator</span>
+            <span class="admin-profile-name" id="admin-profile-name">Admin Profile</span>
+            <span class="admin-profile-role">Super User</span>
           </span>
           <div class="admin-profile-avatar" id="admin-avatar-initial">A</div>
-          <button id="theme-toggle-dash" class="admin-theme-toggle" aria-label="Ganti tema tampilan" title="Mode Gelap / Terang">
-            <svg id="dash-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-            <svg id="dash-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-          </button>
         </div>
       </header>
 
       <!-- User Management Card -->
       <section class="admin-card" aria-labelledby="user-management-title">
         <div class="admin-card-header">
-          <h1 id="user-management-title" class="admin-card-title">Manajemen Peserta</h1>
-          <p class="admin-card-desc">Kelola data peserta, akses foto gigi, dan pantau status akun mereka.</p>
+          <h1 id="user-management-title" class="admin-card-title">User Management</h1>
+          <p class="admin-card-desc">Manage patient records, access clinical photos, and monitor account status.</p>
         </div>
 
         <div class="admin-table-container">
           <table class="admin-table" id="users-table">
             <thead>
               <tr>
-                <th scope="col">Nama Peserta</th>
-                <th scope="col">Email Kontak</th>
-                <th scope="col">Tanggal Bergabung</th>
-                <th scope="col">Foto Gigi</th>
-                <th scope="col">Tindakan</th>
+                <th scope="col">Patient Name</th>
+                <th scope="col">Contact Email</th>
+                <th scope="col">Join Date</th>
+                <th scope="col"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E53E3E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>Streak</th>
+                <th scope="col"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2B6CB0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Progress</th>
+                <th scope="col"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Photos</th>
+                <th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody id="users-tbody">
               <!-- Loading Row -->
               <tr id="loading-row">
-                <td colspan="5" style="text-align: center; padding: 40px; color: var(--admin-text-muted);">
+                <td colspan="7" style="text-align: center; padding: 40px; color: var(--admin-text-muted);">
                   Memuat data pengguna...
                 </td>
               </tr>
@@ -116,7 +109,7 @@
 
         <!-- Pagination -->
         <div class="admin-pagination">
-          <span id="pagination-info">Menampilkan 0 dari 0 peserta</span>
+          <span id="pagination-info">Showing 0 of 0 users</span>
           <div class="admin-pagination-pages" id="pagination-buttons">
             <!-- Dynamic pages -->
           </div>
@@ -132,42 +125,23 @@
     document.addEventListener('DOMContentLoaded', () => {
       const adminSession = JSON.parse(localStorage.getItem('dentavizion-admin-session') || '{}');
       
-      // Perbarui info admin
+      // Update Admin Info
       if (adminSession.name) {
         document.getElementById('admin-profile-name').textContent = adminSession.name;
         document.getElementById('admin-avatar-initial').textContent = adminSession.name.charAt(0).toUpperCase();
       }
-      if (adminSession.role) {
-        document.getElementById('admin-profile-role').textContent = adminSession.role;
-      }
 
-      // Handler keluar
+      // Logout handler
       document.getElementById('btn-logout').addEventListener('click', async () => {
         if (confirm('Apakah Anda yakin ingin keluar?')) {
           try {
             await logoutUser();
           } catch (e) {
-            console.error('Kesalahan keluar:', e);
+            console.error('Logout error:', e);
           }
           localStorage.removeItem('dentavizion-admin-session');
           window.location.href = 'index.html';
         }
-      });
-
-      // Toggle tema
-      const themeToggle = document.getElementById('theme-toggle-dash');
-      const sunIcon = document.getElementById('dash-icon-sun');
-      const moonIcon = document.getElementById('dash-icon-moon');
-      function applyTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('dentavizion-admin-theme', theme);
-        sunIcon.style.display = theme === 'dark' ? 'none' : 'block';
-        moonIcon.style.display = theme === 'dark' ? 'block' : 'none';
-      }
-      applyTheme(localStorage.getItem('dentavizion-admin-theme') || 'light');
-      themeToggle.addEventListener('click', () => {
-        const current = document.documentElement.getAttribute('data-theme');
-        applyTheme(current === 'dark' ? 'light' : 'dark');
       });
 
       // Data states
@@ -175,6 +149,28 @@
       let filteredUsers = [];
       let currentPage = 1;
       const usersPerPage = 8;
+
+      // Calculate consecutive streak from report dates
+      function calculateStreak(reports) {
+        const dates = new Set(reports.map(r => r.date).filter(Boolean));
+        if (dates.size === 0) return 0;
+        const sorted = [...dates].sort().reverse();
+        const today = new Date().toISOString().split('T')[0];
+        // Start from today or the latest report date
+        let cursor = sorted[0] === today ? today : sorted[0];
+        let streak = 0;
+        let checkDate = new Date(`${cursor}T12:00:00`);
+        while (true) {
+          const key = checkDate.toISOString().split('T')[0];
+          if (dates.has(key)) {
+            streak++;
+            checkDate.setDate(checkDate.getDate() - 1);
+          } else {
+            break;
+          }
+        }
+        return streak;
+      }
 
       // Fetch users from Firestore
       async function loadUsers() {
@@ -186,19 +182,27 @@
             const userData = docSnap.data();
             const email = userData.email;
             
-            // Only show regular users, filter out admin role accounts to prevent admin table bloating
+            // Only show regular users, filter out admin role accounts
             if (userData.role !== 'admin') {
               const userPromise = (async () => {
                 let photoCount = 0;
+                let streak = 0;
+                let reports = [];
                 if (email) {
                   try {
-                    const reports = await getUserReports(email);
-                    // Filter reports that have valid photos
+                    reports = await getUserReports(email);
                     photoCount = reports.filter(r => r.photoURL).length;
+                    streak = calculateStreak(reports);
                   } catch (err) {
-                    console.warn(`Failed fetching photo count for ${email}:`, err);
+                    console.warn(`Failed fetching data for ${email}:`, err);
                   }
                 }
+
+                // Module progress from achievementProgress
+                const progress = userData.achievementProgress || {};
+                const completedModules = Array.isArray(progress.completedModuleIds)
+                  ? progress.completedModuleIds.length : 0;
+
                 return {
                   id: docSnap.id,
                   name: userData.name || 'Jagoan Tanpa Nama',
@@ -206,7 +210,10 @@
                   createdAt: userData.createdAt ? new Date(userData.createdAt).toLocaleDateString('id-ID', {
                     day: 'numeric', month: 'short', year: 'numeric'
                   }) : '-',
-                  photoCount: photoCount
+                  photoCount,
+                  streak,
+                  completedModules,
+                  totalReports: reports.length
                 };
               })();
               userPromises.push(userPromise);
@@ -224,7 +231,7 @@
           const tbody = document.getElementById('users-tbody');
           tbody.innerHTML = `
             <tr>
-              <td colspan="5" style="text-align: center; color: #ef4444; padding: 40px;">
+              <td colspan="7" style="text-align: center; color: #ef4444; padding: 40px;">
                 Gagal memuat data pengguna: ${error.message}
               </td>
             </tr>
@@ -239,7 +246,7 @@
         if (filteredUsers.length === 0) {
           tbody.innerHTML = `
             <tr>
-              <td colspan="5" style="text-align: center; padding: 40px; color: var(--admin-text-muted);">
+              <td colspan="7" style="text-align: center; padding: 40px; color: var(--admin-text-muted);">
                 Tidak ada pengguna ditemukan.
               </td>
             </tr>
@@ -261,18 +268,39 @@
             ? 'admin-badge-count admin-badge-count--highlight' 
             : 'admin-badge-count';
 
+          // Streak badge styling
+          const streakClass = user.streak >= 7 ? 'admin-badge-count admin-badge-count--highlight'
+            : user.streak > 0 ? 'admin-badge-count' : 'admin-badge-count';
+
+          // Progress badge
+          const progressPercent = Math.round((user.completedModules / 4) * 100);
+          const progressClass = progressPercent >= 100 ? 'admin-badge-count admin-badge-count--highlight'
+            : 'admin-badge-count';
+
           tr.innerHTML = `
             <td>
               <div class="admin-user-cell">
                 <div class="admin-user-avatar" aria-hidden="true">${avatarLetter}</div>
                 <div>
                   <span class="admin-user-name">${user.name}</span>
-                  <span class="admin-user-id">ID: #PS-${user.id.substring(0, 6).toUpperCase()}</span>
+                  <span class="admin-user-id">ID: #PT-${user.id.substring(0, 6).toUpperCase()}</span>
                 </div>
               </div>
             </td>
             <td>${user.email}</td>
             <td>${user.createdAt}</td>
+            <td>
+              <span class="${streakClass}">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#E53E3E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:3px"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                ${user.streak} hari
+              </span>
+            </td>
+            <td>
+              <span class="${progressClass}">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2B6CB0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:3px"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                ${user.completedModules}/4
+              </span>
+            </td>
             <td>
               <span class="${photoBadgeClass}">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right: 4px;">
@@ -282,7 +310,7 @@
               </span>
             </td>
             <td>
-              <a href="user-details.html?email=${encodeURIComponent(user.email)}&name=${encodeURIComponent(user.name)}&id=${encodeURIComponent(user.id.substring(0, 6).toUpperCase())}" class="admin-link-action">Lihat Detail</a>
+              <a href="user-details.html?email=${encodeURIComponent(user.email)}&name=${encodeURIComponent(user.name)}&id=${encodeURIComponent(user.id.substring(0, 6).toUpperCase())}" class="admin-link-action">View Details</a>
             </td>
           `;
           tbody.appendChild(tr);
