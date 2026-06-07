@@ -90,6 +90,8 @@
                 <th scope="col">Patient Name</th>
                 <th scope="col">Contact Email</th>
                 <th scope="col">Join Date</th>
+                <th scope="col">🔥 Streak</th>
+                <th scope="col">📊 Progress</th>
                 <th scope="col">Clinical Photos</th>
                 <th scope="col">Actions</th>
               </tr>
@@ -97,7 +99,7 @@
             <tbody id="users-tbody">
               <!-- Loading Row -->
               <tr id="loading-row">
-                <td colspan="5" style="text-align: center; padding: 40px; color: var(--admin-text-muted);">
+                <td colspan="7" style="text-align: center; padding: 40px; color: var(--admin-text-muted);">
                   Memuat data pengguna...
                 </td>
               </tr>
@@ -148,6 +150,28 @@
       let currentPage = 1;
       const usersPerPage = 8;
 
+      // Calculate consecutive streak from report dates
+      function calculateStreak(reports) {
+        const dates = new Set(reports.map(r => r.date).filter(Boolean));
+        if (dates.size === 0) return 0;
+        const sorted = [...dates].sort().reverse();
+        const today = new Date().toISOString().split('T')[0];
+        // Start from today or the latest report date
+        let cursor = sorted[0] === today ? today : sorted[0];
+        let streak = 0;
+        let checkDate = new Date(`${cursor}T12:00:00`);
+        while (true) {
+          const key = checkDate.toISOString().split('T')[0];
+          if (dates.has(key)) {
+            streak++;
+            checkDate.setDate(checkDate.getDate() - 1);
+          } else {
+            break;
+          }
+        }
+        return streak;
+      }
+
       // Fetch users from Firestore
       async function loadUsers() {
         try {
@@ -158,19 +182,27 @@
             const userData = docSnap.data();
             const email = userData.email;
             
-            // Only show regular users, filter out admin role accounts to prevent admin table bloating
+            // Only show regular users, filter out admin role accounts
             if (userData.role !== 'admin') {
               const userPromise = (async () => {
                 let photoCount = 0;
+                let streak = 0;
+                let reports = [];
                 if (email) {
                   try {
-                    const reports = await getUserReports(email);
-                    // Filter reports that have valid photos
+                    reports = await getUserReports(email);
                     photoCount = reports.filter(r => r.photoURL).length;
+                    streak = calculateStreak(reports);
                   } catch (err) {
-                    console.warn(`Failed fetching photo count for ${email}:`, err);
+                    console.warn(`Failed fetching data for ${email}:`, err);
                   }
                 }
+
+                // Module progress from achievementProgress
+                const progress = userData.achievementProgress || {};
+                const completedModules = Array.isArray(progress.completedModuleIds)
+                  ? progress.completedModuleIds.length : 0;
+
                 return {
                   id: docSnap.id,
                   name: userData.name || 'Jagoan Tanpa Nama',
@@ -178,7 +210,10 @@
                   createdAt: userData.createdAt ? new Date(userData.createdAt).toLocaleDateString('id-ID', {
                     day: 'numeric', month: 'short', year: 'numeric'
                   }) : '-',
-                  photoCount: photoCount
+                  photoCount,
+                  streak,
+                  completedModules,
+                  totalReports: reports.length
                 };
               })();
               userPromises.push(userPromise);
@@ -196,7 +231,7 @@
           const tbody = document.getElementById('users-tbody');
           tbody.innerHTML = `
             <tr>
-              <td colspan="5" style="text-align: center; color: #ef4444; padding: 40px;">
+              <td colspan="7" style="text-align: center; color: #ef4444; padding: 40px;">
                 Gagal memuat data pengguna: ${error.message}
               </td>
             </tr>
@@ -211,7 +246,7 @@
         if (filteredUsers.length === 0) {
           tbody.innerHTML = `
             <tr>
-              <td colspan="5" style="text-align: center; padding: 40px; color: var(--admin-text-muted);">
+              <td colspan="7" style="text-align: center; padding: 40px; color: var(--admin-text-muted);">
                 Tidak ada pengguna ditemukan.
               </td>
             </tr>
@@ -233,6 +268,15 @@
             ? 'admin-badge-count admin-badge-count--highlight' 
             : 'admin-badge-count';
 
+          // Streak badge styling
+          const streakClass = user.streak >= 7 ? 'admin-badge-count admin-badge-count--highlight'
+            : user.streak > 0 ? 'admin-badge-count' : 'admin-badge-count';
+
+          // Progress badge
+          const progressPercent = Math.round((user.completedModules / 4) * 100);
+          const progressClass = progressPercent >= 100 ? 'admin-badge-count admin-badge-count--highlight'
+            : 'admin-badge-count';
+
           tr.innerHTML = `
             <td>
               <div class="admin-user-cell">
@@ -245,6 +289,16 @@
             </td>
             <td>${user.email}</td>
             <td>${user.createdAt}</td>
+            <td>
+              <span class="${streakClass}">
+                🔥 ${user.streak} hari
+              </span>
+            </td>
+            <td>
+              <span class="${progressClass}">
+                📊 ${user.completedModules}/4
+              </span>
+            </td>
             <td>
               <span class="${photoBadgeClass}">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right: 4px;">

@@ -311,7 +311,7 @@
           <div class="report-card__details">
             <div class="report-card__field">
               <label class="report-card__label" for="report-date">📅 Tanggal</label>
-              <input type="date" id="report-date" class="report-card__input" aria-label="Pilih tanggal sikat gigi">
+              <input type="date" id="report-date" class="report-card__input" aria-label="Tanggal sikat gigi (otomatis hari ini)" readonly style="pointer-events:none;opacity:0.7;">
             </div>
             <div class="report-card__field">
               <label class="report-card__label" for="report-time">🕰️ Kapan sikat giginya?</label>
@@ -384,7 +384,8 @@
   <script src="../js/accessibility.js?v=3"></script>
   <script src="../js/pwa.js?v=3"></script>
   <script type="module">
-    import { getCurrentUser, onUserChanged, uploadReportPhoto, saveReport, getUserReports } from '../js/firebase-config.js?v=3';
+    import { getCurrentUser, onUserChanged, uploadReportPhoto, saveReport, getUserReports, getUserProfile } from '../js/firebase-config.js?v=3';
+    import { getWeeklyReportState, getLocalReports, saveLocalReports, toDateKey, buildProgressSnapshot, syncProgressToProfile } from '../js/progression.js?v=3';
     document.addEventListener('DOMContentLoaded', () => {
       // Guard: redirect to login if not authenticated
       if (!localStorage.getItem('dentavizion-user')) {
@@ -411,15 +412,30 @@
       let firebaseUser = null;
 
       async function checkTodayReportsUI(userObj) {
-        if (!userObj || !userObj.email) return;
-        const reports = await getUserReports(userObj.email);
         const todayStr = new Date().toISOString().split('T')[0];
 
-        const hasPagi = reports.some(r => r.date === todayStr && r.time === 'pagi');
-        const hasMalam = reports.some(r => r.date === todayStr && r.time === 'malam');
+        // Merge Firebase + local reports for today
+        let todayReports = [];
+        if (userObj && userObj.email) {
+          try {
+            const fbReports = await getUserReports(userObj.email);
+            todayReports = fbReports.filter(r => r.date === todayStr);
+          } catch (_e) { /* fallback to local only */ }
+        }
+        // Also check local reports
+        const localReports = getLocalReports().filter(r => r.date === todayStr);
+        // Merge (deduplicate by time slot)
+        const usedSlots = new Set();
+        [...todayReports, ...localReports].forEach(r => {
+          if (r.time) usedSlots.add(r.time);
+        });
+
+        const hasPagi = usedSlots.has('pagi');
+        const hasMalam = usedSlots.has('malam');
 
         const pillPagi = document.querySelector('.report-card__pill[data-time="pagi"]');
         const pillMalam = document.querySelector('.report-card__pill[data-time="malam"]');
+        const submitBtn = document.getElementById('btn-submit-report');
 
         if (hasPagi && pillPagi) {
           pillPagi.innerHTML = '✅ Pagi (Selesai)';
@@ -440,7 +456,17 @@
           pillMalam.style.color = '#1A3B34';
         }
 
-        // Auto select the other one if only one is done
+        // Both done → fully block submit
+        if (hasPagi && hasMalam) {
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '🎉 Hari ini sudah lengkap!';
+            submitBtn.style.opacity = '0.6';
+          }
+          return;
+        }
+
+        // Auto select the available pill
         if (hasPagi && !hasMalam && pillMalam) {
           pillMalam.classList.add('report-card__pill--active');
           pillMalam.setAttribute('aria-checked', 'true');
@@ -450,9 +476,28 @@
         }
       }
 
+      // ── Calculate real streak from reports (date-based) ──
+      function calculateRealStreak() {
+        const localReports = getLocalReports();
+        const weeklyState = getWeeklyReportState(localReports);
+        return weeklyState.currentStreak;
+      }
+
+      function updateStreakUI() {
+        const realStreak = calculateRealStreak();
+        if (streakText) {
+          if (realStreak === 0) {
+            streakText.textContent = '0 hari berturut-turut — Ayo mulai!';
+          } else {
+            streakText.textContent = realStreak + ' hari berturut-turut';
+          }
+        }
+      }
+
       onUserChanged((user) => {
         firebaseUser = user;
         checkTodayReportsUI(user);
+        updateStreakUI();
       });
 
       const mode = localStorage.getItem('dentavizion-mode');
@@ -492,9 +537,8 @@
         reportDate.value = today;
       }
 
-      // Load streak
-      const streak = parseInt(localStorage.getItem('dentavizion-streak') || '0');
-      if (streakText) streakText.textContent = streak + ' hari berturut-turut';
+      // Load real streak (date-based)
+      updateStreakUI();
 
       let capturedFile = null;
       let localStream = null;
@@ -630,13 +674,30 @@
       });
 
       // Submit report
+      let lastSubmitTime = 0;
       if (btnSubmit) {
         btnSubmit.addEventListener('click', async () => {
+          // Anti-spam cooldown (5 seconds)
+          const now = Date.now();
+          if (now - lastSubmitTime < 5000) {
+            showReportToast('⏳ Tunggu sebentar ya, jangan buru-buru! 😊');
+            return;
+          }
+
           const activePill = document.querySelector('.report-card__pill--active');
           const time = activePill ? activePill.dataset.time : 'pagi';
           const notes = document.getElementById('report-notes').value.trim();
-          const date = reportDate.value;
+          // Always use today's date — not from input field (anti-manipulation)
+          const todayStr = new Date().toISOString().split('T')[0];
+          const date = todayStr;
+          reportDate.value = todayStr; // sync display
           const activeFile = capturedFile || cameraInput.files[0] || galleryInput.files[0] || photoInput.files[0];
+
+          // Check if selected pill is already done
+          if (activePill && activePill.style.pointerEvents === 'none') {
+            showReportToast(`⚠️ Kamu sudah laporan ${time === 'pagi' ? 'Pagi 🌅' : 'Malam 🌙'} hari ini!`);
+            return;
+          }
 
           // 1. Validation: Photo required
           if (!activeFile) {
@@ -651,14 +712,6 @@
             return;
           }
 
-          // 3. Validation: Date must be today
-          const todayStr = new Date().toISOString().split('T')[0];
-          if (date !== todayStr) {
-            showReportToast('⚠️ Laporan hanya bisa untuk hari ini ya! 📅');
-            reportDate.value = todayStr; // reset to today
-            return;
-          }
-
           // Loading state
           btnSubmit.disabled = true;
           btnSubmit.textContent = '⏳ Mengecek...';
@@ -667,64 +720,90 @@
             const user = firebaseUser || getCurrentUser();
             let photoURL = null;
 
+            console.log('[Report] User state:', {
+              hasFirebaseUser: !!firebaseUser,
+              hasCurrentUser: !!getCurrentUser(),
+              uid: user?.uid || 'none',
+              email: user?.email || 'none'
+            });
+
             // 4. Validation: Check existing submission for today + time slot
             if (user && user.email) {
-              const existingReports = await getUserReports(user.email);
-              const alreadySubmitted = existingReports.some(r => r.date === todayStr && r.time === time);
-              if (alreadySubmitted) {
-                showReportToast(`⚠️ Kamu sudah laporan sikat gigi ${time === 'pagi' ? 'Pagi 🌅' : 'Malam 🌙'} hari ini!`);
-                btnSubmit.disabled = false;
-                btnSubmit.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Kirim Yuk! 🚀';
-                return;
+              try {
+                const existingReports = await getUserReports(user.email);
+                const alreadySubmitted = existingReports.some(r => r.date === todayStr && r.time === time);
+                if (alreadySubmitted) {
+                  showReportToast(`⚠️ Kamu sudah laporan sikat gigi ${time === 'pagi' ? 'Pagi 🌅' : 'Malam 🌙'} hari ini!`);
+                  btnSubmit.disabled = false;
+                  btnSubmit.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Kirim Yuk! 🚀';
+                  return;
+                }
+              } catch (checkErr) {
+                console.warn('[Report] Failed to check existing reports, continuing:', checkErr);
               }
             }
 
             btnSubmit.textContent = '⏳ Mengunggah foto...';
 
             // Upload photo to Firebase Storage
-            if (user && activeFile) {
+            if (user && user.email && activeFile) {
               try {
-                console.log('Uploading photo for user:', user.uid);
-                photoURL = await uploadReportPhoto(user.uid, activeFile);
-                console.log('Photo uploaded:', photoURL);
+                console.log('[Report] Uploading photo for user:', user.email);
+                photoURL = await uploadReportPhoto(user.email, activeFile);
+                console.log('[Report] Photo uploaded OK:', photoURL);
               } catch (uploadErr) {
-                console.warn('Photo upload failed (CORS?), saving report without photo:', uploadErr);
+                console.warn('[Report] Photo upload failed, saving report without photo:', uploadErr.code || uploadErr.message || uploadErr);
                 photoURL = null;
               }
             }
 
             // Save report to Firestore
             if (user && user.email) {
-              await saveReport({
-                userId: user.uid,
-                userEmail: user.email,
-                photoURL: photoURL,
-                date: date,
-                time: time,
-                notes: notes
-              });
-              console.log('Report saved to Firestore');
+              try {
+                btnSubmit.textContent = '⏳ Menyimpan laporan...';
+                await saveReport({
+                  userId: user.uid,
+                  userEmail: user.email,
+                  photoURL: photoURL,
+                  date: date,
+                  time: time,
+                  notes: notes
+                });
+                console.log('[Report] ✅ Report saved to Firestore successfully');
+              } catch (saveErr) {
+                console.error('[Report] ❌ Failed to save report to Firestore:', saveErr.code || saveErr.message || saveErr);
+                showReportToast('⚠️ Laporan tersimpan lokal, tapi gagal ke server. Cek koneksi ya!');
+              }
             } else {
-              console.log('No Firebase user, saving to localStorage only');
+              console.log('[Report] ⚠️ No Firebase user (uid/email), saving to localStorage only');
             }
 
-            // Also save to localStorage
-            const reports = JSON.parse(localStorage.getItem('dentavizion-reports') || '[]');
-            reports.push({ date, time, notes, photoURL, timestamp: Date.now() });
-            localStorage.setItem('dentavizion-reports', JSON.stringify(reports));
+            // Save to scoped localStorage via progression system
+            const existingLocalReports = getLocalReports();
+            existingLocalReports.push({ date, time, notes, photoURL, timestamp: Date.now() });
+            saveLocalReports(existingLocalReports);
 
-            // Update streak
-            const newStreak = streak + 1;
-            localStorage.setItem('dentavizion-streak', newStreak.toString());
-            if (streakText) streakText.textContent = newStreak + ' hari berturut-turut';
+            // Update streak UI with real date-based calculation
+            updateStreakUI();
 
             // Check UI for done
             checkTodayReportsUI(user);
 
+            // Sync progress to Firestore (for admin dashboard)
+            try {
+              const profile = user ? await getUserProfile(user.uid) : null;
+              const snapshot = await buildProgressSnapshot({ user, profile });
+              await syncProgressToProfile(snapshot);
+            } catch (syncErr) {
+              console.warn('[Report] Progress sync failed (non-critical):', syncErr);
+            }
+
             // Show toast
             showReportToast('✅ Laporan terkirim! Kamu hebat! 🦷');
+            lastSubmitTime = Date.now(); // Set cooldown
 
             // Reset form
+            capturedFile = null;
             previewImg.src = '';
             uploadDefault.style.display = 'block';
             uploadPreview.style.display = 'none';

@@ -89,7 +89,7 @@
 
   <!-- Firebase Script Integration -->
   <script type="module">
-    import { loginUser, getUserProfile } from '../js/firebase-config.js?v=3';
+    import { loginUser, registerUser, getUserProfile, saveUserProfile } from '../js/firebase-config.js?v=3';
 
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('admin-login-form');
@@ -129,38 +129,56 @@
         btnLogin.disabled = true;
         btnLogin.textContent = 'Memproses...';
 
-        // Hardcoded Fallback for provided Admin credentials
-        if (email === 'admin@denticare.com' && password === 'admin') {
-          localStorage.setItem('dentavizion-admin-session', JSON.stringify({
-            uid: 'admin_hardcoded_id',
-            email: email,
-            name: 'Admin DENTAVIZION',
-            loggedInAt: new Date().toISOString()
-          }));
-          window.location.href = 'dashboard.html';
-          return;
-        }
-
         try {
-          // 1. Authenticate user via Firebase Auth
-          const user = await loginUser(email, password);
+          let user;
 
-          // 2. Fetch User Profile to verify Role
+          // Try to login via Firebase Auth
+          try {
+            user = await loginUser(email, password);
+          } catch (loginErr) {
+            // If admin@denticare.com doesn't exist yet, auto-register it
+            if (email === 'admin@denticare.com' && password === 'admin123' &&
+                (loginErr.code === 'auth/user-not-found' || loginErr.code === 'auth/invalid-credential')) {
+              user = await registerUser(email, password);
+              // Set admin role in Firestore
+              await saveUserProfile(user.uid, {
+                name: 'Admin DENTAVIZION',
+                email: email,
+                role: 'admin',
+                createdAt: new Date().toISOString()
+              });
+            } else {
+              throw loginErr;
+            }
+          }
+
+          // Fetch User Profile to verify Role
           const profile = await getUserProfile(user.uid);
 
-          if (profile && profile.role === 'admin') {
-            // Save admin session state locally (simple flag)
+          // Allow admin@denticare.com OR users with role:admin
+          const isDefaultAdmin = email === 'admin@denticare.com';
+          const hasAdminRole = profile && profile.role === 'admin';
+
+          if (isDefaultAdmin || hasAdminRole) {
+            // Ensure admin role is set in Firestore
+            if (isDefaultAdmin && (!profile || profile.role !== 'admin')) {
+              await saveUserProfile(user.uid, {
+                name: profile?.name || 'Admin DENTAVIZION',
+                email: email,
+                role: 'admin',
+                createdAt: profile?.createdAt || new Date().toISOString()
+              });
+            }
+
             localStorage.setItem('dentavizion-admin-session', JSON.stringify({
               uid: user.uid,
               email: user.email,
-              name: profile.name || 'Administrator',
+              name: profile?.name || 'Admin DENTAVIZION',
               loggedInAt: new Date().toISOString()
             }));
 
-            // Redirect to dashboard
             window.location.href = 'dashboard.html';
           } else {
-            // Unauthorized role
             showError('Akses Ditolak! Akun Anda tidak memiliki hak akses Administrator.');
             btnLogin.disabled = false;
             btnLogin.textContent = 'Login';
@@ -172,10 +190,12 @@
           btnLogin.textContent = 'Login';
 
           let msg = 'Email atau Kata Sandi salah! silakan periksa kembali.';
-          if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+          if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
             msg = 'Email atau Kata Sandi salah! silakan periksa kembali.';
           } else if (error.code === 'auth/invalid-email') {
             msg = 'Format email tidak valid!';
+          } else if (error.code === 'auth/weak-password') {
+            msg = 'Password terlalu lemah. Minimal 6 karakter.';
           }
           showError(msg);
         }

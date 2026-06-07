@@ -74,12 +74,39 @@
         </div>
       </header>
 
+      <!-- Stats Overview Card -->
+      <section class="admin-card" aria-labelledby="patient-stats-title" id="stats-section" style="display: none;">
+        <h2 id="patient-stats-title" class="admin-card-title" style="margin-bottom: 16px;">📊 Overview — <span id="stats-user-name"></span></h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;">
+          <div style="background: linear-gradient(135deg, #FFF5F5, #FFF0F0); border-radius: 12px; padding: 16px; text-align: center;">
+            <div style="font-size: 28px;">🔥</div>
+            <div id="stat-streak" style="font-size: 24px; font-weight: 800; color: #E53E3E;">0</div>
+            <div style="font-size: 12px; color: #9B2C2C; font-weight: 600;">Streak Hari</div>
+          </div>
+          <div style="background: linear-gradient(135deg, #F0FFF4, #E6FFED); border-radius: 12px; padding: 16px; text-align: center;">
+            <div style="font-size: 28px;">🦷</div>
+            <div id="stat-total-brush" style="font-size: 24px; font-weight: 800; color: #2BAA8E;">0</div>
+            <div style="font-size: 12px; color: #1A6B56; font-weight: 600;">Total Sikat</div>
+          </div>
+          <div style="background: linear-gradient(135deg, #EBF8FF, #E0F2FE); border-radius: 12px; padding: 16px; text-align: center;">
+            <div style="font-size: 28px;">📚</div>
+            <div id="stat-modules" style="font-size: 24px; font-weight: 800; color: #2B6CB0;">0/4</div>
+            <div style="font-size: 12px; color: #2A4365; font-weight: 600;">Modul Selesai</div>
+          </div>
+          <div style="background: linear-gradient(135deg, #FEFCBF, #FFFFF0); border-radius: 12px; padding: 16px; text-align: center;">
+            <div style="font-size: 28px;">📅</div>
+            <div id="stat-active-days" style="font-size: 24px; font-weight: 800; color: #B7791F;">0</div>
+            <div style="font-size: 12px; color: #744210; font-weight: 600;">Hari Aktif (30d)</div>
+          </div>
+        </div>
+      </section>
+
       <!-- Details Card -->
       <section class="admin-card" aria-labelledby="patient-details-title">
         <div class="admin-gallery-header">
           <div>
-            <h1 id="patient-details-title" class="admin-card-title">Dental Photos (<span id="user-display-name">Loading...</span>)</h1>
-            <p class="admin-card-desc">View and manage uploaded patient imagery for ID: <span id="user-display-id">-</span></p>
+            <h1 id="patient-details-title" class="admin-card-title">Laporan Harian (<span id="user-display-name">Loading...</span>)</h1>
+            <p class="admin-card-desc">Semua laporan sikat gigi dari user ID: <span id="user-display-id">-</span></p>
           </div>
 
           <label>
@@ -93,23 +120,24 @@
         </div>
 
         <div id="gallery-loading" style="text-align: center; padding: 60px; color: var(--admin-text-muted);">
-          Memuat foto klinis pengguna...
+          Memuat data pengguna...
         </div>
 
         <div id="gallery-empty" style="display: none; text-align: center; padding: 60px; color: var(--admin-text-muted);">
           <div style="font-size: 48px; margin-bottom: 16px;">📸</div>
-          <p>Belum ada foto absensi atau laporan klinis yang diunggah oleh pengguna ini.</p>
+          <p>Belum ada laporan sikat gigi dari pengguna ini.</p>
         </div>
 
         <div class="admin-gallery-grid" id="gallery-grid" style="display: none;">
-          <!-- Photo cards injected dynamically -->
+          <!-- Report cards injected dynamically -->
         </div>
       </section>
     </main>
   </div>
 
   <script type="module">
-    import { getUserReports, logoutUser } from '../js/firebase-config.js?v=3';
+    import { db, getUserReports, getUserProfile, logoutUser } from '../js/firebase-config.js?v=3';
+    import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
     document.addEventListener('DOMContentLoaded', () => {
       const adminSession = JSON.parse(localStorage.getItem('dentavizion-admin-session') || '{}');
@@ -132,26 +160,88 @@
       const email = params.get('email');
       const name = params.get('name') || 'Pengguna';
       const id = params.get('id') || '-';
+      const uid = params.get('uid') || null;
 
       document.getElementById('user-display-name').textContent = name;
       document.getElementById('user-display-id').textContent = `#PT-${id}`;
+      document.getElementById('stats-user-name').textContent = name;
 
       let allReports = [];
 
-      async function loadUserPhotos() {
+      // Calculate consecutive streak
+      function calculateStreak(reports) {
+        const dates = new Set(reports.map(r => r.date).filter(Boolean));
+        if (dates.size === 0) return 0;
+        const sorted = [...dates].sort().reverse();
+        const today = new Date().toISOString().split('T')[0];
+        let cursor = sorted[0] === today ? today : sorted[0];
+        let streak = 0;
+        let checkDate = new Date(`${cursor}T12:00:00`);
+        while (true) {
+          const key = checkDate.toISOString().split('T')[0];
+          if (dates.has(key)) {
+            streak++;
+            checkDate.setDate(checkDate.getDate() - 1);
+          } else {
+            break;
+          }
+        }
+        return streak;
+      }
+
+      async function loadUserData() {
         if (!email) {
           showError('Email pengguna tidak valid!');
           return;
         }
 
         try {
+          // Fetch reports
           const reports = await getUserReports(email);
-          // Only show entries that have photos
-          allReports = reports.filter(r => r.photoURL);
+          allReports = reports; // Show ALL reports, not just with photos
+
+          // Calculate stats
+          const streak = calculateStreak(reports);
+          const totalBrush = reports.length;
+          const now = new Date();
+          const thirtyDaysAgo = new Date();
+          thirtyDaysAgo.setDate(now.getDate() - 30);
+          const activeDays30 = new Set(
+            reports.filter(r => {
+              const d = new Date(`${r.date}T12:00:00`);
+              return d >= thirtyDaysAgo;
+            }).map(r => r.date)
+          ).size;
+
+          // Fetch user profile for module progress
+          let completedModules = 0;
+          try {
+            // Find user doc by email
+            const usersSnap = await getDocs(collection(db, 'users'));
+            usersSnap.forEach(docSnap => {
+              const d = docSnap.data();
+              if (d.email === email) {
+                const progress = d.achievementProgress || {};
+                completedModules = Array.isArray(progress.completedModuleIds)
+                  ? progress.completedModuleIds.length : 0;
+              }
+            });
+          } catch (e) {
+            console.warn('Could not fetch user profile:', e);
+          }
+
+          // Update stats UI
+          const statsSection = document.getElementById('stats-section');
+          if (statsSection) statsSection.style.display = 'block';
+          document.getElementById('stat-streak').textContent = streak;
+          document.getElementById('stat-total-brush').textContent = totalBrush;
+          document.getElementById('stat-modules').textContent = `${completedModules}/4`;
+          document.getElementById('stat-active-days').textContent = activeDays30;
+
           applyFilterAndRender();
         } catch (error) {
-          console.error('Error fetching reports:', error);
-          showError(`Gagal mengambil foto: ${error.message}`);
+          console.error('Error fetching data:', error);
+          showError(`Gagal mengambil data: ${error.message}`);
         }
       }
 
@@ -195,18 +285,11 @@
           const card = document.createElement('article');
           card.className = 'admin-photo-card';
 
-          // Determine pagi/malam based on the time stamp (e.g. "08:30" vs "19:00")
-          let timeBadge = 'Pagi';
-          let timeBadgeClass = 'admin-photo-badge--pagi';
-          if (report.time) {
-            const hour = parseInt(report.time.split(':')[0]);
-            if (hour >= 12) {
-              timeBadge = 'Malam';
-              timeBadgeClass = 'admin-photo-badge--malam';
-            }
-          }
+          // Determine pagi/malam
+          let timeBadge = report.time === 'malam' ? 'Malam' : 'Pagi';
+          let timeBadgeClass = report.time === 'malam' ? 'admin-photo-badge--malam' : 'admin-photo-badge--pagi';
 
-          // Format Date to indonesian readable
+          // Format Date
           let formattedDate = report.date;
           try {
             formattedDate = new Date(`${report.date}T12:00:00`).toLocaleDateString('id-ID', {
@@ -216,9 +299,14 @@
             console.warn(e);
           }
 
+          // Photo or placeholder
+          const photoHtml = report.photoURL
+            ? `<img src="${report.photoURL}" alt="Foto gigi ${name} tanggal ${formattedDate}" class="admin-photo-img" loading="lazy">`
+            : `<div style="width:100%;aspect-ratio:4/3;background:linear-gradient(135deg,#E0FFF7,#F0FFF4);display:flex;align-items:center;justify-content:center;font-size:40px;">🦷</div>`;
+
           card.innerHTML = `
             <div class="admin-photo-img-wrapper">
-              <img src="${report.photoURL}" alt="Foto gigi ${name} tanggal ${formattedDate}" class="admin-photo-img" loading="lazy">
+              ${photoHtml}
               <span class="admin-photo-badge ${timeBadgeClass}">
                 ${timeBadge === 'Pagi' ? '☀️' : '🌙'} ${timeBadge}
               </span>
@@ -228,7 +316,7 @@
               <span class="admin-photo-time">
                 ${formattedDate} • ${report.time || '-'}
               </span>
-              ${report.notes ? `<p class="admin-photo-notes"><strong>Catatan:</strong> "${report.notes}"</p>` : ''}
+              ${report.notes ? `<p class="admin-photo-notes"><strong>Catatan:</strong> "${report.notes}"</p>` : '<p class="admin-photo-notes" style="color:#999;">Tidak ada catatan</p>'}
             </div>
           `;
           grid.appendChild(card);
@@ -246,7 +334,7 @@
       // Filter change event listener
       document.getElementById('time-filter').addEventListener('change', applyFilterAndRender);
 
-      loadUserPhotos();
+      loadUserData();
     });
   </script>
 </body>

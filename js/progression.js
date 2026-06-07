@@ -99,6 +99,27 @@ function normalizeScopeToken(value) {
     .replace(/^_+|_+$/g, '') || 'guest';
 }
 
+// Collect ALL possible scope tokens for the current user context
+// This ensures we never miss progress saved under a different auth state
+function getAllScopeTokens(user = null) {
+  const tokens = new Set();
+  const sources = [
+    user,
+    getCurrentUser(),
+    getLocalUser()
+  ].filter(Boolean);
+
+  for (const source of sources) {
+    if (source.uid) tokens.add(`uid_${normalizeScopeToken(source.uid)}`);
+    if (source.email) tokens.add(`email_${normalizeScopeToken(source.email)}`);
+    if (source.username) tokens.add(`name_${normalizeScopeToken(source.username)}`);
+    if (source.name) tokens.add(`name_${normalizeScopeToken(source.name)}`);
+  }
+
+  if (tokens.size === 0) tokens.add('guest');
+  return Array.from(tokens);
+}
+
 function getUserScopeToken(user = null) {
   const source = user || getCurrentUser() || getLocalUser() || {};
   if (source.uid) return `uid_${normalizeScopeToken(source.uid)}`;
@@ -113,15 +134,45 @@ function getScopedKey(baseKey, user = null) {
 }
 
 function getLocalReports(user = null) {
-  return readJSON(getScopedKey('dentavizion-reports', user), []);
+  // Merge reports from all possible scope tokens
+  const tokens = getAllScopeTokens(user);
+  let allReports = [];
+  for (const token of tokens) {
+    const key = `dentavizion-reports:${token}`;
+    const reports = readJSON(key, []);
+    allReports = allReports.concat(reports);
+  }
+  return allReports.length > 0 ? allReports : [];
 }
 
 function getStoredProgress(user = null) {
-  return readJSON(getScopedKey('dentavizion-progress', user), { completedModuleIds: [] });
+  // Merge progress from all possible scope tokens to handle auth state mismatch
+  const tokens = getAllScopeTokens(user);
+  const mergedIds = new Set();
+  let latestProgress = { completedModuleIds: [] };
+
+  for (const token of tokens) {
+    const key = `dentavizion-progress:${token}`;
+    const progress = readJSON(key, null);
+    if (progress && Array.isArray(progress.completedModuleIds)) {
+      progress.completedModuleIds.forEach((id) => mergedIds.add(id));
+      latestProgress = progress;
+    }
+  }
+
+  return {
+    ...latestProgress,
+    completedModuleIds: Array.from(mergedIds)
+  };
 }
 
 function saveStoredProgress(progress, user = null) {
-  localStorage.setItem(getScopedKey('dentavizion-progress', user), JSON.stringify(progress));
+  // Save to ALL possible scope tokens so progress is always findable
+  const tokens = getAllScopeTokens(user);
+  const data = JSON.stringify(progress);
+  for (const token of tokens) {
+    localStorage.setItem(`dentavizion-progress:${token}`, data);
+  }
 }
 
 function getLocalModuleIds(user = null) {
@@ -136,7 +187,12 @@ function getLocalModuleIds(user = null) {
 }
 
 function saveLocalReports(reports, user = null) {
-  localStorage.setItem(getScopedKey('dentavizion-reports', user), JSON.stringify(reports));
+  // Save to ALL possible scope tokens for consistency
+  const tokens = getAllScopeTokens(user);
+  const data = JSON.stringify(reports);
+  for (const token of tokens) {
+    localStorage.setItem(`dentavizion-reports:${token}`, data);
+  }
 }
 
 function uniqueReports(reports) {
@@ -249,25 +305,32 @@ function getConsecutiveStreak(reportDays, anchorKey) {
   return streak;
 }
 
+// Total possible XP from all sources
+const TOTAL_POSSIBLE_XP = MODULE_DEFINITIONS.reduce((sum, m) => sum + m.xp, 0) + WEEKLY_STREAK_XP;
+
 function getLevelFromXp(totalXp) {
   const safeXp = Math.max(0, Number(totalXp) || 0);
-  const level = Math.floor(safeXp / 100) + 1;
-  const levelBaseXp = (level - 1) * 100;
-  const nextLevelXp = level * 100;
+  // Each level = 250 XP, matching module rewards for clean progression
+  const XP_PER_LEVEL = 250;
+  const level = Math.floor(safeXp / XP_PER_LEVEL) + 1;
+  const levelBaseXp = (level - 1) * XP_PER_LEVEL;
+  const nextLevelXp = level * XP_PER_LEVEL;
   return {
     level,
     levelBaseXp,
     nextLevelXp,
     xpIntoLevel: safeXp - levelBaseXp,
-    xpToNextLevel: nextLevelXp - safeXp
+    xpToNextLevel: nextLevelXp - safeXp,
+    totalXp: safeXp,
+    totalPossibleXp: TOTAL_POSSIBLE_XP
   };
 }
 
 function getLevelTitle(level) {
-  if (level >= 12) return 'Legenda Senyum 🏆';
-  if (level >= 9) return 'Pahlawan Senyum ✨';
-  if (level >= 6) return 'Jagoan Konsisten 🌟';
-  if (level >= 3) return 'Penjelajah Gigi 🚀';
+  if (level >= 5) return 'Legenda Senyum 🏆';
+  if (level >= 4) return 'Pahlawan Senyum ✨';
+  if (level >= 3) return 'Jagoan Gigi 🌟';
+  if (level >= 2) return 'Penjelajah Gigi 🚀';
   return 'Pemula Hebat 🦷';
 }
 
@@ -340,6 +403,10 @@ async function buildProgressSnapshot({ user = null, profile = null } = {}) {
   const levelInfo = getLevelFromXp(totalXp);
   const levelTitle = getLevelTitle(levelInfo.level);
 
+  // Calculate total progress as percentage of total possible XP
+  const totalPossibleXp = TOTAL_POSSIBLE_XP;
+  const overallProgressPercent = Math.min(100, Math.round((totalXp / totalPossibleXp) * 100));
+
   return {
     user: resolvedUser,
     userEmail,
@@ -349,13 +416,14 @@ async function buildProgressSnapshot({ user = null, profile = null } = {}) {
     moduleAchievements,
     reportAchievements,
     totalXp,
+    totalPossibleXp,
     moduleXp,
     reportXp,
     level: levelInfo.level,
     levelTitle,
     xpIntoLevel: levelInfo.xpIntoLevel,
     xpToNextLevel: levelInfo.xpToNextLevel,
-    progressPercent: Math.min(100, Math.round((levelInfo.xpIntoLevel / 100) * 100)),
+    progressPercent: overallProgressPercent,
     moduleCompletionCount: mergedModuleIds.length,
     moduleCompletionTotal: MODULE_DEFINITIONS.length,
     reportCompletionCount: weeklyState.completedDays,
@@ -415,6 +483,32 @@ async function completeModuleProgress(moduleId) {
   };
 }
 
+// Restore progress from a Firestore profile into localStorage
+// Called after login to ensure progress survives logout/login cycles
+function restoreProgressFromProfile(profile, user = null) {
+  if (!profile) return;
+
+  const achievementProgress = profile.achievementProgress || profile.progress || {};
+  const completedModuleIds = Array.isArray(achievementProgress.completedModuleIds)
+    ? achievementProgress.completedModuleIds
+    : [];
+
+  if (completedModuleIds.length > 0) {
+    const existingProgress = getStoredProgress(user);
+    const mergedIds = new Set([
+      ...existingProgress.completedModuleIds,
+      ...completedModuleIds
+    ]);
+
+    saveStoredProgress({
+      ...existingProgress,
+      ...achievementProgress,
+      completedModuleIds: Array.from(mergedIds),
+      restoredAt: new Date().toISOString()
+    }, user);
+  }
+}
+
 export {
   MODULE_DEFINITIONS,
   WEEKDAY_LABELS,
@@ -425,7 +519,9 @@ export {
   getLocalReports,
   getWeeklyReportState,
   getUserScopeToken,
+  restoreProgressFromProfile,
   saveLocalReports,
+  saveStoredProgress,
   syncProgressToProfile,
   toDateKey
 };

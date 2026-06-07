@@ -852,7 +852,7 @@
 
             // Upload avatar if selected
             if (selectedEditAvatarFile && user) {
-              photoURL = await uploadProfilePhoto(user.uid, selectedEditAvatarFile);
+              photoURL = await uploadProfilePhoto(user.email, selectedEditAvatarFile);
               selectedEditAvatarFile = null;
             }
 
@@ -967,7 +967,18 @@
         }
 
         if (weeklyStreakEl) weeklyStreakEl.textContent = String(snapshot.weeklyState.currentStreak);
-        if (weeklyCountEl) weeklyCountEl.textContent = `${snapshot.weeklyState.completedDays}x`;
+
+        // Count total brushings (report entries) this week, not just unique days
+        if (weeklyCountEl) {
+          const weekStart = snapshot.weeklyState.dayItems[0]?.key;
+          const weekEnd = snapshot.weeklyState.dayItems[6]?.key;
+          const weeklyBrushings = (snapshot.reports || []).filter(r => {
+            const dk = r.date;
+            return dk && dk >= weekStart && dk <= weekEnd;
+          }).length;
+          weeklyCountEl.textContent = `${weeklyBrushings}x`;
+        }
+
         if (weeklyProgressTextEl) {
           weeklyProgressTextEl.textContent = snapshot.weeklyState.completedDays >= 7
             ? '🏆 Piala baru terbuka untuk streak sempurna!'
@@ -1010,11 +1021,11 @@
         }
 
         if (xpContainerEl) {
-          xpContainerEl.setAttribute('aria-label', `${snapshot.xpIntoLevel} dari 100 XP`);
+          xpContainerEl.setAttribute('aria-label', `${snapshot.totalXp} dari ${snapshot.totalPossibleXp} XP`);
         }
 
         if (xpFillEl) xpFillEl.style.width = `${snapshot.progressPercent}%`;
-        if (xpTextEl) xpTextEl.textContent = `${snapshot.xpIntoLevel} / 100 XP`;
+        if (xpTextEl) xpTextEl.textContent = `${snapshot.totalXp} / ${snapshot.totalPossibleXp} XP`;
 
         renderTrophies(snapshot);
         renderWeeklyStats(snapshot);
