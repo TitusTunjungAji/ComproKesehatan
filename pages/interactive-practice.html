@@ -142,7 +142,7 @@
           <video id="webcam" style="display: none;" playsinline></video>
           <canvas id="ar-canvas" class="viewer-image" width="480" height="480" style="object-fit: cover; transform: scaleX(-1);"></canvas>
           <div id="ar-instructions" class="ar-instructions">Memuat Kamera AR...</div>
-          <div id="success-badge" class="success-badge" aria-hidden="true">Bersih! ✨</div>
+          <div id="success-badge" class="success-badge" aria-hidden="true">Bersih!</div>
         </div>
       </div>
 
@@ -604,9 +604,9 @@
       function stepCompleted() {
         btnNext.disabled = false;
         btnNext.innerHTML = 'Lanjut <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>';
-        progressText.textContent = 'Selesai! 🎉';
+        progressText.textContent = 'Selesai!';
 
-        successBadge.textContent = 'Selesai! ✨';
+        successBadge.textContent = 'Selesai!';
         successBadge.classList.add('success-badge--visible');
 
         hideBrushCursor();
@@ -753,7 +753,7 @@
 
       // ── Finish ──
       function finishSimulation() {
-        titleEl.textContent = 'Luar Biasa! 🏆';
+        titleEl.textContent = 'Luar Biasa!';
         textEl.textContent = 'Kamu sudah belajar menyikat gigi dengan baik dari semua regio! Gigi kamu pasti sehat dan kuat. Jangan lupa untuk menyikat gigi 2 kali sehari ya!';
         if (viewerImg) {
           viewerImg.src = '../assets/images/mascot-tooth.png';
@@ -778,7 +778,7 @@
           btnNext.setAttribute('aria-label', 'Selesai, kembali ke Beranda');
         }
 
-        successBadge.textContent = 'Pahlawan Gigi! 🦷';
+        successBadge.textContent = 'Pahlawan Gigi!';
         successBadge.classList.add('success-badge--visible');
 
         // Mark all dots as done

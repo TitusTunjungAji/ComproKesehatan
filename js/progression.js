@@ -9,7 +9,7 @@ const MODULE_DEFINITIONS = [
   {
     id: 'mod1',
     key: 'dentavizion-mod1-done',
-    title: 'Ayo Sikat Gigi! 🪥',
+    title: 'Ayo Sikat Gigi!',
     subtitle: 'Pahlawan Sikat Gigi',
     description: 'Selesaikan modul dasar sikat gigi untuk membuka piala pertama.',
     xp: 250,
@@ -18,7 +18,7 @@ const MODULE_DEFINITIONS = [
   {
     id: 'mod2',
     key: 'dentavizion-mod2-done',
-    title: 'Scaling Gigi ✨',
+    title: 'Scaling Gigi',
     subtitle: 'Gigi Super Kinclong',
     description: 'Pahami cara merawat gigi dari karang agar senyum makin cerah.',
     xp: 250,
@@ -27,7 +27,7 @@ const MODULE_DEFINITIONS = [
   {
     id: 'mod3',
     key: 'dentavizion-mod3-done',
-    title: 'Tambal Gigi 🦷',
+    title: 'Tambal Gigi',
     subtitle: 'Perisai Gigi Sehat',
     description: 'Selesaikan modul tambal gigi untuk jaga gigi tetap kuat.',
     xp: 250,
@@ -36,7 +36,7 @@ const MODULE_DEFINITIONS = [
   {
     id: 'mod4',
     key: 'dentavizion-mod4-done',
-    title: 'Cabut Gigi 💪',
+    title: 'Cabut Gigi',
     subtitle: 'Sahabat Dokter Gigi',
     description: 'Tuntaskan modul cabut gigi dan buka pencapaian terakhir.',
     xp: 250,
@@ -327,11 +327,11 @@ function getLevelFromXp(totalXp) {
 }
 
 function getLevelTitle(level) {
-  if (level >= 5) return 'Legenda Senyum 🏆';
-  if (level >= 4) return 'Pahlawan Senyum ✨';
-  if (level >= 3) return 'Jagoan Gigi 🌟';
-  if (level >= 2) return 'Penjelajah Gigi 🚀';
-  return 'Pemula Hebat 🦷';
+  if (level >= 5) return 'Legenda Senyum';
+  if (level >= 4) return 'Pahlawan Senyum';
+  if (level >= 3) return 'Jagoan Gigi';
+  if (level >= 2) return 'Penjelajah Gigi';
+  return 'Pemula Hebat';
 }
 
 function buildAchievements(profileProgress, weeklyState) {
@@ -347,7 +347,7 @@ function buildAchievements(profileProgress, weeklyState) {
   if (weeklyState.completedDays >= WEEKLY_STREAK_TARGET) {
     reportAchievements.push({
       id: 'weekly-streak',
-      title: 'Pahlawan Sikat Gigi 🪥',
+      title: 'Pahlawan Sikat Gigi',
       subtitle: '7 Hari Berturut-turut',
       description: 'Kamu menyelesaikan semua hari dalam minggu ini.',
       xp: WEEKLY_STREAK_XP,
@@ -478,8 +478,8 @@ async function completeModuleProgress(moduleId) {
     alreadyCompleted,
     snapshot,
     message: alreadyCompleted
-      ? `✅ Progress modul tetap tersimpan. Piala ${module.subtitle} sudah terbuka.`
-      : `🏆 Piala ${module.subtitle} terbuka! +${module.xp} XP`
+      ? `Progress modul tetap tersimpan. Piala ${module.subtitle} sudah terbuka.`
+      : `Piala ${module.subtitle} terbuka! +${module.xp} XP`
   };
 }
 
