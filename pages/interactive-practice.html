@@ -142,27 +142,6 @@
           <video id="webcam" style="display: none;" playsinline></video>
           <canvas id="ar-canvas" class="viewer-image" width="480" height="480" style="object-fit: cover; transform: scaleX(-1);"></canvas>
           <div id="ar-instructions" class="ar-instructions">Memuat Kamera AR...</div>
-          <div id="ar-controls" style="position:absolute;bottom:12px;right:12px;display:flex;gap:8px;z-index:20">
-            <button id="btn-flip-camera" type="button" aria-label="Putar Kamera" style="
-              width:42px;height:42px;border-radius:50%;border:none;background:rgba(0,0,0,0.5);
-              backdrop-filter:blur(8px);color:#fff;cursor:pointer;display:flex;align-items:center;
-              justify-content:center;transition:all 0.2s ease;box-shadow:0 2px 8px rgba(0,0,0,0.3);
-            ">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/><path d="M13 5h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-5"/><circle cx="12" cy="12" r="3"/><path d="m18 22-3-3 3-3"/><path d="m6 2 3 3-3 3"/></svg>
-            </button>
-          </div>
-          <div id="camera-retry" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.8);z-index:25;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;border-radius:inherit;">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#E53E3E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 10c-.2-2.3-2.1-4-4.5-4a4.98 4.98 0 0 0-4.27 2.41"/><path d="M4.73 10.41 3 8l2.73-2"/><path d="M7.5 14c.2 2.3 2.1 4 4.5 4a4.98 4.98 0 0 0 4.27-2.41"/><path d="M19.27 13.59 21 16l-2.73 2"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
-            <p style="color:#fff;font-size:14px;font-weight:600;text-align:center;max-width:240px;margin:0">Kamera tidak dapat diakses.<br>Izinkan akses kamera untuk melanjutkan.</p>
-            <button id="btn-retry-camera" type="button" style="
-              padding:10px 24px;border-radius:12px;border:none;background:#2BAA8E;color:#fff;
-              font-weight:700;font-size:14px;cursor:pointer;transition:all 0.2s ease;
-            ">Coba Lagi</button>
-            <button id="btn-cancel-camera" type="button" style="
-              padding:8px 20px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.3);background:transparent;color:rgba(255,255,255,0.7);
-              font-weight:600;font-size:13px;cursor:pointer;transition:all 0.2s ease;
-            ">Kembali</button>
-          </div>
           <div id="success-badge" class="success-badge" aria-hidden="true">Bersih!</div>
         </div>
       </div>
@@ -433,17 +412,7 @@
       }
 
       // ── AR & MediaPipe Init ──
-      let currentFacingMode = 'user'; // 'user' = front, 'environment' = rear
-
       function initAR() {
-        const retryPanel = document.getElementById('camera-retry');
-        const btnRetry = document.getElementById('btn-retry-camera');
-        const btnCancel = document.getElementById('btn-cancel-camera');
-        const btnFlip = document.getElementById('btn-flip-camera');
-
-        // Hide retry panel
-        if (retryPanel) retryPanel.style.display = 'none';
-
         faceMesh = new FaceMesh({locateFile: (file) => {
           return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
         }});
@@ -455,73 +424,16 @@
         });
         faceMesh.onResults(onFaceMeshResults);
 
-        function startCamera() {
-          // Stop existing camera/stream if any
-          if (camera) {
-            try { camera.stop(); } catch(_e) {}
-          }
-          if (videoElement.srcObject) {
-            videoElement.srcObject.getTracks().forEach(t => t.stop());
-            videoElement.srcObject = null;
-          }
-
-          if (retryPanel) retryPanel.style.display = 'none';
-          arInstructions.textContent = 'Memuat Kamera AR...';
-          arInstructions.className = 'ar-instructions';
-
-          // Reset auto-zoom on camera switch
-          autoZoomDone = false;
-          savedZoom = 1;
-          savedOffsetX = 0;
-          savedOffsetY = 0;
-
-          camera = new Camera(videoElement, {
-            onFrame: async () => {
-              await faceMesh.send({image: videoElement});
-            },
-            width: 480,
-            height: 480,
-            facingMode: currentFacingMode
-          });
-          camera.start().then(() => {
-            // Mirror only for front camera
-            if (canvasElement) {
-              canvasElement.style.transform = currentFacingMode === 'user' ? 'scaleX(-1)' : 'none';
-            }
-          }).catch(err => {
-            console.warn('Camera error:', err);
-            arInstructions.textContent = 'Kamera tidak dapat diakses';
-            arInstructions.className = 'ar-instructions';
-            if (retryPanel) retryPanel.style.display = 'flex';
-          });
-        }
-
-        // Camera flip button
-        if (btnFlip) {
-          btnFlip.addEventListener('click', (e) => {
-            e.stopPropagation();
-            currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
-            startCamera();
-          });
-        }
-
-        // Retry button
-        if (btnRetry) {
-          btnRetry.addEventListener('click', (e) => {
-            e.stopPropagation();
-            startCamera();
-          });
-        }
-
-        // Cancel button — go back
-        if (btnCancel) {
-          btnCancel.addEventListener('click', (e) => {
-            e.stopPropagation();
-            window.history.back();
-          });
-        }
-
-        startCamera();
+        camera = new Camera(videoElement, {
+          onFrame: async () => {
+            await faceMesh.send({image: videoElement});
+          },
+          width: 480,
+          height: 480
+        });
+        camera.start().catch(err => {
+          arInstructions.textContent = "Gagal mengakses kamera. Periksa izin browser.";
+        });
       }
 
       function detectPose(landmarks) {

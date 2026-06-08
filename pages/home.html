@@ -251,9 +251,21 @@
             <!-- Video preview for live camera -->
             <div class="report-card__video-wrap" id="video-container" style="display: none; position: relative; width: 100%; height: 100%; min-height: 220px; background: #000; border-radius: 16px; overflow: hidden;">
               <video id="webcam-video" autoplay playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
-              <button type="button" id="btn-capture-frame" style="position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); background: #2BAA8E; color: white; border: none; border-radius: 50%; width: 48px; height: 48px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(43,170,142,0.4); z-index: 10;" aria-label="Ambil foto">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
-              </button>
+              <!-- Camera controls bar -->
+              <div style="position:absolute;bottom:12px;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:16px;z-index:10;">
+                <!-- Close camera -->
+                <button type="button" id="btn-close-camera" style="background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);color:#fff;border:none;border-radius:50%;width:40px;height:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.3);" aria-label="Tutup kamera">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+                <!-- Capture button -->
+                <button type="button" id="btn-capture-frame" style="background:#2BAA8E;color:white;border:3px solid rgba(255,255,255,0.4);border-radius:50%;width:56px;height:56px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(43,170,142,0.4);" aria-label="Ambil foto">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+                <!-- Flip camera -->
+                <button type="button" id="btn-flip-report-camera" style="background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);color:#fff;border:none;border-radius:50%;width:40px;height:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.3);" aria-label="Putar kamera">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/><path d="M13 5h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-5"/><circle cx="12" cy="12" r="3"/><path d="m18 22-3-3 3-3"/><path d="m6 2 3 3-3 3"/></svg>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -597,6 +609,7 @@
 
       let capturedFile = null;
       let localStream = null;
+      let reportFacingMode = 'environment'; // default to rear camera for teeth photos
       const video = document.getElementById('webcam-video');
       const videoContainer = document.getElementById('video-container');
 
@@ -608,23 +621,36 @@
         if (videoContainer) videoContainer.style.display = 'none';
       }
 
-      async function startWebcam() {
+      function resetToDefault() {
+        stopWebcam();
+        uploadDefault.style.display = 'block';
+        uploadPreview.style.display = 'none';
+      }
+
+      async function startWebcam(facingMode) {
+        // Stop existing stream first
+        if (localStream) {
+          localStream.getTracks().forEach(track => track.stop());
+          localStream = null;
+        }
+
         try {
-          // Request camera permission and start streaming
           localStream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: 'user' },
+            video: { facingMode: facingMode || reportFacingMode },
             audio: false
           });
           if (video) {
             video.srcObject = localStream;
+            // Mirror for front camera
+            video.style.transform = (facingMode || reportFacingMode) === 'user' ? 'scaleX(-1)' : 'none';
             uploadDefault.style.display = 'none';
             uploadPreview.style.display = 'none';
             videoContainer.style.display = 'block';
           }
         } catch (err) {
-          console.warn('Failed to access webcam (CORS, desktop, or denied permission), falling back to file dialog:', err);
-          showReportToast('Mengaktifkan kamera sistem...');
-          cameraInput.click();
+          console.warn('Camera error, falling back to file dialog:', err);
+          showReportToast('Kamera tidak tersedia, pilih dari galeri');
+          resetToDefault();
         }
       }
 
@@ -690,9 +716,11 @@
             canvas.height = video.videoHeight || 480;
             const ctx = canvas.getContext('2d');
             
-            // Mirror image for front camera feel
-            ctx.translate(canvas.width, 0);
-            ctx.scale(-1, 1);
+            // Only mirror for front camera
+            if (reportFacingMode === 'user') {
+              ctx.translate(canvas.width, 0);
+              ctx.scale(-1, 1);
+            }
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             
             canvas.toBlob((blob) => {
@@ -708,6 +736,27 @@
               reader.readAsDataURL(file);
             }, 'image/jpeg', 0.9);
           }
+        });
+      }
+
+      // Close camera button → reset to default upload state
+      const btnCloseCamera = document.getElementById('btn-close-camera');
+      if (btnCloseCamera) {
+        btnCloseCamera.addEventListener('click', (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          resetToDefault();
+        });
+      }
+
+      // Flip camera button → switch front/rear
+      const btnFlipReportCamera = document.getElementById('btn-flip-report-camera');
+      if (btnFlipReportCamera) {
+        btnFlipReportCamera.addEventListener('click', (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          reportFacingMode = reportFacingMode === 'environment' ? 'user' : 'environment';
+          startWebcam(reportFacingMode);
         });
       }
 
