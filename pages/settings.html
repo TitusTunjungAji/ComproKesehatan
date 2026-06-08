@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 
-  <title>⚙️ Pengaturan — DENTAVIZION</title>
+  <title>Pengaturan — DENTAVIZION</title>
   <meta name="description" content="Atur profil kamu di DENTAVIZION!">
 
   <link rel="manifest" href="../manifest.json">
@@ -32,7 +32,7 @@
             <polyline points="15 18 9 12 15 6"/>
           </svg>
         </button>
-        <h1 class="settings-header__title">⚙️ Pengaturan</h1>
+        <h1 class="settings-header__title">Pengaturan</h1>
       </div>
     </header>
 
@@ -56,7 +56,7 @@
 
       <!-- Profile Info -->
       <div class="settings-card">
-        <h2 class="settings-card__title">👤 Info Profil</h2>
+        <h2 class="settings-card__title">Info Profil</h2>
 
         <div class="settings-field">
           <label class="settings-field__label" for="input-name">Nama Kamu</label>
@@ -71,12 +71,12 @@
 
       <!-- Save -->
       <button id="btn-save" class="settings-save">
-        ✅ Simpan Perubahan
+        Simpan Perubahan
       </button>
 
       <!-- Logout -->
       <button id="btn-logout" class="settings-logout">
-        🚪 Keluar dari Akun
+        Keluar dari Akun
       </button>
 
     </main>
@@ -170,7 +170,7 @@
             avatarImg.src = ev.target.result;
           };
           reader.readAsDataURL(file);
-          showToast('📸 Foto dipilih! Tekan Simpan ya!');
+          showToast('Foto dipilih! Tekan Simpan ya!');
         }
       });
 
@@ -180,7 +180,7 @@
 
         const name = inputName.value.trim();
         if (!name) {
-          showToast('⚠️ Nama tidak boleh kosong!');
+          showToast('Nama tidak boleh kosong!');
           inputName.focus();
           return;
         }
@@ -209,11 +209,11 @@
           localStorage.setItem('dentavizion-user', JSON.stringify(localUser));
 
           hideLoading();
-          showToast('✅ Profil berhasil disimpan!');
+          showToast('Profil berhasil disimpan!');
         } catch (e) {
           console.error('Save error:', e);
           hideLoading();
-          showToast('❌ Gagal menyimpan. Coba lagi ya!');
+          showToast('Gagal menyimpan. Coba lagi ya!');
         } finally {
           btnSave.disabled = false;
         }
@@ -228,7 +228,7 @@
           window.location.href = 'login.html';
         } catch (e) {
           hideLoading();
-          showToast('❌ Gagal keluar. Coba lagi!');
+          showToast('Gagal keluar. Coba lagi!');
         }
       });
     });

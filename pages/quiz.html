@@ -66,14 +66,14 @@
           <div class="quiz-progress-row">
             <span id="quiz-counter" class="quiz-counter" aria-live="polite">PERTANYAAN 1 DARI 5</span>
             <div id="quiz-streak" class="quiz-streak" style="display: none;">
-              <span aria-hidden="true">✨</span>
+              <span aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg></span>
               <span>HEBAT!</span>
             </div>
           </div>
           <!-- Progress Bar -->
           <div class="quiz-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="5" aria-label="Progress kuis">
             <div id="quiz-bar-fill" class="quiz-bar__fill" style="width: 0%;"></div>
-            <div id="quiz-bar-emoji" class="quiz-bar__emoji" style="left: 0%;">😊</div>
+            <div id="quiz-bar-emoji" class="quiz-bar__emoji" style="left: 0%;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
           </div>
         </div>
 
@@ -98,7 +98,7 @@
       <!-- === RESULT SCREEN === -->
       <div id="result-screen" class="result-screen" style="display: none;" aria-labelledby="result-title">
         <div class="result-card">
-          <div class="result-card__emoji" id="result-emoji">🎉</div>
+          <div class="result-card__emoji" id="result-emoji"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#2BAA8E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.8 11.3 2 22l10.7-3.79"/><path d="M4 3h.01"/><path d="M22 8h.01"/><path d="M15 2h.01"/><path d="M22 20h.01"/></svg></div>
           <h1 id="result-title" class="result-card__title">Luar Biasa!</h1>
           <p id="result-desc" class="result-card__desc">Kamu mendapat skor sempurna!</p>
           <div class="result-card__score">
@@ -106,7 +106,7 @@
             <span class="result-card__label">SKOR</span>
           </div>
           <div class="result-card__stars" id="result-stars" aria-label="3 bintang dari 3">
-            ⭐⭐⭐
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#F6AD55" stroke="#F6AD55" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#F6AD55" stroke="#F6AD55" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#F6AD55" stroke="#F6AD55" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           </div>
           <div class="result-card__points">
             <span aria-hidden="true">🪙</span>
@@ -369,7 +369,7 @@
         // Feedback
         els.feedback.style.display = 'flex';
         if (isCorrect) {
-          els.feedbackIcon.textContent = '🎉';
+          els.feedbackIcon.textContent = 'Benar!';
           els.feedbackText.textContent = 'Benar! Kamu hebat!';
           els.feedback.className = 'quiz-feedback quiz-feedback--correct';
         } else {
@@ -413,14 +413,14 @@
         let emoji, title, desc, stars;
 
         if (pct === 1) {
-          emoji = '🏆'; title = 'Sempurna!'; desc = 'Kamu mendapat skor sempurna! Gigi kamu pasti sehat sekali!';
-          stars = '⭐⭐⭐';
+          emoji = 'trophy'; title = 'Sempurna!'; desc = 'Kamu mendapat skor sempurna! Gigi kamu pasti sehat sekali!';
+          stars = '<svg width="16" height="16" viewBox="0 0 24 24" fill="#F6AD55" stroke="#F6AD55" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#F6AD55" stroke="#F6AD55" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#F6AD55" stroke="#F6AD55" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
         } else if (pct >= 0.6) {
-          emoji = '🎉'; title = 'Luar Biasa!'; desc = 'Kerja bagus! Sedikit lagi kamu jadi pahlawan gigi!';
-          stars = '⭐⭐';
+          emoji = 'party'; title = 'Luar Biasa!'; desc = 'Kerja bagus! Sedikit lagi kamu jadi pahlawan gigi!';
+          stars = '★★';
         } else {
-          emoji = '💪'; title = 'Tetap Semangat!'; desc = 'Yuk belajar lagi dan coba ulangi kuisnya!';
-          stars = '⭐';
+          emoji = 'strong'; title = 'Tetap Semangat!'; desc = 'Yuk belajar lagi dan coba ulangi kuisnya!';
+          stars = '★';
         }
 
         document.getElementById('result-emoji').textContent = emoji;

@@ -122,7 +122,7 @@ const DentaPWA = (() => {
       toast.id = 'pwa-update-toast';
       toast.className = 'toast';
       toast.setAttribute('role', 'alert');
-      toast.innerHTML = '✨ Versi baru tersedia! Muat ulang untuk memperbarui.';
+      toast.innerHTML = 'Versi baru tersedia! Muat ulang untuk memperbarui.';
       document.body.appendChild(toast);
 
       toast.addEventListener('click', () => {

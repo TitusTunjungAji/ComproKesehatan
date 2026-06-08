@@ -420,16 +420,16 @@
           </div>
           <div class="prof-card__level-badge" id="profile-level-badge" aria-label="Level 1">LVL 1</div>
         </div>
-        <h1 class="prof-card__name" id="profile-name">Hai, Jagoan! 🌟</h1>
+        <h1 class="prof-card__name" id="profile-name">Hai, Jagoan!</h1>
         <script>
           try {
             const localUser = JSON.parse(localStorage.getItem('dentavizion-user') || '{}');
             if (localUser.name) {
-              document.getElementById('profile-name').textContent = "Hai, " + localUser.name + "! 🌟";
+              document.getElementById('profile-name').textContent = "Hai, " + localUser.name + "!";
             }
           } catch (e) {}
         </script>
-        <p class="prof-card__title" id="profile-title">Penjelajah Gigi Super 🦷</p>
+        <p class="prof-card__title" id="profile-title">Penjelajah Gigi Super</p>
         <!-- XP Bar -->
         <div class="prof-card__xp" id="profile-xp-container" aria-label="0 dari 100 XP">
           <div class="prof-card__xp-bar">
@@ -584,7 +584,7 @@
 
           <!-- Name -->
           <div class="edit-field">
-            <label class="edit-field__label" for="edit-input-name">👤 Nama Kamu</label>
+            <label class="edit-field__label" for="edit-input-name"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Nama Kamu</label>
             <input type="text" id="edit-input-name" class="edit-field__input" placeholder="Masukkan nama kamu..." maxlength="50">
           </div>
 
@@ -596,7 +596,7 @@
 
           <!-- Save -->
           <button class="edit-save-btn" id="btn-edit-save">
-            ✅ Simpan Perubahan
+            Simpan Perubahan
           </button>
         </div>
       </div>
@@ -728,7 +728,7 @@
             await logoutUser();
             window.location.href = 'login.html';
           } catch (e) {
-            alert('❌ Gagal keluar. Coba lagi!');
+            alert('Gagal keluar. Coba lagi!');
           }
         });
       }
@@ -738,7 +738,7 @@
         menuAbout.addEventListener('click', () => {
           closeSettings();
           setTimeout(() => {
-            alert('🦷 DENTAVIZION v1.0.0\n\nAplikasi edukasi kesehatan gigi interaktif untuk anak-anak.\n\n© 2026 DentaVizion Team');
+            alert('DENTAVIZION v1.0.0\n\nAplikasi edukasi kesehatan gigi interaktif untuk anak-anak.\n\n© 2026 DentaVizion Team');
           }, 300);
         });
       }
@@ -748,7 +748,7 @@
         menuHelp.addEventListener('click', () => {
           closeSettings();
           setTimeout(() => {
-            alert('❓ Bantuan DENTAVIZION\n\n1. Buka modul untuk belajar\n2. Kerjakan kuis setelah membaca\n3. Laporkan sikat gigi harian\n4. Kumpulkan XP dan piala!\n\nHubungi: support@dentavizion.id');
+            alert('Bantuan DENTAVIZION\n\n1. Buka modul untuk belajar\n2. Kerjakan kuis setelah membaca\n3. Laporkan sikat gigi harian\n4. Kumpulkan XP dan piala!\n\nHubungi: support@dentavizion.id');
           }, 300);
         });
       }
@@ -827,7 +827,7 @@
               if (editAvatarImg) editAvatarImg.src = ev.target.result;
             };
             reader.readAsDataURL(file);
-            showEditToast('📸 Foto dipilih! Tekan Simpan ya!');
+            showEditToast('Foto dipilih! Tekan Simpan ya!');
           }
         });
       }
@@ -839,13 +839,13 @@
           const name = editInputName?.value.trim();
 
           if (!name) {
-            showEditToast('⚠️ Nama tidak boleh kosong!');
+            showEditToast('Nama tidak boleh kosong!');
             editInputName?.focus();
             return;
           }
 
           btnEditSave.disabled = true;
-          btnEditSave.textContent = '⏳ Menyimpan...';
+          btnEditSave.textContent = 'Menyimpan...';
 
           try {
             let photoURL = null;
@@ -869,7 +869,7 @@
             if (photoURL) localUser.photoURL = photoURL;
             localStorage.setItem('dentavizion-user', JSON.stringify(localUser));
 
-            showEditToast('✅ Profil berhasil disimpan!');
+            showEditToast('Profil berhasil disimpan!');
 
             // Refresh profile page
             await renderProfile(user);
@@ -878,10 +878,10 @@
             setTimeout(() => closeEditProfile(), 800);
           } catch (e) {
             console.error('Save profile error:', e);
-            showEditToast('❌ Gagal menyimpan. Coba lagi ya!');
+            showEditToast('Gagal menyimpan. Coba lagi ya!');
           } finally {
             btnEditSave.disabled = false;
-            btnEditSave.textContent = '✅ Simpan Perubahan';
+            btnEditSave.textContent = 'Simpan Perubahan';
           }
         });
       }
@@ -909,10 +909,10 @@
         if (!trophyGridEl) return;
 
         const moduleIcons = {
-          mod1: '🪥',
-          mod2: '✨',
-          mod3: '🦷',
-          mod4: '💪'
+          mod1: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2BAA8E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg>',
+          mod2: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2B6CB0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+          mod3: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E53E3E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C9.24 2 7 4.24 7 7c0 1.47.5 2.83 1.33 3.92C9.08 12.05 10 14.42 10 17v2a2 2 0 004 0v-2c0-2.58.92-4.95 1.67-6.08A6.94 6.94 0 0017 7c0-2.76-2.24-5-5-5z"/></svg>',
+          mod4: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B7791F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>'
         };
 
         trophyGridEl.innerHTML = snapshot.moduleAchievements.map((module) => {
@@ -923,7 +923,7 @@
           return `
             <article class="trophy-card ${unlockedClass} trophy-card--${module.color}" data-module-id="${module.id}">
               <div class="trophy-card__icon" aria-hidden="true">
-                <span style="font-size: 22px; line-height: 1;">${moduleIcons[module.id] || '🏆'}</span>
+                <span style="font-size: 22px; line-height: 1;">${moduleIcons[module.id] || '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2BAA8E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>'}</span>
               </div>
               <h3 class="trophy-card__title">${module.subtitle}</h3>
               <p class="trophy-card__sub">${statusText}<br>${detailText}</p>
@@ -1011,7 +1011,7 @@
         const resolvedUser = profile || localUser || {};
 
         if (nameEl) {
-          nameEl.textContent = `Hai, ${(resolvedUser.name || localUser.name || 'Jagoan')}! 🌟`;
+          nameEl.textContent = `Hai, ${(resolvedUser.name || localUser.name || 'Jagoan')}!`;
         }
 
         if (titleEl) {
