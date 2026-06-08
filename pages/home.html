@@ -138,51 +138,8 @@
             Lihat Semua <span aria-hidden="true">›</span>
           </a>
         </div>
-        <div class="materials-rail" role="list">
-          <!-- Card 1: Sikat Gigi -->
-          <a href="brushing-guide.html" class="mat-card" role="listitem" aria-label="Ayo Sikat Gigi">
-            <div class="mat-card__thumb">
-              <img src="../assets/images/thumb-sikat.jpeg" alt="" loading="lazy">
-              <span class="mat-card__tag mat-card__tag--teal">MODUL 1</span>
-            </div>
-            <div class="mat-card__body">
-              <h3 class="mat-card__title">Ayo Sikat Gigi!</h3>
-              <p class="mat-card__desc">Belajar sikat gigi yang seru dan benar yuk!</p>
-            </div>
-          </a>
-          <!-- Card 2: Scaling -->
-          <a href="scaling-guide.html" class="mat-card" role="listitem" aria-label="Scaling Gigi">
-            <div class="mat-card__thumb">
-              <img src="../assets/images/thumb-scaling.jpeg" alt="" loading="lazy">
-              <span class="mat-card__tag mat-card__tag--coral">MODUL 2</span>
-            </div>
-            <div class="mat-card__body">
-              <h3 class="mat-card__title">Scaling Gigi</h3>
-              <p class="mat-card__desc">Bikin gigi bersih kinclong kayak bintang!</p>
-            </div>
-          </a>
-          <!-- Card 3: Penambalan -->
-          <a href="filling-guide.html" class="mat-card" role="listitem" aria-label="Penambalan Gigi">
-            <div class="mat-card__thumb">
-              <img src="../assets/images/thumb-tambal.jpeg" alt="" loading="lazy">
-              <span class="mat-card__tag mat-card__tag--green">MODUL 3</span>
-            </div>
-            <div class="mat-card__body">
-              <h3 class="mat-card__title">Tambal Gigi</h3>
-              <p class="mat-card__desc">Gigi bolong? Tenang, bisa ditambal kok!</p>
-            </div>
-          </a>
-          <!-- Card 4: Pencabutan -->
-          <a href="extraction-guide.html" class="mat-card" role="listitem" aria-label="Pencabutan Gigi">
-            <div class="mat-card__thumb">
-              <img src="../assets/images/thumb-cabut.jpeg" alt="" loading="lazy">
-              <span class="mat-card__tag mat-card__tag--teal">MODUL 4</span>
-            </div>
-            <div class="mat-card__body">
-              <h3 class="mat-card__title">Cabut Gigi</h3>
-              <p class="mat-card__desc">Jangan takut! Cabut gigi itu nggak serem kok!</p>
-            </div>
-          </a>
+        <div class="materials-rail" role="list" id="materials-rail">
+          <!-- Rendered dynamically by JS with lock state -->
         </div>
       </section>
 
@@ -406,6 +363,105 @@
           window.location.href = 'profile.html';
         });
       }
+      // ── Materi Cards — Sequential Unlock ──
+      const MATERI_MODULES = [
+        { id: 'mod1', title: 'Ayo Sikat Gigi!', desc: 'Belajar sikat gigi yang seru dan benar yuk!', img: '../assets/images/thumb-sikat.jpeg', href: 'brushing-guide.html', tag: 'MODUL 1', tagColor: 'teal' },
+        { id: 'mod2', title: 'Scaling Gigi', desc: 'Bikin gigi bersih kinclong kayak bintang!', img: '../assets/images/thumb-scaling.jpeg', href: 'scaling-guide.html', tag: 'MODUL 2', tagColor: 'coral' },
+        { id: 'mod3', title: 'Tambal Gigi', desc: 'Gigi bolong? Tenang, bisa ditambal kok!', img: '../assets/images/thumb-tambal.jpeg', href: 'filling-guide.html', tag: 'MODUL 3', tagColor: 'green' },
+        { id: 'mod4', title: 'Cabut Gigi', desc: 'Jangan takut! Cabut gigi itu nggak serem kok!', img: '../assets/images/thumb-cabut.jpeg', href: 'extraction-guide.html', tag: 'MODUL 4', tagColor: 'teal' }
+      ];
+
+      function renderMateriCards(completedIds = []) {
+        const rail = document.getElementById('materials-rail');
+        if (!rail) return;
+        rail.innerHTML = '';
+        const completedSet = new Set(completedIds);
+
+        MATERI_MODULES.forEach((mod, i) => {
+          const isCompleted = completedSet.has(mod.id);
+          const isUnlocked = i === 0 || completedSet.has(MATERI_MODULES[i - 1].id);
+          const isLocked = !isCompleted && !isUnlocked;
+
+          const card = document.createElement(isLocked ? 'div' : 'a');
+          card.className = 'mat-card' + (isLocked ? ' mat-card--locked' : '') + (isCompleted ? ' mat-card--completed' : '');
+          card.setAttribute('role', 'listitem');
+          card.setAttribute('aria-label', mod.title + (isLocked ? ' (Terkunci)' : ''));
+
+          if (!isLocked) {
+            card.href = mod.href;
+          } else {
+            card.style.cursor = 'not-allowed';
+            card.addEventListener('click', (e) => {
+              e.preventDefault();
+              // Show lock toast
+              let toast = document.getElementById('lock-toast');
+              if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'lock-toast';
+                toast.setAttribute('role', 'alert');
+                Object.assign(toast.style, {
+                  position: 'fixed', bottom: '90px', left: '50%', transform: 'translateX(-50%) translateY(10px)',
+                  background: 'rgba(26,59,52,0.92)', color: '#fff', padding: '10px 20px',
+                  borderRadius: '12px', fontSize: '13px', fontWeight: '600',
+                  zIndex: '9999', opacity: '0', transition: 'all 0.3s ease', pointerEvents: 'none',
+                  backdropFilter: 'blur(8px)', boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
+                });
+                document.body.appendChild(toast);
+              }
+              toast.textContent = `Selesaikan ${MATERI_MODULES[i - 1].title} dulu ya!`;
+              toast.style.opacity = '1';
+              toast.style.transform = 'translateX(-50%) translateY(0)';
+              clearTimeout(toast._timer);
+              toast._timer = setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(-50%) translateY(10px)';
+              }, 2500);
+            });
+          }
+
+          // Lock overlay for thumbnail
+          const lockOverlay = isLocked
+            ? `<div style="position:absolute;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;border-radius:inherit;z-index:2">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+               </div>`
+            : '';
+
+          // Completed check overlay
+          const checkOverlay = isCompleted
+            ? `<div style="position:absolute;inset:0;background:rgba(43,170,142,0.3);display:flex;align-items:center;justify-content:center;border-radius:inherit;z-index:2">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+               </div>`
+            : '';
+
+          card.innerHTML = `
+            <div class="mat-card__thumb" style="position:relative${isLocked ? ';filter:grayscale(0.6);opacity:0.7' : ''}">
+              <img src="${mod.img}" alt="" loading="lazy">
+              <span class="mat-card__tag mat-card__tag--${mod.tagColor}">${mod.tag}</span>
+              ${lockOverlay}${checkOverlay}
+            </div>
+            <div class="mat-card__body"${isLocked ? ' style="opacity:0.5"' : ''}>
+              <h3 class="mat-card__title">${mod.title}${isLocked ? ' <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-left:3px;opacity:0.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>' : ''}</h3>
+              <p class="mat-card__desc">${isLocked ? 'Selesaikan modul sebelumnya dulu!' : mod.desc}</p>
+            </div>
+          `;
+
+          rail.appendChild(card);
+        });
+      }
+
+      // Initial render (before Firebase loads)
+      renderMateriCards([]);
+
+      // Re-render after progress snapshot loads
+      async function refreshMateriLockState() {
+        try {
+          const snapshot = await buildProgressSnapshot();
+          renderMateriCards(snapshot.progress?.completedModuleIds || []);
+        } catch (_e) {
+          renderMateriCards([]);
+        }
+      }
+      refreshMateriLockState();
 
       // Track Firebase auth user
       let firebaseUser = null;
