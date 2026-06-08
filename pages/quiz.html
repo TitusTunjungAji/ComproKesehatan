@@ -46,7 +46,7 @@
     <div id="exit-modal" class="exit-modal" role="dialog" aria-modal="true" aria-labelledby="exit-modal-title" style="display: none;">
       <div class="exit-modal__backdrop" id="exit-modal-backdrop"></div>
       <div class="exit-modal__card">
-        <div class="exit-modal__emoji">😢</div>
+        <div class="exit-modal__emoji"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
         <h2 id="exit-modal-title" class="exit-modal__title">Yakin mau keluar?</h2>
         <p class="exit-modal__desc">Progressmu belum tersimpan. Kuis akan diulang dari awal jika kamu keluar.</p>
         <div class="exit-modal__actions">
@@ -373,7 +373,7 @@
           els.feedbackText.textContent = 'Benar! Kamu hebat!';
           els.feedback.className = 'quiz-feedback quiz-feedback--correct';
         } else {
-          els.feedbackIcon.textContent = '😢';
+          els.feedbackIcon.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E53E3E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>';
           els.feedbackText.textContent = `Jawabannya: ${q.answers[correctIdx].text}`;
           els.feedback.className = 'quiz-feedback quiz-feedback--wrong';
         }
