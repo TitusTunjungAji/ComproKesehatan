@@ -490,6 +490,9 @@
   font-size: 56px;
   margin-bottom: 12px;
   animation: float 2s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .result-card__title {
@@ -532,6 +535,10 @@
   font-size: 28px;
   margin-bottom: 16px;
   letter-spacing: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
 .result-card__points {
