@@ -181,35 +181,45 @@
           title: 'Regio 1 — Depan Atas & Bawah',
           text: 'Hadap lurus ke depan dan buka mulutmu. Setelah posisi tepat (hijau), gosok layar untuk menyikat!',
           action: 'brush',
-          requiredPose: { yaw: 'straight', mouth: 'open' }
+          requiredPose: { yaw: 'straight', mouth: 'open' },
+          image: '../assets/images/sikat_gigi_depan.png',
+          transform: 'none'
         },
         {
           id: 'regio2',
           title: 'Regio 2 — Samping Kanan Luar',
           text: 'Palingkan wajahmu sedikit ke KIRI agar gigi kananmu terlihat. Buka mulut dan gosok layar!',
           action: 'brush',
-          requiredPose: { yaw: 'left', mouth: 'open' }
+          requiredPose: { yaw: 'left', mouth: 'open' },
+          image: '../assets/images/sikat_gigi_depan.png',
+          transform: 'skewY(-20deg)'
         },
         {
           id: 'regio3',
           title: 'Regio 3 — Samping Kiri Luar',
           text: 'Palingkan wajahmu sedikit ke KANAN agar gigi kirimu terlihat. Buka mulut dan gosok layar!',
           action: 'brush',
-          requiredPose: { yaw: 'right', mouth: 'open' }
+          requiredPose: { yaw: 'right', mouth: 'open' },
+          image: '../assets/images/sikat_gigi_depan.png',
+          transform: 'skewY(20deg)'
         },
         {
           id: 'regio4',
           title: 'Regio 4 — Permukaan Kunyah',
           text: 'Tengadah (angkat dagumu sedikit ke atas) dan buka mulut lebar-lebar. Gosok layar!',
           action: 'brush',
-          requiredPose: { pitch: 'up', mouth: 'open' }
+          requiredPose: { pitch: 'up', mouth: 'open' },
+          image: '../assets/images/sikat gigi.png',
+          transform: 'scaleX(-1)'
         },
         {
           id: 'regio5',
           title: 'Regio 5 — Bagian Dalam',
           text: 'Tundukkan kepalamu sedikit (dagu ke bawah) dan buka mulut. Gosok layar!',
           action: 'brush',
-          requiredPose: { pitch: 'down', mouth: 'open' }
+          requiredPose: { pitch: 'down', mouth: 'open' },
+          image: '../assets/images/sikat gigi.png',
+          transform: 'none'
         }
       ];
 
@@ -237,7 +247,7 @@
       // Brush rotation tracking
       let prevBrushX = 0;
       let currentBrushAngle = -30;      // current smoothed angle (degrees)
-      const BASE_ANGLE = -30;           // resting angle
+      const BASE_ANGLE = 0;             // resting angle
       const MAX_SWING = 20;             // max tilt away from base (±20°)
       const LERP_SPEED = 0.25;          // how fast angle follows movement
       const RETURN_SPEED = 0.08;        // how fast it returns to rest
@@ -604,12 +614,20 @@
         savedZoom = 1;
         savedOffsetX = 0;
         savedOffsetY = 0;
-        mouthBounds = null;
+        mouthPolygon = null;
         
         arInstructions.textContent = "Menunggu posisi...";
         arInstructions.className = 'ar-instructions';
         
         viewerEl.style.cursor = scene.action === 'brush' ? 'none' : 'default';
+
+        if (scene.image && brushCursor) {
+          const img = brushCursor.querySelector('img');
+          if (img) {
+            img.src = scene.image;
+            img.style.transform = scene.transform || 'none';
+          }
+        }
 
         buildStepDots();
 
