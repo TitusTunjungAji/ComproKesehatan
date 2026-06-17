@@ -33,7 +33,7 @@
     <div id="exit-modal" class="exit-modal" role="dialog" aria-modal="true" aria-labelledby="exit-modal-title" style="display: none;">
       <div class="exit-modal__backdrop" id="exit-modal-backdrop"></div>
       <div class="exit-modal__card">
-        <div class="exit-modal__emoji">😢</div>
+        <div class="exit-modal__emoji"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
         <h2 id="exit-modal-title" class="exit-modal__title">Yakin mau keluar?</h2>
         <p class="exit-modal__desc">Progressmu belum tersimpan. Kuis akan diulang dari awal jika kamu keluar.</p>
         <div class="exit-modal__actions">
@@ -145,7 +145,7 @@
             { text: 'Minum air putih', icon: '💧', correct: false },
             { text: 'Mengunyah makanan keras di area tambal', icon: '🦴', correct: true },
             { text: 'Tidur siang', icon: '😴', correct: false },
-            { text: 'Tersenyum', icon: '😊', correct: false }
+            { text: 'Tersenyum', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>', correct: false }
           ]
         }
       ];
@@ -199,8 +199,8 @@
         if (isCorrect) { score++; streak++; } else { streak = 0; }
         els.answersGrid.querySelectorAll('.answer-card').forEach((c, i) => { if (i === correctIdx) c.classList.add('answer-card--correct'); if (i === selectedIdx && !isCorrect) c.classList.add('answer-card--wrong'); c.style.pointerEvents = 'none'; });
         els.feedback.style.display = 'flex';
-        if (isCorrect) { els.feedbackIcon.textContent = 'Benar!'; els.feedbackText.textContent = 'Benar! Kamu hebat!'; els.feedback.className = 'quiz-feedback quiz-feedback--correct'; }
-        else { els.feedbackIcon.textContent = '😢'; els.feedbackText.textContent = `Jawabannya: ${q.answers[correctIdx].text}`; els.feedback.className = 'quiz-feedback quiz-feedback--wrong'; }
+        if (isCorrect) { els.feedbackIcon.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2BAA8E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'; els.feedbackText.textContent = 'Benar! Kamu hebat!'; els.feedback.className = 'quiz-feedback quiz-feedback--correct'; }
+        else { els.feedbackIcon.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E53E3E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>'; els.feedbackText.textContent = `Jawabannya: ${q.answers[correctIdx].text}`; els.feedback.className = 'quiz-feedback quiz-feedback--wrong'; }
         if (typeof DentaA11y !== 'undefined') DentaA11y.vibrate(isCorrect ? 'confirm' : 'error');
         if (currentQ < QUESTIONS.length - 1) { buttonMode = 'next'; els.btnCheck.innerHTML = 'Lanjut <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'; }
         else { buttonMode = 'result'; els.btnCheck.innerHTML = 'Lihat Hasil <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'; }
@@ -212,12 +212,12 @@
         els.quizScreen.style.display = 'none'; els.quizCta.style.display = 'none'; els.resultScreen.style.display = 'flex';
         await completeModuleProgress('mod3');
         const pct = score / QUESTIONS.length; let emoji, title, desc, stars;
-        if (pct === 1) { emoji = 'trophy'; title = 'Sempurna!'; desc = 'Kamu ahli penambalan gigi!'; stars = '<svg width="16" height="16" viewBox="0 0 24 24" fill="#F6AD55" stroke="#F6AD55" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#F6AD55" stroke="#F6AD55" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#F6AD55" stroke="#F6AD55" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'; }
-        else if (pct >= 0.6) { emoji = 'party'; title = 'Luar Biasa!'; desc = 'Kerja bagus! Sedikit lagi sempurna!'; stars = '★★'; }
-        else { emoji = 'strong'; title = 'Tetap Semangat!'; desc = 'Yuk belajar lagi!'; stars = '★'; }
-        document.getElementById('result-emoji').textContent = emoji; document.getElementById('result-title').textContent = title;
+        if (pct === 1) { emoji = '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#2BAA8E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>'; title = 'Sempurna!'; desc = 'Kamu ahli penambalan gigi!'; stars = '<svg width="16" height="16" viewBox="0 0 24 24" fill="#F6AD55" stroke="#F6AD55" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#F6AD55" stroke="#F6AD55" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#F6AD55" stroke="#F6AD55" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'; }
+        else if (pct >= 0.6) { emoji = '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#F6AD55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.8 11.3 2 22l10.7-3.79"/><path d="M4 3h.01"/><path d="M22 8h.01"/><path d="M15 2h.01"/><path d="M22 20h.01"/><path d="M9.1 9.1 4 19.8"/><path d="M13.6 6.2l2 4.6"/><path d="M18 2l-3 8"/></svg>'; title = 'Luar Biasa!'; desc = 'Kerja bagus! Sedikit lagi sempurna!'; stars = '<svg width="20" height="20" viewBox="0 0 24 24" fill="#F6AD55" stroke="#F6AD55" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="20" height="20" viewBox="0 0 24 24" fill="#F6AD55" stroke="#F6AD55" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'; }
+        else { emoji = '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#E53E3E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/></svg>'; title = 'Tetap Semangat!'; desc = 'Yuk belajar lagi!'; stars = '<svg width="20" height="20" viewBox="0 0 24 24" fill="#F6AD55" stroke="#F6AD55" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'; }
+        document.getElementById('result-emoji').innerHTML = emoji; document.getElementById('result-title').textContent = title;
         document.getElementById('result-desc').textContent = desc; document.getElementById('result-score').textContent = `${score}/${QUESTIONS.length}`;
-        document.getElementById('result-stars').textContent = stars; document.getElementById('result-points').textContent = `+${score * 10} Poin!`;
+        document.getElementById('result-stars').innerHTML = stars; document.getElementById('result-points').textContent = `+${score * 10} Poin!`;
         els.barFill.style.width = '100%'; els.barEmoji.style.left = '100%';
         if (typeof DentaA11y !== 'undefined') DentaA11y.vibrate('confirm');
       }

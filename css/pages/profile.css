@@ -3,6 +3,14 @@
    User profile, trophies, weekly stats
    ============================================ */
 
+/* ── Force all inline SVG icons to stay beside text ── */
+h2 > svg, h3 > svg, p > svg, span > svg, label > svg,
+.trophy-section__title > svg,
+.stats-card__title > svg {
+  display: inline !important;
+  vertical-align: middle;
+}
+
 .app-shell {
   min-height: 100vh;
   min-height: 100dvh;

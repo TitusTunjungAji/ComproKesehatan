@@ -3,6 +3,19 @@
    🌈 Kid-Friendly Fun Edition! 🦷
    ============================================ */
 
+/* ── Force all inline SVG icons to stay beside text ── */
+h1 > svg, h2 > svg, h3 > svg, p > svg, span > svg, label > svg, a > svg,
+.section-header__title > svg,
+.report-card__label > svg,
+.report-card__upload-text > svg,
+.ar-card__title > svg,
+.trophy-section__title > svg,
+.mission-pill__text > svg,
+.home-header__subtitle > svg {
+  display: inline !important;
+  vertical-align: middle;
+}
+
 /* ── App Shell ── */
 .app-shell {
   min-height: 100vh;
