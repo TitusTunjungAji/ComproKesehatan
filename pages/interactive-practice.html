@@ -92,6 +92,8 @@
          style="width: 220px; height: auto; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));">
   </div>
 
+  <div id="foam-container" style="position:fixed; top:0; left:0; width:0; height:0; pointer-events:none; z-index:9998; overflow:visible;"></div>
+
   <div class="app-shell">
 
     <!-- ─── Top Navigation Bar ─── -->
@@ -228,6 +230,13 @@
       let interactionCount = 0;
       let isPoseReady = false;
       let currentProgress = 0;
+      let activeBrushingTimeMs = 0;
+      let lastInteractTime = 0;
+      let mouthCenterX = 0;
+      let mouthCenterY = 0;
+      let mouthAngle = 0;
+      let faceRotateX = 0;
+      let faceRotateY = 0;
       let faceMesh;
       let camera;
       
@@ -555,6 +564,7 @@
           
           const canvasRect = canvasElement.getBoundingClientRect();
           
+          let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
           mouthPolygon = outerLipIndices.map(idx => {
             const p = landmarks[idx];
             if (!p) return {x: 0, y: 0};
@@ -569,11 +579,43 @@
             
             // 3. Map to screen pixels. 
             // We use (1 - ratioX) to exactly match the CSS scaleX(-1) mirror effect.
+            const x = canvasRect.left + (1 - ratioX) * canvasRect.width;
+            const y = canvasRect.top + ratioY * canvasRect.height;
+            
+            minX = Math.min(minX, x);
+            maxX = Math.max(maxX, x);
+            minY = Math.min(minY, y);
+            maxY = Math.max(maxY, y);
+            
+            return { x, y };
+          });
+          
+          mouthCenterX = (minX + maxX) / 2;
+          mouthCenterY = (minY + maxY) / 2;
+          
+          // Calculate face angle using cheeks (234 = left side, 454 = right side)
+          const mapToScreen = (p) => {
+            if (!p) return {x:0, y:0};
+            const internalX = p.x * canvasElement.width * savedZoom + savedOffsetX;
+            const internalY = p.y * canvasElement.height * savedZoom + savedOffsetY;
+            const ratioX = internalX / canvasElement.width;
+            const ratioY = internalY / canvasElement.height;
             return {
               x: canvasRect.left + (1 - ratioX) * canvasRect.width,
               y: canvasRect.top + ratioY * canvasRect.height
             };
-          });
+          };
+          
+          const ptLeft = mapToScreen(landmarks[234]);
+          const ptRight = mapToScreen(landmarks[454]);
+          
+          // Angle of the line going from left to right on screen (Roll / Z-axis)
+          mouthAngle = Math.atan2(ptLeft.y - ptRight.y, ptLeft.x - ptRight.x);
+          
+          const foamContainer = document.getElementById('foam-container');
+          if (foamContainer) {
+            foamContainer.style.transform = `translate(${mouthCenterX}px, ${mouthCenterY}px) rotate(${mouthAngle}rad)`;
+          }
           
           // Keep mouth landmarks for hit-testing, but do not render lip outline.
           
@@ -606,7 +648,12 @@
         successBadge.classList.remove('success-badge--visible');
 
         currentProgress = 0;
+        activeBrushingTimeMs = 0;
+        lastInteractTime = 0;
         interactionCount = 0;
+        
+        const container = document.getElementById('foam-container');
+        if (container) container.innerHTML = '';
         isPoseReady = false;
         
         // Reset auto-zoom for new scenario
@@ -683,6 +730,44 @@
         return inside;
       }
 
+      // ── Spawn Foam ──
+      function spawnFoam(x, y) {
+        const container = document.getElementById('foam-container');
+        if (!container) return;
+        
+        const foam = document.createElement('div');
+        foam.className = 'foam-particle';
+        
+        // Reduced size (was 10-35px, now 5-20px)
+        const size = Math.random() * 15 + 5;
+        const offsetX = (Math.random() - 0.5) * 60;
+        // Adjusted to be lower (was -20, now +15)
+        const offsetY = (Math.random() - 0.5) * 60 + 15;
+        
+        foam.style.width = size + 'px';
+        foam.style.height = size + 'px';
+        
+        // Inverse-rotate the spawn coordinates so they end up at the exact cursor position 
+        // after the foam-container rotates them.
+        const dx = x - mouthCenterX;
+        const dy = y - mouthCenterY;
+        const pX = dx * Math.cos(mouthAngle) + dy * Math.sin(mouthAngle);
+        const pY = -dx * Math.sin(mouthAngle) + dy * Math.cos(mouthAngle);
+        
+        foam.style.left = (pX + offsetX) + 'px';
+        foam.style.top = (pY + offsetY) + 'px';
+        
+        container.appendChild(foam);
+        
+        // Foam stays much longer now (8 seconds) before fading
+        setTimeout(() => {
+          foam.style.opacity = '0';
+          setTimeout(() => {
+            if (foam.parentNode) foam.parentNode.removeChild(foam);
+          }, 500);
+        }, 8000);
+      }
+
       // ── Handle brushing interaction ──
       function handleInteraction() {
         const scene = scenarios[currentStep];
@@ -691,8 +776,23 @@
           if (interactionCount % 10 === 0 && typeof navigator.vibrate === 'function') {
             navigator.vibrate(20);
           }
+          // Spawn less frequently (was % 3, now % 10)
+          if (interactionCount % 10 === 0) {
+            spawnFoam(brushAnchorX, brushAnchorY);
+          }
           interactionCount++;
-          currentProgress += 1.5;
+          
+          const now = performance.now();
+          if (lastInteractTime === 0) lastInteractTime = now;
+          
+          const delta = now - lastInteractTime;
+          if (delta < 500) {
+            activeBrushingTimeMs += delta;
+          }
+          lastInteractTime = now;
+          
+          // Require at least 10 seconds (10000ms) of active brushing to reach 100%
+          currentProgress = Math.min(100, (activeBrushingTimeMs / 10000) * 100);
           updateProgress(currentProgress);
         }
       }

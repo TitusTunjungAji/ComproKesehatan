@@ -335,3 +335,21 @@
   background: rgba(43, 170, 142, 0.9);
   box-shadow: 0 4px 12px rgba(43, 170, 142, 0.4);
 }
+
+/* ── Foam Effect ── */
+.foam-particle {
+  position: absolute;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 1), rgba(240, 248, 255, 0.8));
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.6), inset -2px -2px 4px rgba(200, 220, 255, 0.5);
+  pointer-events: none;
+  opacity: 0.8;
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  animation: foamPop 0.5s ease-out forwards;
+  z-index: 9998;
+}
+
+@keyframes foamPop {
+  0% { transform: scale(0.5); }
+  100% { transform: scale(1); }
+}
