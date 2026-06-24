@@ -740,22 +740,34 @@
         
         // Reduced size (was 10-35px, now 5-20px)
         const size = Math.random() * 15 + 5;
-        const offsetX = (Math.random() - 0.5) * 60;
-        // Adjusted to be lower (was -20, now +15)
-        const offsetY = (Math.random() - 0.5) * 60 + 15;
+        
+        let targetScreenX, targetScreenY;
+        let valid = false;
+        
+        for (let i = 0; i < 15; i++) {
+          const offsetX = (Math.random() - 0.5) * 60;
+          const offsetY = (Math.random() - 0.5) * 60 + 15;
+          targetScreenX = x + offsetX;
+          targetScreenY = y + offsetY;
+          
+          if (isPointInMouth(targetScreenX, targetScreenY)) {
+            valid = true;
+            break;
+          }
+        }
+        
+        if (!valid) return;
         
         foam.style.width = size + 'px';
         foam.style.height = size + 'px';
         
-        // Inverse-rotate the spawn coordinates so they end up at the exact cursor position 
-        // after the foam-container rotates them.
-        const dx = x - mouthCenterX;
-        const dy = y - mouthCenterY;
-        const pX = dx * Math.cos(mouthAngle) + dy * Math.sin(mouthAngle);
-        const pY = -dx * Math.sin(mouthAngle) + dy * Math.cos(mouthAngle);
+        const dx = targetScreenX - mouthCenterX;
+        const dy = targetScreenY - mouthCenterY;
+        const localX = dx * Math.cos(mouthAngle) + dy * Math.sin(mouthAngle);
+        const localY = -dx * Math.sin(mouthAngle) + dy * Math.cos(mouthAngle);
         
-        foam.style.left = (pX + offsetX) + 'px';
-        foam.style.top = (pY + offsetY) + 'px';
+        foam.style.left = localX + 'px';
+        foam.style.top = localY + 'px';
         
         container.appendChild(foam);
         

@@ -339,9 +339,9 @@
 /* ── Foam Effect ── */
 .foam-particle {
   position: absolute;
-  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 1), rgba(240, 248, 255, 0.8));
+  background: radial-gradient(circle at 30% 30%, rgba(224, 247, 250, 1), rgba(129, 212, 250, 0.8));
   border-radius: 50%;
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.6), inset -2px -2px 4px rgba(200, 220, 255, 0.5);
+  box-shadow: 0 0 5px rgba(129, 212, 250, 0.6), inset -2px -2px 4px rgba(3, 169, 244, 0.5);
   pointer-events: none;
   opacity: 0.8;
   transition: opacity 0.5s ease-out, transform 0.5s ease-out;
