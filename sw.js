@@ -3,7 +3,7 @@
    Network-first for dev, cache-first for prod
    ============================================ */
 
-const CACHE_NAME = 'dentavizion-v7';
+const CACHE_NAME = 'dentavizion-v8';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
