@@ -115,25 +115,15 @@
       <section class="video-section" aria-labelledby="video-title">
         <h2 id="video-title" class="video-section__title">Video Panduan</h2>
 
-        <!-- YouTube Embed Container -->
-        
-        <div class="video-section__player" id="video-player" data-youtube-id="WN8h1lJeowk" role="button" tabindex="0"
-          aria-label="Putar video panduan penambalan gigi dari YouTube"
-          data-a11y-read="Video panduan penambalan gigi dari YouTube. Tekan untuk memutar.">
-
-          <!-- Thumbnail (auto-loaded from YouTube) -->
-          <img id="video-thumb" src="" alt="Thumbnail video panduan penambalan gigi" class="video-section__thumb"
-            loading="lazy">
-
-          <!-- Play Button Overlay -->
-          <div class="video-section__play-btn" aria-hidden="true" id="video-play-overlay">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
-              <polygon points="5 3 19 12 5 21 5 3" />
-            </svg>
-          </div>
-
-          <!-- Duration badge -->
-          <div class="video-section__duration" aria-hidden="true" id="video-duration">--:--</div>
+        <!-- Google Drive Embed Container -->
+        <div class="video-section__player video-section__player--active" id="video-player">
+          <iframe 
+            src="https://drive.google.com/file/d/1nC8qajyagMK6Sw2duSw4eVov-Gize8tb/preview" 
+            frameborder="0" 
+            allowfullscreen 
+            title="Video panduan penambalan gigi"
+            class="video-section__iframe"
+          ></iframe>
         </div>
 
         <p class="video-section__desc">
@@ -177,53 +167,7 @@
         }
       });
 
-      // ── YouTube Video Embed ──
-      const videoPlayer = document.getElementById('video-player');
-      const videoThumb = document.getElementById('video-thumb');
-      const youtubeId = videoPlayer.dataset.youtubeId;
 
-      // Load YouTube thumbnail
-      if (youtubeId && videoThumb) {
-        videoThumb.src = `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
-        videoThumb.onerror = () => {
-          videoThumb.src = '../assets/images/video-thumbnail.png';
-        };
-      }
-
-      // Play video on click — swap thumbnail with YouTube iframe
-      function loadYouTubeVideo() {
-        if (!youtubeId) return;
-
-        if (typeof DentaA11y !== 'undefined') {
-          DentaA11y.vibrate('tap');
-          if (mode === 'blind') {
-            DentaA11y.speak('Memutar video panduan penambalan gigi dari YouTube.', true);
-          }
-        }
-
-        const iframe = document.createElement('iframe');
-        iframe.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1`;
-        iframe.setAttribute('frameborder', '0');
-        iframe.setAttribute('allowfullscreen', '');
-        iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
-        iframe.setAttribute('title', 'Video panduan penambalan gigi');
-        iframe.className = 'video-section__iframe';
-
-        videoPlayer.innerHTML = '';
-        videoPlayer.appendChild(iframe);
-        videoPlayer.classList.add('video-section__player--active');
-        videoPlayer.removeAttribute('role');
-        videoPlayer.removeAttribute('tabindex');
-        videoPlayer.style.cursor = 'default';
-      }
-
-      videoPlayer.addEventListener('click', loadYouTubeVideo);
-      videoPlayer.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          loadYouTubeVideo();
-        }
-      });
 
       if (typeof DentaA11y !== 'undefined' && mode === 'blind') {
         DentaA11y.speak('Modul Penambalan Gigi. Ada 4 langkah yang akan kamu pelajari.', true);
