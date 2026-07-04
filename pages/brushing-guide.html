@@ -44,7 +44,7 @@
       </button>
       <span class="topbar__brand">DENTAVIZION</span>
       <div class="topbar__points" aria-label="Dapatkan 50 poin dari modul ini">
-        <span class="topbar__points-icon" aria-hidden="true">⭐</span>
+        <span class="topbar__points-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="#F6AD55" stroke="#F6AD55" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
         <span class="topbar__points-text">DAPATKAN 50 POIN!</span>
       </div>
     </header>
@@ -52,7 +52,7 @@
     <!-- ─── Hero Banner ─── -->
     <section class="mod-hero" aria-labelledby="mod-hero-title">
       <div class="mod-hero__image">
-        <img src="../assets/images/hero-child-brushing.png" alt="Anak sedang menyikat gigi dengan senang" width="300"
+        <img src="../assets/images/guide-sikat-1.jpeg" alt="Anak sedang menyikat gigi dengan senang" width="300"
           height="200" loading="eager">
       </div>
       <div class="mod-hero__overlay">
@@ -66,7 +66,7 @@
 
       <!-- Tips Seru Pill -->
       <div class="tips-pill" role="note" aria-label="Tips seru: putar lagu favoritmu selama 2 menit">
-        <div class="tips-pill__icon" aria-hidden="true">💡</div>
+        <div class="tips-pill__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/></svg></div>
         <p class="tips-pill__text">
           <strong>Tips Seru!</strong> Putar lagu favoritmu selama 2 menit!
         </p>
@@ -114,7 +114,7 @@
         </p>
         <!-- Step Image -->
         <div class="step__image">
-          <img src="../assets/images/material-brushing.png" alt="Teknik menyikat gigi dengan gerakan memutar"
+          <img src="../assets/images/guide-sikat-2.jpeg" alt="Teknik menyikat gigi dengan gerakan memutar"
             loading="lazy">
         </div>
       </article>
@@ -165,25 +165,15 @@
       <section class="video-section" aria-labelledby="video-title">
         <h2 id="video-title" class="video-section__title">Video Panduan</h2>
 
-        <!-- YouTube Embed Container -->
-        <!-- Ganti data-youtube-id dengan ID video YouTube yang diinginkan -->
-        <div class="video-section__player" id="video-player" data-youtube-id="viRJ4rFvTrQ" role="button" tabindex="0"
-          aria-label="Putar video panduan menyikat gigi dari YouTube"
-          data-a11y-read="Video panduan sikat gigi dari YouTube. Tekan untuk memutar.">
-
-          <!-- Thumbnail (auto-loaded from YouTube) -->
-          <img id="video-thumb" src="" alt="Thumbnail video panduan sikat gigi" class="video-section__thumb"
-            loading="lazy">
-
-          <!-- Play Button Overlay -->
-          <div class="video-section__play-btn" aria-hidden="true" id="video-play-overlay">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
-              <polygon points="5 3 19 12 5 21 5 3" />
-            </svg>
-          </div>
-
-          <!-- Duration badge -->
-          <div class="video-section__duration" aria-hidden="true" id="video-duration">02:41</div>
+        <!-- Google Drive Embed Container -->
+        <div class="video-section__player video-section__player--active" id="video-player">
+          <iframe 
+            src="https://drive.google.com/file/d/1DEgDgSZ2jdThug-sHaq-5c2qfeRvOzDU/preview" 
+            frameborder="0" 
+            allowfullscreen 
+            title="Video panduan menyikat gigi"
+            class="video-section__iframe"
+          ></iframe>
         </div>
 
         <p class="video-section__desc">
@@ -278,60 +268,11 @@
           showToast(result.message);
         } catch (error) {
           console.error('Save progress error:', error);
-          showToast('❌ Gagal menyimpan progress, coba lagi ya!');
+          showToast('Gagal menyimpan progress, coba lagi ya!');
         }
       });
 
-      // ── YouTube Video Embed ──
-      const videoPlayer = document.getElementById('video-player');
-      const videoThumb = document.getElementById('video-thumb');
-      const youtubeId = videoPlayer.dataset.youtubeId;
 
-      // Load YouTube thumbnail
-      if (youtubeId && videoThumb) {
-        videoThumb.src = `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
-        videoThumb.onerror = () => {
-          // Fallback to local thumbnail if YouTube thumb fails
-          videoThumb.src = '../assets/images/video-thumbnail.png';
-        };
-      }
-
-      // Play video on click — swap thumbnail with YouTube iframe
-      function loadYouTubeVideo() {
-        if (!youtubeId) return;
-
-        if (typeof DentaA11y !== 'undefined') {
-          DentaA11y.vibrate('tap');
-          if (mode === 'blind') {
-            DentaA11y.speak('Memutar video panduan sikat gigi dari YouTube.', true);
-          }
-        }
-
-        // Create iframe
-        const iframe = document.createElement('iframe');
-        iframe.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1`;
-        iframe.setAttribute('frameborder', '0');
-        iframe.setAttribute('allowfullscreen', '');
-        iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
-        iframe.setAttribute('title', 'Video panduan menyikat gigi');
-        iframe.className = 'video-section__iframe';
-
-        // Replace player content with iframe
-        videoPlayer.innerHTML = '';
-        videoPlayer.appendChild(iframe);
-        videoPlayer.classList.add('video-section__player--active');
-        videoPlayer.removeAttribute('role');
-        videoPlayer.removeAttribute('tabindex');
-        videoPlayer.style.cursor = 'default';
-      }
-
-      videoPlayer.addEventListener('click', loadYouTubeVideo);
-      videoPlayer.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          loadYouTubeVideo();
-        }
-      });
 
       // TTS for blind mode
       if (typeof DentaA11y !== 'undefined' && mode === 'blind') {

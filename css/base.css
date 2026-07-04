@@ -53,11 +53,19 @@ a {
   text-decoration: none;
 }
 
-/* Make images responsive */
-img, picture, video, canvas, svg {
+/* Make images responsive (SVG excluded — often used inline with text) */
+img, picture, video, canvas {
   display: block;
   max-width: 100%;
   height: auto;
+}
+
+/* SVG icons inside text elements should be inline */
+h1 > svg, h2 > svg, h3 > svg, h4 > svg,
+p > svg, span > svg, label > svg, a > svg,
+button > svg {
+  display: inline;
+  vertical-align: middle;
 }
 
 /* Remove built-in form typography */
