@@ -1,1030 +1,1887 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"
+    />
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Simulasi Sikat Gigi — DENTAVIZION</title>
+    <meta
+      name="description"
+      content="Simulasi interaktif cara menyikat gigi langkah demi langkah."
+    />
 
-  <title>Simulasi Sikat Gigi — DENTAVIZION</title>
-  <meta name="description" content="Simulasi interaktif cara menyikat gigi langkah demi langkah.">
+    <link rel="manifest" href="../manifest.json" />
+    <meta name="theme-color" content="#2BAA8E" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
 
-  <link rel="manifest" href="../manifest.json">
-  <meta name="theme-color" content="#2BAA8E">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="../css/variables.css" />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <style>
+      /* ── Base ── */
+      * {
+        -webkit-user-select: none; /* Safari */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* IE10+/Edge */
+        user-select: none; /* Standard */
+        -webkit-user-drag: none; /* Safari */
+      }
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        font-family: "Nunito", sans-serif;
+        background-color: #000;
+      }
+      /* Phone-sized container */
+      .app-shell {
+        position: relative;
+        width: 100%;
+        max-width: 430px;
+        height: 100dvh;
+        margin: 0 auto;
+        overflow: hidden;
+      }
 
-  <link rel="stylesheet" href="../css/variables.css">
-  <link rel="stylesheet" href="../css/base.css">
-  <link rel="stylesheet" href="../css/components.css">
-  <link rel="stylesheet" href="../css/pages/module-content.css">
-  <link rel="stylesheet" href="../css/pages/interactive-practice.css">
-</head>
+      /* ── Camera: absolute fullscreen inside app-shell ── */
+      .viewer-wrapper {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background: #000;
+        overflow: hidden;
+      }
+      .viewer-wrapper video,
+      .viewer-wrapper canvas {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
 
-<body>
-  <a href="#main-content" class="skip-link" id="skip-link">Langsung ke konten utama</a>
-  <div id="a11y-announcer" class="a11y-announcement" aria-live="polite" aria-atomic="true" role="status"></div>
+      /* ── Top Panel ── */
+      .top-panel-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 20;
+      }
+      .top-panel-bg {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      .btn-kembali {
+        position: absolute;
+        top: 50%;
+        left: 8%;
+        transform: translateY(-50%);
+        width: 12%;
+        max-width: 55px;
+        cursor: pointer;
+        z-index: 21;
+        transition: transform 0.2s;
+      }
+      .btn-kembali:active {
+        transform: translateY(-50%) scale(0.9);
+      }
+      .top-icon {
+        position: absolute;
+        top: 50%;
+        right: 8%;
+        transform: translateY(-50%);
+        width: 15%;
+        max-width: 65px;
+        z-index: 21;
+      }
 
-  <!-- Debug Info Overlay -->
-  <div id="debug-overlay" style="
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    background: rgba(0, 0, 0, 0.9);
-    color: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    font-family: monospace;
-    font-size: 12px;
-    z-index: 10000;
-    line-height: 1.6;
-    max-width: 300px;
-    pointer-events: auto;
-    display: none; /* Hidden by default */
-    border: 2px solid #2BAA8E;
-  ">
-    <div style="color: #2BAA8E; font-weight: bold; margin-bottom: 8px; cursor: pointer;" id="debug-header">
-      🐛 DEBUG MODE [CLICK TO HIDE]
-    </div>
-    <div style="margin-bottom: 10px; padding: 8px; background: rgba(43, 170, 142, 0.2); border-left: 3px solid #2BAA8E;">
-      <div>Cursor X: <span id="debug-cursor-x">-</span></div>
-      <div>Cursor Y: <span id="debug-cursor-y">-</span></div>
-      <div style="margin-top: 5px; font-size: 11px; color: #aaa;">Gerakkan mouse untuk update</div>
-    </div>
-    <div style="margin-bottom: 10px; padding: 8px; background: rgba(100, 100, 100, 0.3); border-left: 3px solid #666;">
-      <div>Anchor X: <span id="debug-anchor-x">-</span></div>
-      <div>Anchor Y: <span id="debug-anchor-y">-</span></div>
-      <div style="margin-top: 5px; font-size: 11px; color: #aaa;">Posisi pojok kiri bawah sikat</div>
-    </div>
-    <div style="margin-bottom: 10px; padding: 8px; background: rgba(255, 107, 107, 0.2); border-left: 3px solid #ff6b6b;">
-      <div style="font-weight: bold;">Mouth Bounds</div>
-      <div>L: <span id="debug-mouth-left">-</span> R: <span id="debug-mouth-right">-</span></div>
-      <div>T: <span id="debug-mouth-top">-</span> B: <span id="debug-mouth-bottom">-</span></div>
-    </div>
-    <div style="padding: 10px; background: rgba(0, 0, 0, 0.5); border-radius: 5px;">
-      <div id="debug-status" style="color: #ffd93d; font-weight: bold; font-size: 13px;">? NO MOUTH DATA</div>
-      <div style="margin-top: 5px; font-size: 10px; color: #aaa;">Anchor point status di mouth region</div>
-    </div>
-  </div>
-  
-  <!-- Mouth Region Visual Overlay -->
-  <canvas id="debug-mouth-canvas" style="
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 9998;
-    pointer-events: none;
-    display: none;
-  "></canvas>
-  
-  <div id="brush-cursor" style="
-    position: fixed;
-    pointer-events: none;
-    z-index: 9999;
-    display: none;
-    transform: rotate(-30deg);
-    transform-origin: bottom left;
-    transition: opacity 0.15s ease;
-    opacity: 0;
-  ">
-    <img src="../assets/images/sikat gigi.png" alt="" aria-hidden="true"
-         style="width: 220px; height: auto; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));">
-  </div>
+      /* ── Tombol Posisikan Ulang (di atas progress bar) ── */
+      #btn-recenter-zoom {
+        font-family: "Nunito", sans-serif;
+        font-size: 12px;
+        font-weight: 900;
+        padding: 5px 18px;
+        border-radius: 20px;
+        background: linear-gradient(180deg, #fff 0%, #e8e8e8 100%);
+        border: 2px solid #ccc;
+        cursor: pointer;
+        color: #333;
+        white-space: nowrap;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        align-self: center;
+      }
+      #btn-recenter-zoom:active {
+        transform: scale(0.95);
+      }
 
-  <div id="foam-container" style="position:fixed; top:0; left:0; width:0; height:0; pointer-events:none; z-index:9998; overflow:visible;"></div>
+      /* ── Step Indicator ── */
+      .step-indicator {
+        position: absolute;
+        z-index: 20;
+        display: flex;
+        gap: 8px;
+        /* top = approx height of top panel image */
+        top: 78px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .step-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        border: 2px solid rgba(255, 255, 255, 0.85);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+        transition: all 0.3s;
+      }
+      .step-dot--active {
+        background: #ff9d00;
+        border-color: #fff;
+        transform: scale(1.35);
+        box-shadow: 0 0 10px #ff9d00;
+      }
+      .step-dot--done {
+        background: #32cd32;
+        border-color: #fff;
+      }
 
-  <div class="app-shell">
+      /* ── AR instructions bubble (floating below top panel) ── */
+      .ar-instructions-box {
+        position: absolute;
+        top: 110px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 88%;
+        z-index: 15;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .ar-instructions-box img {
+        width: 100%;
+        display: block;
+      }
+      .ar-instructions-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #fff;
+        font-weight: 900;
+        font-size: 13px;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+        width: 78%;
+        text-align: center;
+        line-height: 1.3;
+      }
 
-    <!-- ─── Top Navigation Bar ─── -->
-    <header class="topbar" role="banner">
-      <button class="topbar__back" id="btn-back" aria-label="Kembali ke halaman sebelumnya"
-        data-a11y-read="Tombol kembali. Tekan untuk kembali ke halaman sebelumnya.">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-          stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="15 18 9 12 15 6" />
-        </svg>
-      </button>
-      <span class="topbar__brand">PRAKTIK SIKAT GIGI</span>
-    </header>
+      /* ── AR status badge (bottom overlay) ── */
+      #ar-status-badge {
+        position: absolute;
+        top: 185px;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 18;
+        background: transparent;
+        color: #000;
+        font-weight: 900;
+        font-size: 15px;
+        text-align: center;
+        white-space: nowrap;
+        max-width: 90%;
+      }
+      #ar-status-badge.status-ready {
+        color: #2e8b57; /* Darker green text when ready so it's readable on light background */
+      }
 
-    <!-- ─── Step Indicator Dots ─── -->
-    <div class="step-indicator" id="step-indicator" aria-hidden="true">
-      <!-- Dots injected by JS -->
-    </div>
+      /* ── Decorations ── */
+      .deco-gigi-1 {
+        position: absolute;
+        bottom: 36%;
+        left: 0;
+        width: 22%;
+        z-index: 8;
+        filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.3));
+        animation: float1 4s ease-in-out infinite;
+      }
+      .deco-gigi-2 {
+        position: absolute;
+        top: 16%;
+        right: 0;
+        width: 18%;
+        z-index: 8;
+        filter: drop-shadow(-2px 4px 6px rgba(0, 0, 0, 0.3));
+        animation: float2 5s ease-in-out infinite;
+      }
+      @keyframes float1 {
+        0%,
+        100% {
+          transform: translateY(0) rotate(-5deg);
+        }
+        50% {
+          transform: translateY(-12px) rotate(5deg);
+        }
+      }
+      @keyframes float2 {
+        0%,
+        100% {
+          transform: translateY(0) rotate(5deg);
+        }
+        50% {
+          transform: translateY(-8px) rotate(-5deg);
+        }
+      }
 
-    <main id="main-content" class="interactive-main" role="main">
+      /* ── Bottom Panel ── */
+      .bottom-panel-container {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 35%;
+        min-height: 230px;
+        z-index: 10;
+      }
+      .bottom-panel-bg {
+        position: absolute;
+        inset: 0;
+        background: url("../assets/yasmine/panel-bawah.png") top center / cover
+          no-repeat;
+      }
+      .bottom-content {
+        position: relative;
+        z-index: 1;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0 20px 18px;
+        gap: 8px;
+      }
+      .scene-title {
+        font-size: 16px;
+        color: #ff7b00;
+        margin: 0;
+        text-align: center;
+        font-weight: 900;
+        text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.7);
+      }
+      .scene-text {
+        text-align: center;
+        color: #1a3b34;
+        font-size: 12px;
+        font-weight: 800;
+        margin: 0;
+        line-height: 1.4;
+      }
+      .progress-container {
+        width: 100%;
+        height: 26px;
+        background: #e0e0e0;
+        border-radius: 13px;
+        overflow: hidden;
+        position: relative;
+        border: 3px solid #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #32cd32 0%, #00ff00 100%);
+        width: 0%;
+        transition: width 0.3s;
+      }
+      .progress-text-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 12px;
+        font-weight: 900;
+        color: #333;
+        text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8);
+        gap: 4px;
+      }
+      .btn-next-custom {
+        background: linear-gradient(180deg, #ff9d00 0%, #ff7b00 100%);
+        color: #fff;
+        border: 2px solid #fff;
+        padding: 10px 32px;
+        border-radius: 30px;
+        font-size: 15px;
+        font-weight: 900;
+        cursor: pointer;
+        box-shadow:
+          0 5px 0 #cc6200,
+          0 7px 12px rgba(0, 0, 0, 0.3);
+        transition: all 0.2s;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .btn-next-custom:disabled {
+        background: linear-gradient(180deg, #d3d3d3 0%, #aaa 100%);
+        box-shadow:
+          0 5px 0 #888,
+          0 7px 12px rgba(0, 0, 0, 0.2);
+        cursor: not-allowed;
+        color: #666;
+      }
+      .btn-next-custom:active:not(:disabled) {
+        transform: translateY(5px);
+        box-shadow:
+          0 0 0 #cc6200,
+          0 2px 5px rgba(0, 0, 0, 0.3);
+      }
 
-      <!-- Header Area -->
-      <section class="scene-header" aria-live="polite">
-        <h1 id="scene-title" class="scene-header__title">Persiapan Alat</h1>
-        <p id="scene-text" class="scene-header__text">
-          Siapkan sikat gigi dan pasta gigi. Ambil pasta gigi sebesar biji jagung — oleskan di bulu sikat.
-        </p>
-      </section>
+      /* ── Success badge ── */
+      #success-badge {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, #4caf50, #2e7d32);
+        color: #fff;
+        padding: 14px 28px;
+        border-radius: 20px;
+        font-weight: 900;
+        z-index: 20;
+        font-size: 26px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        border: 3px solid #fff;
+        text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.5);
+      }
+      #success-badge.success-badge--visible {
+        display: block !important;
+        animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      }
+      @keyframes popIn {
+        0% {
+          transform: translate(-50%, -50%) scale(0.1);
+          opacity: 0;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 1;
+        }
+      }
 
-      <!-- Progress Area -->
-      <div class="progress-bar-container" aria-hidden="true">
-        <div class="progress-track">
-          <div id="scene-progress" class="progress-fill"></div>
-        </div>
-        <div class="progress-label">
-          <span id="progress-text">Gosok untuk membersihkan!</span>
-          <span id="progress-pct">0%</span>
+      /* ── Foam ── */
+      .foam-particle {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle at 30% 30%,
+          #ffffff 0%,
+          rgba(255, 255, 255, 0.9) 20%,
+          rgba(200, 230, 255, 0.8) 60%,
+          rgba(200, 230, 255, 0.4) 100%
+        );
+        box-shadow:
+          0 0 4px rgba(255, 255, 255, 0.8),
+          inset -2px -2px 4px rgba(100, 180, 255, 0.3);
+        pointer-events: none;
+        transition: opacity 0.5s ease-out;
+      }
+
+      /* ── Instruction Modal ── */
+      #instruction-modal {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.78);
+        z-index: 100;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .modal-card {
+        width: 82%;
+        max-width: 320px;
+        background: url("../assets/yasmine/panel-gigi.png") center/100% 100%
+          no-repeat;
+        padding: 44px 32px 36px;
+        text-align: center;
+        /* Ensure animation doesn't offset position */
+        transform-origin: center center;
+        animation: modalPopIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)
+          forwards;
+      }
+      @keyframes modalPopIn {
+        0% {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      @keyframes modalBrushAnim {
+        0% {
+          margin-left: -15px;
+        }
+        100% {
+          margin-left: 15px;
+        }
+      }
+      @keyframes modalBrushAnimVertical {
+        0% {
+          margin-top: -15px;
+        }
+        100% {
+          margin-top: 15px;
+        }
+      }
+      @keyframes floatInstruction {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <a href="#main-content" class="skip-link" id="skip-link"
+      >Langsung ke konten utama</a
+    >
+    <div
+      id="a11y-announcer"
+      class="a11y-announcement"
+      aria-live="polite"
+      aria-atomic="true"
+      role="status"
+    ></div>
+
+    <!-- Debug Info Overlay -->
+    <div
+      id="debug-overlay"
+      style="
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.9);
+        color: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        font-family: monospace;
+        font-size: 12px;
+        z-index: 10000;
+        line-height: 1.6;
+        max-width: 300px;
+        pointer-events: auto;
+        display: none; /* Hidden by default */
+        border: 2px solid #2baa8e;
+      "
+    >
+      <div
+        style="
+          color: #2baa8e;
+          font-weight: bold;
+          margin-bottom: 8px;
+          cursor: pointer;
+        "
+        id="debug-header"
+      >
+        🐛 DEBUG MODE [CLICK TO HIDE]
+      </div>
+      <div
+        style="
+          margin-bottom: 10px;
+          padding: 8px;
+          background: rgba(43, 170, 142, 0.2);
+          border-left: 3px solid #2baa8e;
+        "
+      >
+        <div>Cursor X: <span id="debug-cursor-x">-</span></div>
+        <div>Cursor Y: <span id="debug-cursor-y">-</span></div>
+        <div style="margin-top: 5px; font-size: 11px; color: #aaa">
+          Gerakkan mouse untuk update
         </div>
       </div>
+      <div
+        style="
+          margin-bottom: 10px;
+          padding: 8px;
+          background: rgba(100, 100, 100, 0.3);
+          border-left: 3px solid #666;
+        "
+      >
+        <div>Anchor X: <span id="debug-anchor-x">-</span></div>
+        <div>Anchor Y: <span id="debug-anchor-y">-</span></div>
+        <div style="margin-top: 5px; font-size: 11px; color: #aaa">
+          Posisi pojok kiri bawah sikat
+        </div>
+      </div>
+      <div
+        style="
+          margin-bottom: 10px;
+          padding: 8px;
+          background: rgba(255, 107, 107, 0.2);
+          border-left: 3px solid #ff6b6b;
+        "
+      >
+        <div style="font-weight: bold">Mouth Bounds</div>
+        <div>
+          L: <span id="debug-mouth-left">-</span> R:
+          <span id="debug-mouth-right">-</span>
+        </div>
+        <div>
+          T: <span id="debug-mouth-top">-</span> B:
+          <span id="debug-mouth-bottom">-</span>
+        </div>
+      </div>
+      <div
+        style="
+          padding: 10px;
+          background: rgba(0, 0, 0, 0.5);
+          border-radius: 5px;
+        "
+      >
+        <div
+          id="debug-status"
+          style="color: #ffd93d; font-weight: bold; font-size: 13px"
+        >
+          ? NO MOUTH DATA
+        </div>
+        <div style="margin-top: 5px; font-size: 10px; color: #aaa">
+          Anchor point status di mouth region
+        </div>
+      </div>
+    </div>
 
-      <!-- Interactive Area -->
-      <div class="interactive-area">
-        <div id="viewer" class="viewer-wrapper" role="region" aria-label="Area simulasi menyikat">
-          <button id="btn-recenter-zoom" class="viewer-zoom-btn" type="button"
-            aria-label="Posisikan ulang zoom wajah" data-a11y-read="Tombol posisikan ulang zoom wajah.">
-            Posisikan Ulang Zoom
+    <!-- Mouth Region Visual Overlay -->
+    <canvas
+      id="debug-mouth-canvas"
+      style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 9998;
+        pointer-events: none;
+        display: none;
+      "
+    ></canvas>
+
+    <div
+      id="brush-cursor"
+      style="
+        position: fixed;
+        pointer-events: none;
+        z-index: 9999;
+        display: none;
+        transform: rotate(-30deg);
+        transform-origin: bottom left;
+        transition: opacity 0.15s ease;
+        opacity: 0;
+      "
+    >
+      <img
+        src="../assets/yasmine/sikat-gigi.png"
+        alt=""
+        aria-hidden="true"
+        style="
+          width: 320px;
+          height: auto;
+          filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25));
+        "
+      />
+    </div>
+
+    <div
+      id="foam-container"
+      style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 0;
+        pointer-events: none;
+        z-index: 9998;
+        overflow: visible;
+      "
+    ></div>
+
+    <div class="app-shell">
+      <!-- Top Panel -->
+      <div class="top-panel-container">
+        <img
+          src="../assets/yasmine/panel-atas.png"
+          class="top-panel-bg"
+          alt=""
+        />
+        <img
+          src="../assets/yasmine/btn-kembali.png"
+          id="btn-back"
+          class="btn-kembali"
+          alt="Kembali"
+          tabindex="0"
+          role="button"
+        />
+        <img src="../assets/yasmine/icon.png" class="top-icon" alt="" />
+      </div>
+
+      <!-- Step Indicator -->
+      <div class="step-indicator" id="step-indicator" aria-hidden="true"></div>
+
+      <!-- Decorations -->
+      <img src="../assets/yasmine/gigi-1.png" class="deco-gigi-1" alt="" />
+      <img src="../assets/yasmine/gigi-2.png" class="deco-gigi-2" alt="" />
+
+      <!-- Camera as background -->
+      <div id="viewer" class="viewer-wrapper">
+        <video id="webcam" style="display: none" playsinline></video>
+        <canvas
+          id="ar-canvas"
+          width="480"
+          height="480"
+          style="transform: scaleX(-1)"
+        ></canvas>
+        <div id="success-badge" aria-hidden="true">Bersih!</div>
+      </div>
+
+      <!-- AR Instructions bubble -->
+      <div class="ar-instructions-box">
+        <img src="../assets/yasmine/intruksi-ar.png?v=2" alt="" />
+        <div id="ar-instructions" class="ar-instructions-text"></div>
+      </div>
+
+      <!-- AR Status Badge (pose/mouth feedback) -->
+      <div id="ar-status-badge">Menunggu wajah...</div>
+
+      <!-- Instruction Modal -->
+      <div id="instruction-modal">
+        <div class="modal-card">
+          <div style="position: relative; width: 85%; margin: 0 auto 16px">
+            <img
+              id="instruction-modal-img"
+              src="../assets/images/Regio 4 — Permukaan Kunyah.png"
+              alt="Petunjuk"
+              style="width: 100%; display: block"
+            />
+            <img
+              id="instruction-modal-brush"
+              src=""
+              style="
+                position: absolute;
+                display: none;
+                animation: modalBrushAnim 0.5s infinite alternate ease-in-out;
+                z-index: 2;
+                pointer-events: none;
+              "
+            />
+          </div>
+          <p
+            id="instruction-modal-text"
+            style="
+              font-weight: 800;
+              color: #000;
+              font-size: 13px;
+              margin: 0 0 18px;
+              line-height: 1.5;
+            "
+          >
+            Ikuti arah sikat gigi pada layar untuk membersihkan area gigi yang
+            tepat.
+          </p>
+          <button
+            onclick="
+              document.getElementById('instruction-modal').style.display =
+                'none'
+            "
+            style="
+              background: linear-gradient(180deg, #32cd32 0%, #00cc00 100%);
+              color: #fff;
+              border: 2px solid #fff;
+              padding: 10px 36px;
+              border-radius: 30px;
+              font-size: 15px;
+              font-weight: 900;
+              cursor: pointer;
+              box-shadow: 0 4px 0 #1a8c1a;
+            "
+          >
+            MENGERTI
           </button>
-          <video id="webcam" style="display: none;" playsinline></video>
-          <canvas id="ar-canvas" class="viewer-image" width="480" height="480" style="object-fit: cover; transform: scaleX(-1);"></canvas>
-          <div id="ar-instructions" class="ar-instructions">Memuat Kamera AR...</div>
-          <div id="success-badge" class="success-badge" aria-hidden="true">Bersih!</div>
         </div>
       </div>
 
-      <!-- Bottom CTAs -->
-      <div class="interactive-cta">
-        <button id="btn-next" class="btn" disabled
-          aria-label="Lanjut ke langkah berikutnya" data-a11y-read="Tombol Lanjut. Selesaikan misi dulu.">
-          Misi Belum Selesai
-        </button>
+      <!-- Bottom Panel -->
+      <div class="bottom-panel-container">
+        <div class="bottom-panel-bg"></div>
+        <div class="bottom-content">
+          <h1 id="scene-title" class="scene-title"></h1>
+          <p id="scene-text" class="scene-text"></p>
+          <button id="btn-recenter-zoom">Posisikan Ulang</button>
+          <div class="progress-container">
+            <div id="scene-progress" class="progress-fill"></div>
+            <div class="progress-text-overlay">
+              <span id="progress-text">Gosok untuk membersihkan!</span>
+              <span id="progress-pct">0%</span>
+            </div>
+          </div>
+          <button id="btn-next" class="btn-next-custom" disabled>
+            Misi Belum Selesai
+          </button>
+        </div>
       </div>
-    </main>
+    </div>
 
-  </div>
+    <script src="../js/accessibility.js"></script>
+    <script src="../js/pwa.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      (() => {
+        "use strict";
 
-  <script src="../js/accessibility.js"></script>
-  <script src="../js/pwa.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
-  <script>
-    (() => {
-      'use strict';
-
-      // ── SCENARIOS ──
-      const scenarios = [
-        {
-          id: 'persiapan',
-          title: 'Persiapan AR',
-          text: 'Posisikan wajahmu di depan kamera. Kita akan menggunakan filter AR untuk praktik menyikat gigi. Buka mulutmu untuk uji coba!',
-          action: 'wait',
-          requiredPose: { yaw: 'straight', mouth: 'open' }
-        },
-        {
-          id: 'regio1',
-          title: 'Regio 1 — Depan Atas & Bawah',
-          text: 'Hadap lurus ke depan dan buka mulutmu. Setelah posisi tepat (hijau), gosok layar untuk menyikat!',
-          action: 'brush',
-          requiredPose: { yaw: 'straight', mouth: 'open' },
-          image: '../assets/images/sikat_gigi_depan.png',
-          transform: 'none'
-        },
-        {
-          id: 'regio2',
-          title: 'Regio 2 — Samping Kanan Luar',
-          text: 'Palingkan wajahmu sedikit ke KIRI agar gigi kananmu terlihat. Buka mulut dan gosok layar!',
-          action: 'brush',
-          requiredPose: { yaw: 'left', mouth: 'open' },
-          image: '../assets/images/sikat_gigi_depan.png',
-          transform: 'translateY(-30px) skewY(-20deg)'
-        },
-        {
-          id: 'regio3',
-          title: 'Regio 3 — Samping Kiri Luar',
-          text: 'Palingkan wajahmu sedikit ke KANAN agar gigi kirimu terlihat. Buka mulut dan gosok layar!',
-          action: 'brush',
-          requiredPose: { yaw: 'right', mouth: 'open' },
-          image: '../assets/images/sikat_gigi_depan.png',
-          transform: 'translateX(-100%) translateY(-30px) rotate(180deg) skewY(20deg)'
-        },
-        {
-          id: 'regio4',
-          title: 'Regio 4 — Permukaan Kunyah',
-          text: 'Tengadah (angkat dagumu sedikit ke atas) dan buka mulut lebar-lebar. Gosok layar!',
-          action: 'brush',
-          requiredPose: { pitch: 'up', mouth: 'open' },
-          image: '../assets/images/sikat gigi.png',
-          transform: 'none'
-        },
-        {
-          id: 'regio5',
-          title: 'Regio 5 — Bagian Dalam',
-          text: 'Tundukkan kepalamu sedikit (dagu ke bawah) dan buka mulut. Gosok layar!',
-          action: 'brush',
-          requiredPose: { pitch: 'down', mouth: 'open' },
-          image: '../assets/images/sikat gigi.png',
-          transform: 'scaleY(-1)'
-        }
-      ];
-
-      let currentStep = 0;
-      let isInteracting = false;
-      let interactionCount = 0;
-      let isPoseReady = false;
-      let currentProgress = 0;
-      let activeBrushingTimeMs = 0;
-      let lastInteractTime = 0;
-      let mouthCenterX = 0;
-      let mouthCenterY = 0;
-      let mouthAngle = 0;
-      let faceRotateX = 0;
-      let faceRotateY = 0;
-      let faceMesh;
-      let camera;
-      
-      // Auto-zoom variables (one-time only)
-      let autoZoomDone = false;
-      let savedZoom = 1;
-      let savedOffsetX = 0;
-      let savedOffsetY = 0;
-      
-      // Mouth region polygon
-      let mouthPolygon = null;
-      
-      // Brush anchor point (bottom-left) for mouth region checking
-      let brushAnchorX = 0;
-      let brushAnchorY = 0;
-      
-      // Brush rotation tracking
-      let prevBrushX = 0;
-      let currentBrushAngle = -30;      // current smoothed angle (degrees)
-      const BASE_ANGLE = 0;             // resting angle
-      const MAX_SWING = 20;             // max tilt away from base (±20°)
-      const LERP_SPEED = 0.25;          // how fast angle follows movement
-      const RETURN_SPEED = 0.08;        // how fast it returns to rest
-      
-      // Debug mode
-      let debugMode = false; // Set to true to show debugging tools
-
-      // ── DOM refs (initialized in DOMContentLoaded) ──
-      let titleEl, textEl, viewerEl, videoElement, canvasElement, canvasCtx, viewerImg;
-      let arInstructions, btnNext, btnBack, progressFill, progressText, progressPct;
-      let btnRecenterZoom;
-      let successBadge, stepIndicator, brushCursor;
-      let debugOverlay, debugAnchorX, debugAnchorY, debugMouthLeft, debugMouthRight, debugMouthTop, debugMouthBottom, debugStatus;
-      let debugCursorX, debugCursorY, debugHeader, debugMouthCanvas, debugMouthCtx;
-
-      function resetAutoZoom() {
-        autoZoomDone = false;
-        savedZoom = 1;
-        savedOffsetX = 0;
-        savedOffsetY = 0;
-        if (arInstructions && isPoseReady) {
-          arInstructions.textContent = 'Zoom direset. Menyesuaikan posisi wajah...';
-          arInstructions.className = 'ar-instructions';
-        }
-      }
-
-      // ── Build step indicator dots ──
-      function buildStepDots() {
-        stepIndicator.innerHTML = '';
-        scenarios.forEach((_, i) => {
-          const dot = document.createElement('div');
-          dot.className = 'step-dot';
-          if (i < currentStep) dot.classList.add('step-dot--done');
-          if (i === currentStep) dot.classList.add('step-dot--active');
-          stepIndicator.appendChild(dot);
-        });
-      }
-      
-      // ── Update debug info ──
-      function updateDebugInfo() {
-        if (!debugMode || !debugOverlay) return;
-        
-        // Update cursor position
-        if (debugCursorX && debugCursorY) {
-          debugCursorX.textContent = Math.round(brushAnchorX);
-          debugCursorY.textContent = Math.round(brushAnchorY);
-        }
-        
-        // Update anchor position
-        if (debugAnchorX && debugAnchorY) {
-          debugAnchorX.textContent = Math.round(brushAnchorX);
-          debugAnchorY.textContent = Math.round(brushAnchorY);
-        }
-        
-        if (mouthPolygon) {
-          // Bounding box for debug display only
-          let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-          mouthPolygon.forEach(p => {
-            minX = Math.min(minX, p.x);
-            maxX = Math.max(maxX, p.x);
-            minY = Math.min(minY, p.y);
-            maxY = Math.max(maxY, p.y);
-          });
-          
-          if (debugMouthLeft) debugMouthLeft.textContent = Math.round(minX);
-          if (debugMouthRight) debugMouthRight.textContent = Math.round(maxX);
-          if (debugMouthTop) debugMouthTop.textContent = Math.round(minY);
-          if (debugMouthBottom) debugMouthBottom.textContent = Math.round(maxY);
-          
-          // Draw mouth region on canvas
-          if (debugMouthCanvas && debugMouthCtx) {
-            debugMouthCtx.clearRect(0, 0, debugMouthCanvas.width, debugMouthCanvas.height);
-            
-            // Draw mouth polygon exactly following the green lips
-            debugMouthCtx.strokeStyle = '#ff6b6b';
-            debugMouthCtx.lineWidth = 3;
-            debugMouthCtx.setLineDash([5, 5]);
-            debugMouthCtx.beginPath();
-            if (mouthPolygon.length > 0) {
-              debugMouthCtx.moveTo(mouthPolygon[0].x, mouthPolygon[0].y);
-              for (let i = 1; i < mouthPolygon.length; i++) {
-                debugMouthCtx.lineTo(mouthPolygon[i].x, mouthPolygon[i].y);
-              }
-              debugMouthCtx.closePath();
-            }
-            debugMouthCtx.stroke();
-            debugMouthCtx.setLineDash([]);
-            
-            // Draw cursor/anchor point
-            debugMouthCtx.fillStyle = isPointInMouth(brushAnchorX, brushAnchorY) ? '#51cf66' : '#ff6b6b';
-            debugMouthCtx.beginPath();
-            debugMouthCtx.arc(brushAnchorX, brushAnchorY, 8, 0, Math.PI * 2);
-            debugMouthCtx.fill();
-            
-            // Draw crosshair for cursor
-            debugMouthCtx.strokeStyle = debugMouthCtx.fillStyle;
-            debugMouthCtx.lineWidth = 2;
-            debugMouthCtx.beginPath();
-            debugMouthCtx.moveTo(brushAnchorX - 15, brushAnchorY);
-            debugMouthCtx.lineTo(brushAnchorX + 15, brushAnchorY);
-            debugMouthCtx.moveTo(brushAnchorX, brushAnchorY - 15);
-            debugMouthCtx.lineTo(brushAnchorX, brushAnchorY + 15);
-            debugMouthCtx.stroke();
-          }
-          
-          // Update status
-          const inMouth = isPointInMouth(brushAnchorX, brushAnchorY);
-          if (debugStatus) {
-            debugStatus.textContent = inMouth ? '✓ IN MOUTH REGION' : '✗ OUTSIDE MOUTH';
-            debugStatus.style.color = inMouth ? '#51cf66' : '#ff6b6b';
-          }
-        } else {
-          if (debugMouthLeft) debugMouthLeft.textContent = '-';
-          if (debugMouthRight) debugMouthRight.textContent = '-';
-          if (debugMouthTop) debugMouthTop.textContent = '-';
-          if (debugMouthBottom) debugMouthBottom.textContent = '-';
-          if (debugStatus) {
-            debugStatus.textContent = '? NO MOUTH DATA';
-            debugStatus.style.color = '#ffd93d';
-          }
-        }
-      }
-
-      // ── Custom Brush Cursor ──
-      function updateBrushAngle(x) {
-        const dx = x - prevBrushX;
-        prevBrushX = x;
-        
-        if (Math.abs(dx) > 1) {
-          // Map horizontal delta to target angle within swing range
-          // dx > 0 = moving right = tilt right, dx < 0 = tilt left
-          const tiltFactor = Math.max(-1, Math.min(1, dx / 12));
-          const targetAngle = BASE_ANGLE + tiltFactor * MAX_SWING;
-          currentBrushAngle += (targetAngle - currentBrushAngle) * LERP_SPEED;
-        } else {
-          // Gradually return to resting angle when stationary
-          currentBrushAngle += (BASE_ANGLE - currentBrushAngle) * RETURN_SPEED;
-        }
-      }
-      
-      function applyBrushTransform() {
-        if (!brushCursor) return;
-        brushCursor.style.transform = 'rotate(' + currentBrushAngle.toFixed(1) + 'deg)';
-      }
-      
-      function showBrushCursor(x, y) {
-        if (!brushCursor) return;
-        brushCursor.style.display = 'block';
-        brushCursor.style.left = x + 'px';
-        brushCursor.style.top = y + 'px';
-        brushCursor.style.opacity = '1';
-        updateBrushAngle(x);
-        applyBrushTransform();
-        brushAnchorX = x;
-        brushAnchorY = y;
-      }
-
-      function hideBrushCursor() {
-        if (!brushCursor) return;
-        brushCursor.style.opacity = '0';
-        setTimeout(() => { brushCursor.style.display = 'none'; }, 150);
-      }
-
-      // ── AR & MediaPipe Init ──
-      function initAR() {
-        faceMesh = new FaceMesh({locateFile: (file) => {
-          return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
-        }});
-        faceMesh.setOptions({
-          maxNumFaces: 1,
-          refineLandmarks: true,
-          minDetectionConfidence: 0.5,
-          minTrackingConfidence: 0.5
-        });
-        faceMesh.onResults(onFaceMeshResults);
-
-        camera = new Camera(videoElement, {
-          onFrame: async () => {
-            await faceMesh.send({image: videoElement});
+        // ── SCENARIOS ──
+        const scenarios = [
+          {
+            id: "persiapan",
+            title: "Persiapan AR",
+            text: "Posisikan wajahmu di depan kamera. Kita akan menggunakan filter AR untuk praktik menyikat gigi. Buka mulutmu untuk uji coba!",
+            action: "wait",
+            requiredPose: { yaw: "straight", mouth: "open" },
+            modalImage: "../assets/images/Regio 4 — Permukaan Kunyah.png",
           },
-          width: 480,
-          height: 480
-        });
-        camera.start().catch(err => {
-          arInstructions.textContent = "Gagal mengakses kamera. Periksa izin browser.";
-        });
-      }
+          {
+            id: "regio1",
+            title: "Regio 1 — Depan Atas & Bawah",
+            text: "Hadap lurus ke depan dan buka mulutmu. Setelah posisi tepat, gosok layar untuk menyikat!",
+            action: "brush",
+            requiredPose: { yaw: "straight", mouth: "open" },
+            image: "../assets/images/sikat_gigi_depan.png",
+            transform: "none",
+            modalImage: "../assets/images/Regio 1 2 3.png",
+            modalBrushImage: "../assets/images/sikat_gigi_depan.png",
+            modalBrushStyle:
+              "top: 35%; left: 42%; width: 45%; transform: rotate(0deg);",
+            modalBrushAnim: "modalBrushAnimVertical",
+          },
+          {
+            id: "regio2",
+            title: "Regio 2 — Samping Kanan Luar",
+            text: "Palingkan wajahmu sedikit ke KIRI agar gigi kananmu terlihat. Buka mulut dan gosok layar!",
+            action: "brush",
+            requiredPose: { yaw: "left", mouth: "open" },
+            image: "../assets/images/sikat_gigi_depan.png",
+            transform: "translateY(-30px) skewY(-20deg)",
+            modalImage: "../assets/images/Regio 1 2 3.png",
+            modalBrushImage: "../assets/images/sikat_gigi_depan.png",
+            modalBrushStyle:
+              "top: 35%; left: 25%; width: 45%; transform: rotate(-10deg);",
+            modalBrushAnim: "modalBrushAnimVertical",
+          },
+          {
+            id: "regio3",
+            title: "Regio 3 — Samping Kiri Luar",
+            text: "Palingkan wajahmu sedikit ke KANAN agar gigi kirimu terlihat. Buka mulut dan gosok layar!",
+            action: "brush",
+            requiredPose: { yaw: "right", mouth: "open" },
+            image: "../assets/images/sikat_gigi_depan.png",
+            transform:
+              "translateX(-100%) translateY(-30px) rotate(180deg) skewY(20deg)",
+            modalImage: "../assets/images/Regio 1 2 3.png",
+            modalBrushImage: "../assets/images/sikat_gigi_depan.png",
+            modalBrushStyle:
+              "top: 35%; left: 35%; width: 45%; transform: scaleX(-1) rotate(-10deg);",
+            modalBrushAnim: "modalBrushAnimVertical",
+          },
+          {
+            id: "regio4",
+            title: "Regio 4 — Permukaan Kunyah",
+            text: "Tengadah (angkat dagumu sedikit ke atas) dan buka mulut lebar-lebar. Gosok layar!",
+            action: "brush",
+            requiredPose: { pitch: "up", mouth: "open" },
+            image: "../assets/images/sikat gigi.png",
+            transform: "none",
+            modalImage: "../assets/images/Regio 4 — Permukaan Kunyah.png",
+            modalBrushImage: "../assets/images/sikat gigi.png",
+            modalBrushStyle:
+              "top: 15%; left: 30%; width: 40%; transform: rotate(-10deg);",
+          },
+          {
+            id: "regio5",
+            title: "Regio 5 — Bagian Dalam",
+            text: "Tundukkan kepalamu sedikit (dagu ke bawah) dan buka mulut. Gosok layar!",
+            action: "brush",
+            requiredPose: { pitch: "down", mouth: "open" },
+            image: "../assets/images/sikat gigi.png",
+            transform: "scaleY(-1)",
+            modalImage: "../assets/images/Regio 5 — Bagian Dalam.png",
+            modalBrushImage: "../assets/images/sikat gigi.png",
+            modalBrushStyle: "bottom: 15%; left: 35%; width: 40%;",
+          },
+        ];
 
-      function detectPose(landmarks) {
-        const nose = landmarks[1];
-        const leftCheek = landmarks[234];
-        const rightCheek = landmarks[454];
-        const top = landmarks[10];
-        const bottom = landmarks[152];
-        const upperLip = landmarks[13];
-        const lowerLip = landmarks[14];
-        
-        const dist = (p1, p2) => Math.sqrt((p1.x - p2.x)**2 + (p1.y - p2.y)**2);
-        
-        const faceHeight = dist(top, bottom);
-        const mouthOpenness = dist(upperLip, lowerLip) / faceHeight;
-        const mouthState = mouthOpenness > 0.05 ? 'open' : 'closed';
-        
-        const leftDistX = Math.abs(nose.x - leftCheek.x);
-        const rightDistX = Math.abs(nose.x - rightCheek.x);
-        let yaw = 'straight';
-        if (rightDistX > leftDistX * 1.5) yaw = 'right';
-        else if (leftDistX > rightDistX * 1.5) yaw = 'left';
-        
-        const topDistY = Math.abs(nose.y - top.y);
-        const bottomDistY = Math.abs(nose.y - bottom.y);
-        let pitch = 'straight';
-        if (bottomDistY > topDistY * 1.5) pitch = 'up';
-        else if (topDistY > bottomDistY * 1.5) pitch = 'down';
-        
-        return { yaw, pitch, mouth: mouthState };
-      }
+        let currentStep = 0;
+        let isInteracting = false;
+        let interactionCount = 0;
+        let isPoseReady = false;
+        let currentProgress = 0;
+        let activeBrushingTimeMs = 0;
+        let lastInteractTime = 0;
+        let mouthCenterX = 0;
+        let mouthCenterY = 0;
+        let mouthAngle = 0;
+        let faceWidthScreen = 100;
+        let faceRotateX = 0;
+        let faceRotateY = 0;
+        let faceMesh;
+        let camera;
 
-      function checkPoseRequirement(pose) {
-        if (currentStep >= scenarios.length) return;
-        const req = scenarios[currentStep].requiredPose;
-        if (!req) {
-          isPoseReady = true;
-          return;
-        }
-        
-        let msgs = [];
-        if (req.yaw && req.yaw !== pose.yaw) {
-          if (req.yaw === 'left') msgs.push('Palingkan wajah ke Kiri');
-          else if (req.yaw === 'right') msgs.push('Palingkan wajah ke Kanan');
-          else if (req.yaw === 'straight') msgs.push('Hadap lurus ke depan');
-        }
-        if (req.pitch && req.pitch !== pose.pitch) {
-          if (req.pitch === 'up') msgs.push('Tengadahkan kepala ke atas');
-          else if (req.pitch === 'down') msgs.push('Tundukkan kepala');
-          else if (req.pitch === 'straight') msgs.push('Hadap lurus ke depan');
-        }
-        if (req.mouth && req.mouth !== pose.mouth) {
-          if (req.mouth === 'open') msgs.push('Buka mulutmu');
-          else if (req.mouth === 'closed') msgs.push('Tutup mulutmu');
-        }
-        
-        if (msgs.length === 0) {
-          isPoseReady = true;
-          arInstructions.textContent = scenarios[currentStep].action === 'wait' ? 'Posisi Tepat! Bertahan...' : 'Posisi Tepat! Gosok layar!';
-          arInstructions.className = 'ar-instructions ready';
-          
-          if (scenarios[currentStep].action === 'wait' && currentProgress < 100) {
-            currentProgress += 1.5;
-            updateProgress(currentProgress);
+        // Auto-zoom variables (one-time only)
+        let autoZoomDone = false;
+        let savedZoom = 1;
+        let savedOffsetX = 0;
+        let savedOffsetY = 0;
+
+        // Mouth region polygon
+        let mouthPolygon = null;
+
+        // Brush anchor point (bottom-left) for mouth region checking
+        let brushAnchorX = 0;
+        let brushAnchorY = 0;
+
+        // Brush rotation tracking
+        let prevBrushX = 0;
+        let currentBrushAngle = -30; // current smoothed angle (degrees)
+        const BASE_ANGLE = 0; // resting angle
+        const MAX_SWING = 20; // max tilt away from base (±20°)
+        const LERP_SPEED = 0.25; // how fast angle follows movement
+        const RETURN_SPEED = 0.08; // how fast it returns to rest
+
+        // Debug mode
+        let debugMode = false; // Set to true to show debugging tools
+
+        // ── DOM refs (initialized in DOMContentLoaded) ──
+        let titleEl,
+          textEl,
+          viewerEl,
+          videoElement,
+          canvasElement,
+          canvasCtx,
+          viewerImg;
+        let arInstructions,
+          arStatusBadge,
+          btnNext,
+          btnBack,
+          progressFill,
+          progressText,
+          progressPct;
+        let btnRecenterZoom;
+        let successBadge, stepIndicator, brushCursor;
+        let debugOverlay,
+          debugAnchorX,
+          debugAnchorY,
+          debugMouthLeft,
+          debugMouthRight,
+          debugMouthTop,
+          debugMouthBottom,
+          debugStatus;
+        let debugCursorX,
+          debugCursorY,
+          debugHeader,
+          debugMouthCanvas,
+          debugMouthCtx;
+
+        function resetAutoZoom() {
+          autoZoomDone = false;
+          savedZoom = 1;
+          savedOffsetX = 0;
+          savedOffsetY = 0;
+          if (arStatusBadge && isPoseReady) {
+            arStatusBadge.textContent =
+              "Zoom direset. Menyesuaikan posisi wajah...";
+            arStatusBadge.className = "";
           }
-        } else {
-          isPoseReady = false;
-          arInstructions.textContent = msgs.join(' & ');
-          arInstructions.className = 'ar-instructions';
         }
-      }
 
-      function onFaceMeshResults(results) {
-        canvasCtx.save();
-        
-        // Calculate auto-zoom only once when face is first detected
-        if (!autoZoomDone && results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
-          const landmarks = results.multiFaceLandmarks[0];
-          
-          // Calculate face bounding box (0-1 normalized coordinates)
-          let minX = 1, maxX = 0, minY = 1, maxY = 0;
-          landmarks.forEach(p => {
-            minX = Math.min(minX, p.x);
-            maxX = Math.max(maxX, p.x);
-            minY = Math.min(minY, p.y);
-            maxY = Math.max(maxY, p.y);
+        // ── Build step indicator dots ──
+        function buildStepDots() {
+          stepIndicator.innerHTML = "";
+          scenarios.forEach((_, i) => {
+            const dot = document.createElement("div");
+            dot.className = "step-dot";
+            if (i < currentStep) dot.classList.add("step-dot--done");
+            if (i === currentStep) dot.classList.add("step-dot--active");
+            stepIndicator.appendChild(dot);
           });
-          
-          const faceWidth = maxX - minX;
-          const faceHeight = maxY - minY;
-          const faceCenterX = minX + faceWidth / 2;
-          const faceCenterY = minY + faceHeight / 2;
-          
-          // Target face to occupy 70% of canvas
-          const targetCoverage = 0.7;
-          const faceMaxDim = Math.max(faceWidth, faceHeight);
-          savedZoom = Math.min(targetCoverage / faceMaxDim, 3); // Cap at 3x zoom
-          
-          // Center face in canvas
-          const faceCenterPixelX = faceCenterX * canvasElement.width;
-          const faceCenterPixelY = faceCenterY * canvasElement.height;
-          savedOffsetX = (canvasElement.width / 2) - (faceCenterPixelX * savedZoom);
-          savedOffsetY = (canvasElement.height / 2) - (faceCenterPixelY * savedZoom);
-          
-          autoZoomDone = true;
         }
-        
-        // Clear and apply saved transform (calculated once)
-        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-        canvasCtx.setTransform(savedZoom, 0, 0, savedZoom, savedOffsetX, savedOffsetY);
-        
-        canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
-        
-        if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
-          const landmarks = results.multiFaceLandmarks[0];
-          
-          // Get exact outer lip landmarks (FACEMESH_LIPS outer contour)
-          const outerLipIndices = [61, 146, 91, 181, 84, 17, 314, 405, 321, 375, 291, 409, 270, 269, 267, 0, 37, 39, 40, 185];
-          
-          const canvasRect = canvasElement.getBoundingClientRect();
-          
-          let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-          mouthPolygon = outerLipIndices.map(idx => {
-            const p = landmarks[idx];
-            if (!p) return {x: 0, y: 0};
-            
-            // 1. Calculate internal canvas coordinates with zoom & offset
-            const internalX = p.x * canvasElement.width * savedZoom + savedOffsetX;
-            const internalY = p.y * canvasElement.height * savedZoom + savedOffsetY;
-            
-            // 2. Calculate proportional position (0.0 to 1.0) inside the canvas
-            const ratioX = internalX / canvasElement.width;
-            const ratioY = internalY / canvasElement.height;
-            
-            // 3. Map to screen pixels. 
-            // We use (1 - ratioX) to exactly match the CSS scaleX(-1) mirror effect.
-            const x = canvasRect.left + (1 - ratioX) * canvasRect.width;
-            const y = canvasRect.top + ratioY * canvasRect.height;
-            
-            minX = Math.min(minX, x);
-            maxX = Math.max(maxX, x);
-            minY = Math.min(minY, y);
-            maxY = Math.max(maxY, y);
-            
-            return { x, y };
+
+        // ── Update debug info ──
+        function updateDebugInfo() {
+          if (!debugMode || !debugOverlay) return;
+
+          // Update cursor position
+          if (debugCursorX && debugCursorY) {
+            debugCursorX.textContent = Math.round(brushAnchorX);
+            debugCursorY.textContent = Math.round(brushAnchorY);
+          }
+
+          // Update anchor position
+          if (debugAnchorX && debugAnchorY) {
+            debugAnchorX.textContent = Math.round(brushAnchorX);
+            debugAnchorY.textContent = Math.round(brushAnchorY);
+          }
+
+          if (mouthPolygon) {
+            // Bounding box for debug display only
+            let minX = Infinity,
+              maxX = -Infinity,
+              minY = Infinity,
+              maxY = -Infinity;
+            mouthPolygon.forEach((p) => {
+              minX = Math.min(minX, p.x);
+              maxX = Math.max(maxX, p.x);
+              minY = Math.min(minY, p.y);
+              maxY = Math.max(maxY, p.y);
+            });
+
+            if (debugMouthLeft) debugMouthLeft.textContent = Math.round(minX);
+            if (debugMouthRight) debugMouthRight.textContent = Math.round(maxX);
+            if (debugMouthTop) debugMouthTop.textContent = Math.round(minY);
+            if (debugMouthBottom)
+              debugMouthBottom.textContent = Math.round(maxY);
+
+            // Draw mouth region on canvas
+            if (debugMouthCanvas && debugMouthCtx) {
+              debugMouthCtx.clearRect(
+                0,
+                0,
+                debugMouthCanvas.width,
+                debugMouthCanvas.height,
+              );
+
+              // Draw mouth polygon exactly following the green lips
+              debugMouthCtx.strokeStyle = "#ff6b6b";
+              debugMouthCtx.lineWidth = 3;
+              debugMouthCtx.setLineDash([5, 5]);
+              debugMouthCtx.beginPath();
+              if (mouthPolygon.length > 0) {
+                debugMouthCtx.moveTo(mouthPolygon[0].x, mouthPolygon[0].y);
+                for (let i = 1; i < mouthPolygon.length; i++) {
+                  debugMouthCtx.lineTo(mouthPolygon[i].x, mouthPolygon[i].y);
+                }
+                debugMouthCtx.closePath();
+              }
+              debugMouthCtx.stroke();
+              debugMouthCtx.setLineDash([]);
+
+              // Draw cursor/anchor point
+              debugMouthCtx.fillStyle = isPointInMouth(
+                brushAnchorX,
+                brushAnchorY,
+              )
+                ? "#51cf66"
+                : "#ff6b6b";
+              debugMouthCtx.beginPath();
+              debugMouthCtx.arc(brushAnchorX, brushAnchorY, 8, 0, Math.PI * 2);
+              debugMouthCtx.fill();
+
+              // Draw crosshair for cursor
+              debugMouthCtx.strokeStyle = debugMouthCtx.fillStyle;
+              debugMouthCtx.lineWidth = 2;
+              debugMouthCtx.beginPath();
+              debugMouthCtx.moveTo(brushAnchorX - 15, brushAnchorY);
+              debugMouthCtx.lineTo(brushAnchorX + 15, brushAnchorY);
+              debugMouthCtx.moveTo(brushAnchorX, brushAnchorY - 15);
+              debugMouthCtx.lineTo(brushAnchorX, brushAnchorY + 15);
+              debugMouthCtx.stroke();
+            }
+
+            // Update status
+            const inMouth = isPointInMouth(brushAnchorX, brushAnchorY);
+            if (debugStatus) {
+              debugStatus.textContent = inMouth
+                ? "✓ IN MOUTH REGION"
+                : "✗ OUTSIDE MOUTH";
+              debugStatus.style.color = inMouth ? "#51cf66" : "#ff6b6b";
+            }
+          } else {
+            if (debugMouthLeft) debugMouthLeft.textContent = "-";
+            if (debugMouthRight) debugMouthRight.textContent = "-";
+            if (debugMouthTop) debugMouthTop.textContent = "-";
+            if (debugMouthBottom) debugMouthBottom.textContent = "-";
+            if (debugStatus) {
+              debugStatus.textContent = "? NO MOUTH DATA";
+              debugStatus.style.color = "#ffd93d";
+            }
+          }
+        }
+
+        // ── Custom Brush Cursor ──
+        function updateBrushAngle(x) {
+          const dx = x - prevBrushX;
+          prevBrushX = x;
+
+          if (Math.abs(dx) > 1) {
+            // Map horizontal delta to target angle within swing range
+            // dx > 0 = moving right = tilt right, dx < 0 = tilt left
+            const tiltFactor = Math.max(-1, Math.min(1, dx / 12));
+            const targetAngle = BASE_ANGLE + tiltFactor * MAX_SWING;
+            currentBrushAngle += (targetAngle - currentBrushAngle) * LERP_SPEED;
+          } else {
+            // Gradually return to resting angle when stationary
+            currentBrushAngle +=
+              (BASE_ANGLE - currentBrushAngle) * RETURN_SPEED;
+          }
+        }
+
+        function applyBrushTransform() {
+          if (!brushCursor) return;
+          brushCursor.style.transform =
+            "rotate(" + currentBrushAngle.toFixed(1) + "deg)";
+        }
+
+        function showBrushCursor(x, y) {
+          if (!brushCursor) return;
+          brushCursor.style.display = "block";
+          brushCursor.style.left = x + "px";
+          brushCursor.style.top = y + "px";
+          brushCursor.style.opacity = "1";
+          updateBrushAngle(x);
+          applyBrushTransform();
+          brushAnchorX = x;
+          brushAnchorY = y;
+        }
+
+        function hideBrushCursor() {
+          if (!brushCursor) return;
+          brushCursor.style.opacity = "0";
+          setTimeout(() => {
+            brushCursor.style.display = "none";
+          }, 150);
+        }
+
+        // ── AR & MediaPipe Init ──
+        function initAR() {
+          faceMesh = new FaceMesh({
+            locateFile: (file) => {
+              return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
+            },
           });
-          
-          mouthCenterX = (minX + maxX) / 2;
-          mouthCenterY = (minY + maxY) / 2;
-          
-          // Calculate face angle using cheeks (234 = left side, 454 = right side)
-          const mapToScreen = (p) => {
-            if (!p) return {x:0, y:0};
-            const internalX = p.x * canvasElement.width * savedZoom + savedOffsetX;
-            const internalY = p.y * canvasElement.height * savedZoom + savedOffsetY;
-            const ratioX = internalX / canvasElement.width;
-            const ratioY = internalY / canvasElement.height;
-            return {
-              x: canvasRect.left + (1 - ratioX) * canvasRect.width,
-              y: canvasRect.top + ratioY * canvasRect.height
+          faceMesh.setOptions({
+            maxNumFaces: 1,
+            refineLandmarks: true,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5,
+          });
+          faceMesh.onResults(onFaceMeshResults);
+
+          camera = new Camera(videoElement, {
+            onFrame: async () => {
+              await faceMesh.send({ image: videoElement });
+            },
+            width: 480,
+            height: 480,
+          });
+          camera.start().catch((err) => {
+            if (arStatusBadge)
+              arStatusBadge.textContent =
+                "Gagal mengakses kamera. Periksa izin browser.";
+          });
+        }
+
+        function detectPose(landmarks) {
+          const nose = landmarks[1];
+          const leftCheek = landmarks[234];
+          const rightCheek = landmarks[454];
+          const top = landmarks[10];
+          const bottom = landmarks[152];
+          const upperLip = landmarks[13];
+          const lowerLip = landmarks[14];
+
+          const dist = (p1, p2) =>
+            Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
+
+          const faceHeight = dist(top, bottom);
+          const mouthOpenness = dist(upperLip, lowerLip) / faceHeight;
+          const mouthState = mouthOpenness > 0.05 ? "open" : "closed";
+
+          const leftDistX = Math.abs(nose.x - leftCheek.x);
+          const rightDistX = Math.abs(nose.x - rightCheek.x);
+          let yaw = "straight";
+          if (rightDistX > leftDistX * 1.5) yaw = "right";
+          else if (leftDistX > rightDistX * 1.5) yaw = "left";
+
+          const topDistY = Math.abs(nose.y - top.y);
+          const bottomDistY = Math.abs(nose.y - bottom.y);
+          let pitch = "straight";
+          if (bottomDistY > topDistY * 1.5) pitch = "up";
+          else if (topDistY > bottomDistY * 1.5) pitch = "down";
+
+          return { yaw, pitch, mouth: mouthState };
+        }
+
+        function checkPoseRequirement(pose) {
+          if (currentStep >= scenarios.length) return;
+          const req = scenarios[currentStep].requiredPose;
+          if (!req) {
+            isPoseReady = true;
+            return;
+          }
+
+          let msgs = [];
+          if (req.yaw && req.yaw !== pose.yaw) {
+            if (req.yaw === "left") msgs.push("Palingkan wajah ke Kiri");
+            else if (req.yaw === "right") msgs.push("Palingkan wajah ke Kanan");
+            else if (req.yaw === "straight") msgs.push("Hadap lurus ke depan");
+          }
+          if (req.pitch && req.pitch !== pose.pitch) {
+            if (req.pitch === "up") msgs.push("Tengadahkan kepala ke atas");
+            else if (req.pitch === "down") msgs.push("Tundukkan kepala");
+            else if (req.pitch === "straight")
+              msgs.push("Hadap lurus ke depan");
+          }
+          if (req.mouth && req.mouth !== pose.mouth) {
+            if (req.mouth === "open") msgs.push("Buka mulutmu");
+            else if (req.mouth === "closed") msgs.push("Tutup mulutmu");
+          }
+
+          if (msgs.length === 0) {
+            isPoseReady = true;
+            // Show ready status on badge (green), clear instructions text
+            if (arStatusBadge) {
+              arStatusBadge.textContent =
+                scenarios[currentStep].action === "wait"
+                  ? "✅ Posisi Tepat! Bertahan..."
+                  : "✅ Posisi Tepat! Gosok layar!";
+              arStatusBadge.className = "status-ready";
+            }
+
+            if (
+              scenarios[currentStep].action === "wait" &&
+              currentProgress < 100
+            ) {
+              currentProgress += 1.5;
+              updateProgress(currentProgress);
+            }
+          } else {
+            isPoseReady = false;
+            // Show pose guidance on status badge (dark overlay)
+            if (arStatusBadge) {
+              arStatusBadge.innerHTML = msgs.join("<br>");
+              arStatusBadge.className = "";
+            }
+          }
+        }
+
+        const getObjectFitCoverParams = (canvasEl) => {
+          const rect = canvasEl.getBoundingClientRect();
+          const scale = Math.max(
+            rect.width / canvasEl.width,
+            rect.height / canvasEl.height,
+          );
+          const dispW = canvasEl.width * scale;
+          const dispH = canvasEl.height * scale;
+          const offsetX = (rect.width - dispW) / 2;
+          const offsetY = (rect.height - dispH) / 2;
+          return { rect, scale, offsetX, offsetY };
+        };
+
+        function onFaceMeshResults(results) {
+          canvasCtx.save();
+          // Clear and apply saved transform (calculated once) when face is first detected
+          if (
+            !autoZoomDone &&
+            results.multiFaceLandmarks &&
+            results.multiFaceLandmarks.length > 0
+          ) {
+            const landmarks = results.multiFaceLandmarks[0];
+
+            // Calculate face bounding box (0-1 normalized coordinates)
+            let minX = 1,
+              maxX = 0,
+              minY = 1,
+              maxY = 0;
+            landmarks.forEach((p) => {
+              minX = Math.min(minX, p.x);
+              maxX = Math.max(maxX, p.x);
+              minY = Math.min(minY, p.y);
+              maxY = Math.max(maxY, p.y);
+            });
+
+            const faceWidth = maxX - minX;
+            const faceHeight = maxY - minY;
+            const faceCenterX = minX + faceWidth / 2;
+            const faceCenterY = minY + faceHeight / 2;
+
+            // Target face to occupy 35% of canvas (zoomed out)
+            const targetCoverage = 0.35;
+            const faceMaxDim = Math.max(faceWidth, faceHeight);
+            const computedZoom = Math.min(targetCoverage / faceMaxDim, 1.2);
+
+            // If zoom would go below 1 (creates black borders), use default — no transform
+            if (computedZoom < 1) {
+              savedZoom = 1;
+              savedOffsetX = 0;
+              savedOffsetY = 0;
+            } else {
+              savedZoom = computedZoom;
+              // Center face in canvas
+              const faceCenterPixelX = faceCenterX * canvasElement.width;
+              const faceCenterPixelY = faceCenterY * canvasElement.height;
+              savedOffsetX =
+                canvasElement.width / 2 - faceCenterPixelX * savedZoom;
+              savedOffsetY =
+                canvasElement.height / 2 - faceCenterPixelY * savedZoom;
+            }
+
+            autoZoomDone = true;
+          }
+
+          // Clear and apply saved transform (calculated once)
+          canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+          canvasCtx.setTransform(
+            savedZoom,
+            0,
+            0,
+            savedZoom,
+            savedOffsetX,
+            savedOffsetY,
+          );
+
+          canvasCtx.drawImage(
+            results.image,
+            0,
+            0,
+            canvasElement.width,
+            canvasElement.height,
+          );
+
+          if (
+            results.multiFaceLandmarks &&
+            results.multiFaceLandmarks.length > 0
+          ) {
+            const landmarks = results.multiFaceLandmarks[0];
+
+            const mapToScreen = (p) => {
+              if (!p) return { x: 0, y: 0 };
+              const internalX =
+                p.x * canvasElement.width * savedZoom + savedOffsetX;
+              const internalY =
+                p.y * canvasElement.height * savedZoom + savedOffsetY;
+              const { rect, scale, offsetX, offsetY } =
+                getObjectFitCoverParams(canvasElement);
+
+              // CSS scaleX(-1) means x is drawn from the right
+              return {
+                x:
+                  rect.left +
+                  offsetX +
+                  (canvasElement.width - internalX) * scale,
+                y: rect.top + offsetY + internalY * scale,
+              };
             };
-          };
-          
-          const ptLeft = mapToScreen(landmarks[234]);
-          const ptRight = mapToScreen(landmarks[454]);
-          
-          // Angle of the line going from left to right on screen (Roll / Z-axis)
-          mouthAngle = Math.atan2(ptLeft.y - ptRight.y, ptLeft.x - ptRight.x);
-          
-          const foamContainer = document.getElementById('foam-container');
-          if (foamContainer) {
-            foamContainer.style.transform = `translate(${mouthCenterX}px, ${mouthCenterY}px) rotate(${mouthAngle}rad)`;
+
+            // Get exact outer lip landmarks (FACEMESH_LIPS outer contour)
+            const outerLipIndices = [
+              61, 146, 91, 181, 84, 17, 314, 405, 321, 375, 291, 409, 270, 269,
+              267, 0, 37, 39, 40, 185,
+            ];
+
+            // Reconstruct mouthPolygon
+            mouthPolygon = outerLipIndices.map((idx) =>
+              mapToScreen(landmarks[idx]),
+            );
+
+            const canvasRect = canvasElement.getBoundingClientRect();
+
+            let minX = Infinity,
+              maxX = -Infinity,
+              minY = Infinity,
+              maxY = -Infinity;
+            mouthPolygon = outerLipIndices.map((idx) => {
+              const p = landmarks[idx];
+              if (!p) return { x: 0, y: 0 };
+              const screenPt = mapToScreen(p);
+              minX = Math.min(minX, screenPt.x);
+              maxX = Math.max(maxX, screenPt.x);
+              minY = Math.min(minY, screenPt.y);
+              maxY = Math.max(maxY, screenPt.y);
+              return screenPt;
+            });
+
+            const centerPt = mapToScreen(landmarks[13]);
+            mouthCenterX = centerPt.x;
+            mouthCenterY = centerPt.y;
+
+            const ptLeft = mapToScreen(landmarks[234]);
+            const ptRight = mapToScreen(landmarks[454]);
+
+            // Calculate distance between cheeks to get apparent face width
+            faceWidthScreen = Math.sqrt(
+              Math.pow(ptLeft.x - ptRight.x, 2) +
+                Math.pow(ptLeft.y - ptRight.y, 2),
+            );
+
+            // Angle of the line going from left to right on screen (Roll / Z-axis)
+            mouthAngle = Math.atan2(ptLeft.y - ptRight.y, ptLeft.x - ptRight.x);
+
+            const foamContainer = document.getElementById("foam-container");
+            if (foamContainer) {
+              foamContainer.style.transform = `translate(${mouthCenterX}px, ${mouthCenterY}px) rotate(${mouthAngle}rad)`;
+            }
+
+            const pose = detectPose(landmarks);
+            checkPoseRequirement(pose);
+          } else {
+            if (arStatusBadge) {
+              arStatusBadge.textContent = "Wajah tidak terdeteksi";
+              arStatusBadge.className = "";
+            }
+            isPoseReady = false;
           }
-          
-          // Keep mouth landmarks for hit-testing, but do not render lip outline.
-          
-          const pose = detectPose(landmarks);
-          checkPoseRequirement(pose);
-        } else {
-          arInstructions.textContent = "Wajah tidak terdeteksi";
-          arInstructions.className = 'ar-instructions';
+
+          // Draw foam bubbles tracked to face every frame
+          drawFoamOnCanvas();
+
+          canvasCtx.restore();
+        }
+
+        // ── Init a scenario ──
+        function initScenario(index) {
+          if (index >= scenarios.length) {
+            finishSimulation();
+            return;
+          }
+
+          const scene = scenarios[index];
+          const modal = document.getElementById("instruction-modal");
+          const modalImg = document.getElementById("instruction-modal-img");
+          const modalBrush = document.getElementById("instruction-modal-brush");
+          const modalText = document.getElementById("instruction-modal-text");
+          if (modal && modalImg && scene.modalImage) {
+            modalImg.src = scene.modalImage;
+
+            if (scene.modalBrushImage) {
+              modalBrush.src = scene.modalBrushImage;
+              const animName = scene.modalBrushAnim || "modalBrushAnim";
+              modalBrush.style.cssText = `
+                 position: absolute;
+                 animation: ${animName} 0.5s infinite alternate ease-in-out;
+                 z-index: 2;
+                 pointer-events: none;
+                 ${scene.modalBrushStyle}
+               `;
+              modalBrush.style.display = "block";
+            } else {
+              modalBrush.style.display = "none";
+            }
+
+            if (index === 0) {
+              modalText.textContent =
+                "Buka mulut lebar-lebar sebagai tahap persiapan!";
+            } else if (index <= 5) {
+              modalText.textContent = scenarios[index].text;
+            } else {
+              modalText.textContent =
+                "Ikuti animasi sikat gigi pada gambar untuk membersihkan area gigi yang tepat.";
+            }
+
+            modal.style.display = "flex";
+          }
+
+          btnNext.disabled = true;
+          btnNext.textContent = "Misi Belum Selesai";
+          progressFill.style.width = "0%";
+          progressPct.textContent = "0%";
+          progressText.textContent =
+            scene.action === "wait"
+              ? "Tahan posisi!"
+              : "Gosok layar untuk membersihkan!";
+          successBadge.classList.remove("success-badge--visible");
+
+          currentProgress = 0;
+          activeBrushingTimeMs = 0;
+          lastInteractTime = 0;
+          interactionCount = 0;
+
+          foamParticles.length = 0;
           isPoseReady = false;
-        }
-        canvasCtx.restore();
-      }
 
-      // ── Init a scenario ──
-      function initScenario(index) {
-        if (index >= scenarios.length) {
-          finishSimulation();
-          return;
-        }
+          autoZoomDone = false;
+          savedZoom = 1;
+          savedOffsetX = 0;
+          savedOffsetY = 0;
+          mouthPolygon = null;
 
-        const scene = scenarios[index];
-        titleEl.textContent = scene.title;
-        textEl.textContent = scene.text;
+          if (arStatusBadge) {
+            arStatusBadge.textContent = "Menunggu posisi...";
+            arStatusBadge.className = "";
+          }
 
-        btnNext.disabled = true;
-        btnNext.textContent = 'Misi Belum Selesai';
-        progressFill.style.width = '0%';
-        progressPct.textContent = '0%';
-        progressText.textContent = scene.action === 'wait' ? 'Tahan posisi!' : 'Gosok layar untuk membersihkan!';
-        successBadge.classList.remove('success-badge--visible');
+          viewerEl.style.cursor = scene.action === "brush" ? "none" : "default";
 
-        currentProgress = 0;
-        activeBrushingTimeMs = 0;
-        lastInteractTime = 0;
-        interactionCount = 0;
-        
-        const container = document.getElementById('foam-container');
-        if (container) container.innerHTML = '';
-        isPoseReady = false;
-        
-        // Reset auto-zoom for new scenario
-        autoZoomDone = false;
-        savedZoom = 1;
-        savedOffsetX = 0;
-        savedOffsetY = 0;
-        mouthPolygon = null;
-        
-        arInstructions.textContent = "Menunggu posisi...";
-        arInstructions.className = 'ar-instructions';
-        
-        viewerEl.style.cursor = scene.action === 'brush' ? 'none' : 'default';
+          if (scene.image && brushCursor) {
+            const img = brushCursor.querySelector("img");
+            if (img) {
+              img.src = scene.image;
+              img.style.transform = scene.transform || "none";
+            }
+          }
 
-        if (scene.image && brushCursor) {
-          const img = brushCursor.querySelector('img');
-          if (img) {
-            img.src = scene.image;
-            img.style.transform = scene.transform || 'none';
+          buildStepDots();
+
+          if (typeof DentaA11y !== "undefined") {
+            const mode = localStorage.getItem("dentavizion-mode");
+            if (mode === "blind") {
+              DentaA11y.speak(scene.title + ". " + scene.text, true);
+            }
           }
         }
 
-        buildStepDots();
-
-        if (typeof DentaA11y !== 'undefined') {
-          const mode = localStorage.getItem('dentavizion-mode');
-          if (mode === 'blind') {
-            DentaA11y.speak(scene.title + '. ' + scene.text, true);
+        // ── Update progress ──
+        function updateProgress(percent) {
+          percent = Math.min(100, Math.round(percent));
+          progressFill.style.width = percent + "%";
+          progressPct.textContent = percent + "%";
+          if (percent >= 100 && btnNext.disabled) {
+            stepCompleted();
           }
         }
-      }
 
-      // ── Update progress ──
-      function updateProgress(percent) {
-        percent = Math.min(100, Math.round(percent));
-        progressFill.style.width = percent + '%';
-        progressPct.textContent = percent + '%';
-        if (percent >= 100 && btnNext.disabled) {
-          stepCompleted();
+        // ── Step completed ──
+        function stepCompleted() {
+          btnNext.disabled = false;
+          btnNext.innerHTML =
+            'Lanjut <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>';
+          progressText.textContent = "Selesai!";
+
+          successBadge.textContent = "Selesai!";
+          successBadge.classList.add("success-badge--visible");
+
+          hideBrushCursor();
+
+          if (typeof DentaA11y !== "undefined") {
+            DentaA11y.vibrate("confirm");
+          }
         }
-      }
 
-      // ── Step completed ──
-      function stepCompleted() {
-        btnNext.disabled = false;
-        btnNext.innerHTML = 'Lanjut <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>';
-        progressText.textContent = 'Selesai!';
+        function isPointInMouth(x, y) {
+          if (!mouthPolygon || mouthPolygon.length === 0) return false;
 
-        successBadge.textContent = 'Selesai!';
-        successBadge.classList.add('success-badge--visible');
+          let inside = false;
+          for (
+            let i = 0, j = mouthPolygon.length - 1;
+            i < mouthPolygon.length;
+            j = i++
+          ) {
+            const xi = mouthPolygon[i].x,
+              yi = mouthPolygon[i].y;
+            const xj = mouthPolygon[j].x,
+              yj = mouthPolygon[j].y;
 
-        hideBrushCursor();
+            const intersect =
+              yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+            if (intersect) inside = !inside;
+          }
 
-        if (typeof DentaA11y !== 'undefined') {
-          DentaA11y.vibrate('confirm');
+          return inside;
         }
-      }
 
-      // ── Check if point is inside mouth region using ray casting algorithm ──
-      function isPointInMouth(x, y) {
-        if (!mouthPolygon || mouthPolygon.length === 0) return false;
-        
-        // Ray casting algorithm for point in polygon
-        let inside = false;
-        for (let i = 0, j = mouthPolygon.length - 1; i < mouthPolygon.length; j = i++) {
-          const xi = mouthPolygon[i].x, yi = mouthPolygon[i].y;
-          const xj = mouthPolygon[j].x, yj = mouthPolygon[j].y;
-          
-          const intersect = ((yi > y) !== (yj > y))
-              && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-          if (intersect) inside = !inside;
-        }
-        
-        return inside;
-      }
+        const foamParticles = [];
+        const FOAM_LIFE_MS = 6000;
 
-      // ── Spawn Foam ──
-      function spawnFoam(x, y) {
-        const container = document.getElementById('foam-container');
-        if (!container) return;
-        
-        const foam = document.createElement('div');
-        foam.className = 'foam-particle';
-        
-        // Reduced size (was 10-35px, now 5-20px)
-        const size = Math.random() * 15 + 5;
-        
-        let targetScreenX, targetScreenY;
-        let valid = false;
-        
-        for (let i = 0; i < 15; i++) {
-          const offsetX = (Math.random() - 0.5) * 60;
-          const offsetY = (Math.random() - 0.5) * 60 + 15;
-          targetScreenX = x + offsetX;
-          targetScreenY = y + offsetY;
-          
-          if (isPointInMouth(targetScreenX, targetScreenY)) {
-            valid = true;
+        function spawnFoam(screenX, screenY) {
+          if (!mouthPolygon || mouthPolygon.length === 0) return;
+
+          for (let attempt = 0; attempt < 15; attempt++) {
+            const offsetX = (Math.random() - 0.5) * 60;
+            const offsetY = (Math.random() - 0.5) * 50 + 10;
+            const tx = screenX + offsetX;
+            const ty = screenY + offsetY;
+
+            if (!isPointInMouth(tx, ty)) continue;
+
+            const dx = tx - mouthCenterX;
+            const dy = ty - mouthCenterY;
+            // Rotate back by mouthAngle to align with face axis
+            const localX =
+              dx * Math.cos(mouthAngle) + dy * Math.sin(mouthAngle);
+            const localY =
+              -dx * Math.sin(mouthAngle) + dy * Math.cos(mouthAngle);
+
+            const size = Math.random() * 12 + 6;
+
+            foamParticles.push({
+              relX: localX / faceWidthScreen,
+              relY: localY / faceWidthScreen,
+              relSize: size / faceWidthScreen,
+              opacity: 1,
+              born: performance.now(),
+            });
             break;
           }
         }
-        
-        if (!valid) return;
-        
-        foam.style.width = size + 'px';
-        foam.style.height = size + 'px';
-        
-        const dx = targetScreenX - mouthCenterX;
-        const dy = targetScreenY - mouthCenterY;
-        const localX = dx * Math.cos(mouthAngle) + dy * Math.sin(mouthAngle);
-        const localY = -dx * Math.sin(mouthAngle) + dy * Math.cos(mouthAngle);
-        
-        foam.style.left = localX + 'px';
-        foam.style.top = localY + 'px';
-        
-        container.appendChild(foam);
-        
-        // Foam stays much longer now (8 seconds) before fading
-        setTimeout(() => {
-          foam.style.opacity = '0';
-          setTimeout(() => {
-            if (foam.parentNode) foam.parentNode.removeChild(foam);
-          }, 500);
-        }, 8000);
-      }
 
-      // ── Handle brushing interaction ──
-      function handleInteraction() {
-        const scene = scenarios[currentStep];
-        // Only allow brushing within mouth region, checked by brush anchor point
-        if (scene && scene.action === 'brush' && isPoseReady && currentProgress < 100 && isPointInMouth(brushAnchorX, brushAnchorY)) {
-          if (interactionCount % 10 === 0 && typeof navigator.vibrate === 'function') {
-            navigator.vibrate(20);
-          }
-          // Spawn less frequently (was % 3, now % 10)
-          if (interactionCount % 10 === 0) {
-            spawnFoam(brushAnchorX, brushAnchorY);
-          }
-          interactionCount++;
-          
+        function drawFoamOnCanvas() {
+          if (foamParticles.length === 0) return;
           const now = performance.now();
-          if (lastInteractTime === 0) lastInteractTime = now;
-          
-          const delta = now - lastInteractTime;
-          if (delta < 500) {
-            activeBrushingTimeMs += delta;
+          canvasCtx.save();
+          canvasCtx.setTransform(1, 0, 0, 1, 0, 0); // reset to identity pixels
+
+          for (let i = foamParticles.length - 1; i >= 0; i--) {
+            const p = foamParticles[i];
+            const age = now - p.born;
+
+            // Remove expired
+            if (age > FOAM_LIFE_MS) {
+              foamParticles.splice(i, 1);
+              continue;
+            }
+
+            // Fade out in last 1500ms
+            p.opacity =
+              age < FOAM_LIFE_MS - 1500
+                ? 1
+                : 1 - (age - (FOAM_LIFE_MS - 1500)) / 1500;
+
+            // Reconstruct screen coordinates using current face position & scale
+            const localX = p.relX * faceWidthScreen;
+            const localY = p.relY * faceWidthScreen;
+            // Rotate forward by current mouthAngle
+            const dx =
+              localX * Math.cos(-mouthAngle) + localY * Math.sin(-mouthAngle);
+            const dy =
+              -localX * Math.sin(-mouthAngle) + localY * Math.cos(-mouthAngle);
+            const tx = mouthCenterX + dx;
+            const ty = mouthCenterY + dy;
+
+            const size = p.relSize * faceWidthScreen;
+
+            // Convert screen coordinates to canvas context coordinates
+            const { rect, scale, offsetX, offsetY } =
+              getObjectFitCoverParams(canvasElement);
+            const cx = canvasElement.width - (tx - rect.left - offsetX) / scale;
+            const cy = (ty - rect.top - offsetY) / scale;
+
+            // Draw bubble
+            const grad = canvasCtx.createRadialGradient(
+              cx - size * 0.25,
+              cy - size * 0.25,
+              size * 0.05,
+              cx,
+              cy,
+              size * 0.5,
+            );
+            grad.addColorStop(0, `rgba(255,255,255,${p.opacity})`);
+            grad.addColorStop(0.3, `rgba(220,240,255,${p.opacity * 0.9})`);
+            grad.addColorStop(0.7, `rgba(180,220,255,${p.opacity * 0.7})`);
+            grad.addColorStop(1, `rgba(180,220,255,0)`);
+
+            canvasCtx.beginPath();
+            canvasCtx.arc(cx, cy, size * 0.5, 0, Math.PI * 2);
+            canvasCtx.fillStyle = grad;
+            canvasCtx.fill();
+
+            // Highlight rim
+            canvasCtx.beginPath();
+            canvasCtx.arc(cx, cy, size * 0.5, 0, Math.PI * 2);
+            canvasCtx.strokeStyle = `rgba(255,255,255,${p.opacity * 0.5})`;
+            canvasCtx.lineWidth = 1;
+            canvasCtx.stroke();
           }
-          lastInteractTime = now;
-          
-          // Require at least 10 seconds (10000ms) of active brushing to reach 100%
-          currentProgress = Math.min(100, (activeBrushingTimeMs / 10000) * 100);
-          updateProgress(currentProgress);
+
+          canvasCtx.restore();
         }
-      }
 
-      // ── Pointer events ──
-      const attachPointerListeners = () => {
-        if (!viewerEl) return; // Sanity check
-        
-        viewerEl.addEventListener('pointerdown', (e) => {
-          e.preventDefault();
-          isInteracting = true;
+        // ── Handle brushing interaction ──
+        function handleInteraction() {
           const scene = scenarios[currentStep];
-          if (scene && scene.action === 'brush') {
-            showBrushCursor(e.clientX, e.clientY);
+          // Only allow brushing within mouth region, checked by brush anchor point
+          if (
+            scene &&
+            scene.action === "brush" &&
+            isPoseReady &&
+            currentProgress < 100 &&
+            isPointInMouth(brushAnchorX, brushAnchorY)
+          ) {
+            if (
+              interactionCount % 10 === 0 &&
+              typeof navigator.vibrate === "function"
+            ) {
+              navigator.vibrate(20);
+            }
+            // Spawn foam more frequently
+            if (interactionCount % 3 === 0) {
+              spawnFoam(brushAnchorX, brushAnchorY);
+            }
+            interactionCount++;
+
+            const now = performance.now();
+            if (lastInteractTime === 0) lastInteractTime = now;
+
+            const delta = now - lastInteractTime;
+            if (delta < 500) {
+              activeBrushingTimeMs += delta;
+            }
+            lastInteractTime = now;
+
+            // Require at least 10 seconds (10000ms) of active brushing to reach 100%
+            currentProgress = Math.min(
+              100,
+              (activeBrushingTimeMs / 10000) * 100,
+            );
+            updateProgress(currentProgress);
           }
-          updateDebugInfo();
-          handleInteraction();
-        });
+        }
 
-        viewerEl.addEventListener('pointermove', (e) => {
-          if (!isInteracting) return;
-          e.preventDefault();
-          const scene = scenarios[currentStep];
-          if (scene && scene.action === 'brush') {
-            showBrushCursor(e.clientX, e.clientY);
+        // ── Pointer events ──
+        const attachPointerListeners = () => {
+          if (!viewerEl) return; // Sanity check
+
+          viewerEl.addEventListener("pointerdown", (e) => {
+            e.preventDefault();
+            isInteracting = true;
+            const scene = scenarios[currentStep];
+            if (scene && scene.action === "brush") {
+              showBrushCursor(e.clientX, e.clientY);
+            }
+            updateDebugInfo();
+            handleInteraction();
+          });
+
+          viewerEl.addEventListener("pointermove", (e) => {
+            if (!isInteracting) return;
+            e.preventDefault();
+            const scene = scenarios[currentStep];
+            if (scene && scene.action === "brush") {
+              showBrushCursor(e.clientX, e.clientY);
+            }
+            updateDebugInfo();
+            handleInteraction();
+          });
+
+          window.addEventListener("pointerup", () => {
+            isInteracting = false;
+            hideBrushCursor();
+          });
+
+          viewerEl.addEventListener("mousemove", (e) => {
+            const scene = scenarios[currentStep];
+            if (scene && scene.action === "brush" && brushCursor) {
+              brushCursor.style.display = "block";
+              brushCursor.style.left = e.clientX + "px";
+              brushCursor.style.top = e.clientY + "px";
+              brushCursor.style.opacity = isInteracting ? "1" : "0.5";
+              updateBrushAngle(e.clientX);
+              applyBrushTransform();
+              brushAnchorX = e.clientX;
+              brushAnchorY = e.clientY;
+              updateDebugInfo();
+            }
+          });
+
+          viewerEl.addEventListener("mouseleave", () => {
+            if (!isInteracting) hideBrushCursor();
+          });
+
+          // ── Navigation ──
+          if (btnNext) {
+            btnNext.addEventListener("click", () => {
+              // If this button is marked as final, navigate to home instead of advancing step
+              if (btnNext.dataset.final === "true") {
+                window.location.href = "home.html";
+                return;
+              }
+              currentStep++;
+              initScenario(currentStep);
+            });
           }
-          updateDebugInfo();
-          handleInteraction();
-        });
 
-        window.addEventListener('pointerup', () => {
-          isInteracting = false;
-          hideBrushCursor();
-        });
+          if (btnBack) {
+            btnBack.addEventListener("click", () => {
+              window.history.back();
+            });
+          }
 
-        viewerEl.addEventListener('mousemove', (e) => {
-          const scene = scenarios[currentStep];
-          if (scene && scene.action === 'brush' && brushCursor) {
-            brushCursor.style.display = 'block';
-            brushCursor.style.left = e.clientX + 'px';
-            brushCursor.style.top = e.clientY + 'px';
-            brushCursor.style.opacity = isInteracting ? '1' : '0.5';
-            updateBrushAngle(e.clientX);
-            applyBrushTransform();
+          if (btnRecenterZoom) {
+            btnRecenterZoom.addEventListener("pointerdown", (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            });
+
+            btnRecenterZoom.addEventListener("click", () => {
+              resetAutoZoom();
+            });
+          }
+
+          // ── Debug header toggle ──
+          if (debugHeader) {
+            debugHeader.addEventListener("click", () => {
+              debugMode = !debugMode;
+              if (debugOverlay) {
+                debugOverlay.style.display = debugMode ? "block" : "none";
+              }
+              if (debugMouthCanvas) {
+                debugMouthCanvas.style.display = debugMode ? "block" : "none";
+              }
+              if (debugMode) updateDebugInfo();
+            });
+          }
+
+          // ── Real-time cursor tracking ──
+          document.addEventListener("mousemove", (e) => {
+            // Always track cursor for debug purposes
             brushAnchorX = e.clientX;
             brushAnchorY = e.clientY;
-            updateDebugInfo();
+            if (debugMode) {
+              updateDebugInfo();
+            }
+          });
+        };
+
+        // ── Finish ──
+        function finishSimulation() {
+          titleEl.textContent = "Luar Biasa!";
+          textEl.textContent =
+            "Kamu sudah belajar menyikat gigi dengan baik dari semua regio! Gigi kamu pasti sehat dan kuat. Jangan lupa untuk menyikat gigi 2 kali sehari ya!";
+          if (viewerImg) {
+            viewerImg.src = "../assets/yasmine/gigi-1.png";
+            viewerImg.style.transform = "none";
+            viewerImg.style.display = "block";
           }
-        });
-
-        viewerEl.addEventListener('mouseleave', () => {
-          if (!isInteracting) hideBrushCursor();
-        });
-
-        // ── Navigation ──
-        if (btnNext) {
-          btnNext.addEventListener('click', () => {
-            // If this button is marked as final, navigate to home instead of advancing step
-            if (btnNext.dataset.final === 'true') {
-              window.location.href = 'home.html';
-              return;
-            }
-            currentStep++;
-            initScenario(currentStep);
-          });
-        }
-
-        if (btnBack) {
-          btnBack.addEventListener('click', () => {
-            window.history.back();
-          });
-        }
-
-        if (btnRecenterZoom) {
-          btnRecenterZoom.addEventListener('pointerdown', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          });
-
-          btnRecenterZoom.addEventListener('click', () => {
-            resetAutoZoom();
-          });
-        }
-
-        // ── Debug header toggle ──
-        if (debugHeader) {
-          debugHeader.addEventListener('click', () => {
-            debugMode = !debugMode;
-            if (debugOverlay) {
-              debugOverlay.style.display = debugMode ? 'block' : 'none';
-            }
-            if (debugMouthCanvas) {
-              debugMouthCanvas.style.display = debugMode ? 'block' : 'none';
-            }
-            if (debugMode) updateDebugInfo();
-          });
-        }
-        
-        // ── Real-time cursor tracking ──
-        document.addEventListener('mousemove', (e) => {
-          // Always track cursor for debug purposes
-          brushAnchorX = e.clientX;
-          brushAnchorY = e.clientY;
-          if (debugMode) {
-            updateDebugInfo();
+          if (canvasElement) canvasElement.style.display = "none";
+          if (videoElement) videoElement.style.display = "none";
+          progressFill.style.width = "100%";
+          progressPct.textContent = "100%";
+          progressText.textContent = "Simulasi selesai!";
+          if (camera) camera.stop();
+          canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+          arInstructions.style.display = "none";
+          btnNext.textContent = "Selesai & Kembali";
+          btnNext.disabled = false;
+          // Mark button as final so its click handler will navigate home
+          if (btnNext) {
+            btnNext.dataset.final = "true";
+            // Fallback: set onclick directly to ensure navigation even if listeners misbehave
+            btnNext.onclick = () => {
+              window.location.href = "home.html";
+            };
+            btnNext.setAttribute("aria-label", "Selesai, kembali ke Beranda");
           }
-        });
-      };
 
-      // ── Finish ──
-      function finishSimulation() {
-        titleEl.textContent = 'Luar Biasa!';
-        textEl.textContent = 'Kamu sudah belajar menyikat gigi dengan baik dari semua regio! Gigi kamu pasti sehat dan kuat. Jangan lupa untuk menyikat gigi 2 kali sehari ya!';
-        if (viewerImg) {
-          viewerImg.src = '../assets/images/mascot-tooth.png';
-          viewerImg.style.transform = 'none';
-          viewerImg.style.display = 'block';
-        }
-        if (canvasElement) canvasElement.style.display = 'none';
-        if (videoElement) videoElement.style.display = 'none';
-        progressFill.style.width = '100%';
-        progressPct.textContent = '100%';
-        progressText.textContent = 'Simulasi selesai!';
-        if (camera) camera.stop();
-        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-        arInstructions.style.display = 'none';
-        btnNext.textContent = 'Selesai & Kembali';
-        btnNext.disabled = false;
-        // Mark button as final so its click handler will navigate home
-        if (btnNext) {
-          btnNext.dataset.final = 'true';
-          // Fallback: set onclick directly to ensure navigation even if listeners misbehave
-          btnNext.onclick = () => { window.location.href = 'home.html'; };
-          btnNext.setAttribute('aria-label', 'Selesai, kembali ke Beranda');
-        }
+          successBadge.textContent = "Pahlawan Gigi!";
+          successBadge.classList.add("success-badge--visible");
 
-        successBadge.textContent = 'Pahlawan Gigi!';
-        successBadge.classList.add('success-badge--visible');
+          // Mark all dots as done
+          document.querySelectorAll(".step-dot").forEach((d) => {
+            d.classList.remove("step-dot--active");
+            d.classList.add("step-dot--done");
+          });
 
-        // Mark all dots as done
-        document.querySelectorAll('.step-dot').forEach(d => {
-          d.classList.remove('step-dot--active');
-          d.classList.add('step-dot--done');
-        });
-
-        if (typeof DentaA11y !== 'undefined') {
-          DentaA11y.vibrate('confirm');
-          const mode = localStorage.getItem('dentavizion-mode');
-          if (mode === 'blind') {
-            DentaA11y.speak('Luar biasa! Simulasi selesai. Kamu sudah belajar semua tekniknya.', true);
+          if (typeof DentaA11y !== "undefined") {
+            DentaA11y.vibrate("confirm");
+            const mode = localStorage.getItem("dentavizion-mode");
+            if (mode === "blind") {
+              DentaA11y.speak(
+                "Luar biasa! Simulasi selesai. Kamu sudah belajar semua tekniknya.",
+                true,
+              );
+            }
           }
         }
-      }
 
-      // ── Init ──
-      document.addEventListener('DOMContentLoaded', () => {
-        // Initialize DOM refs
-        titleEl = document.getElementById('scene-title');
-        textEl = document.getElementById('scene-text');
-        viewerEl = document.getElementById('viewer');
-        videoElement = document.getElementById('webcam');
-        canvasElement = document.getElementById('ar-canvas');
-        canvasCtx = canvasElement.getContext('2d');
-        // Viewer image fallback (created if not present)
-        viewerImg = document.getElementById('viewer-img');
-        if (!viewerImg && viewerEl) {
-          viewerImg = document.createElement('img');
-          viewerImg.id = 'viewer-img';
-          viewerImg.alt = '';
-          viewerImg.style.width = '100%';
-          viewerImg.style.height = '100%';
-          viewerImg.style.objectFit = 'cover';
-          viewerImg.style.position = 'absolute';
-          viewerImg.style.inset = '0';
-          viewerImg.style.display = 'none';
-          viewerEl.appendChild(viewerImg);
-        }
-        arInstructions = document.getElementById('ar-instructions');
-        btnNext = document.getElementById('btn-next');
-        btnRecenterZoom = document.getElementById('btn-recenter-zoom');
-        btnBack = document.getElementById('btn-back');
-        progressFill = document.getElementById('scene-progress');
-        progressText = document.getElementById('progress-text');
-        progressPct = document.getElementById('progress-pct');
-        successBadge = document.getElementById('success-badge');
-        stepIndicator = document.getElementById('step-indicator');
-        brushCursor = document.getElementById('brush-cursor');
-        
-        // Debug elements
-        debugOverlay = document.getElementById('debug-overlay');
-        debugAnchorX = document.getElementById('debug-anchor-x');
-        debugAnchorY = document.getElementById('debug-anchor-y');
-        debugMouthLeft = document.getElementById('debug-mouth-left');
-        debugMouthRight = document.getElementById('debug-mouth-right');
-        debugMouthTop = document.getElementById('debug-mouth-top');
-        debugMouthBottom = document.getElementById('debug-mouth-bottom');
-        debugStatus = document.getElementById('debug-status');
-        debugCursorX = document.getElementById('debug-cursor-x');
-        debugCursorY = document.getElementById('debug-cursor-y');
-        debugHeader = document.getElementById('debug-header');
-        debugMouthCanvas = document.getElementById('debug-mouth-canvas');
-        if (debugMouthCanvas) {
-          debugMouthCanvas.width = window.innerWidth;
-          debugMouthCanvas.height = window.innerHeight;
-          debugMouthCanvas.style.display = 'block';
-          debugMouthCtx = debugMouthCanvas.getContext('2d');
-        }
-        
-        const mode = localStorage.getItem('dentavizion-mode');
-        if (!mode) { window.location.href = '../index.html'; return; }
-        document.documentElement.setAttribute('data-mode', mode);
+        // ── Init ──
+        document.addEventListener("DOMContentLoaded", () => {
+          // Initialize DOM refs
+          titleEl = document.getElementById("scene-title");
+          textEl = document.getElementById("scene-text");
+          viewerEl = document.getElementById("viewer");
+          videoElement = document.getElementById("webcam");
+          canvasElement = document.getElementById("ar-canvas");
+          canvasCtx = canvasElement.getContext("2d");
+          // Viewer image fallback (created if not present)
+          viewerImg = document.getElementById("viewer-img");
+          if (!viewerImg && viewerEl) {
+            viewerImg = document.createElement("img");
+            viewerImg.id = "viewer-img";
+            viewerImg.alt = "";
+            viewerImg.style.width = "100%";
+            viewerImg.style.height = "100%";
+            viewerImg.style.objectFit = "cover";
+            viewerImg.style.position = "absolute";
+            viewerImg.style.inset = "0";
+            viewerImg.style.display = "none";
+            viewerEl.appendChild(viewerImg);
+          }
+          arInstructions = document.getElementById("ar-instructions");
+          arStatusBadge = document.getElementById("ar-status-badge");
+          btnNext = document.getElementById("btn-next");
+          btnRecenterZoom = document.getElementById("btn-recenter-zoom");
+          btnBack = document.getElementById("btn-back");
+          progressFill = document.getElementById("scene-progress");
+          progressText = document.getElementById("progress-text");
+          progressPct = document.getElementById("progress-pct");
+          successBadge = document.getElementById("success-badge");
+          stepIndicator = document.getElementById("step-indicator");
+          brushCursor = document.getElementById("brush-cursor");
 
-        // Attach event listeners after DOM refs are ready
-        attachPointerListeners();
+          // Debug elements
+          debugOverlay = document.getElementById("debug-overlay");
+          debugAnchorX = document.getElementById("debug-anchor-x");
+          debugAnchorY = document.getElementById("debug-anchor-y");
+          debugMouthLeft = document.getElementById("debug-mouth-left");
+          debugMouthRight = document.getElementById("debug-mouth-right");
+          debugMouthTop = document.getElementById("debug-mouth-top");
+          debugMouthBottom = document.getElementById("debug-mouth-bottom");
+          debugStatus = document.getElementById("debug-status");
+          debugCursorX = document.getElementById("debug-cursor-x");
+          debugCursorY = document.getElementById("debug-cursor-y");
+          debugHeader = document.getElementById("debug-header");
+          debugMouthCanvas = document.getElementById("debug-mouth-canvas");
+          if (debugMouthCanvas) {
+            debugMouthCanvas.width = window.innerWidth;
+            debugMouthCanvas.height = window.innerHeight;
+            debugMouthCanvas.style.display = "block";
+            debugMouthCtx = debugMouthCanvas.getContext("2d");
+          }
 
-        initAR();
-        initScenario(currentStep);
-      });
-    })();
-  </script>
-</body>
+          const mode = localStorage.getItem("dentavizion-mode");
+          if (!mode) {
+            window.location.href = "../index.html";
+            return;
+          }
+          document.documentElement.setAttribute("data-mode", mode);
 
+          // Attach event listeners after DOM refs are ready
+          attachPointerListeners();
+
+          initAR();
+          initScenario(currentStep);
+        });
+      })();
+    </script>
+  </body>
 </html>
