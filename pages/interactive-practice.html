@@ -40,7 +40,23 @@
         height: 100%;
         overflow: hidden;
         font-family: "Nunito", sans-serif;
-        background-color: #000;
+        background-color: #f5fffb;
+        background-image:
+          radial-gradient(
+            circle at 20% 50%,
+            rgba(0, 201, 167, 0.04) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(255, 123, 84, 0.04) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 50% 80%,
+            rgba(255, 217, 61, 0.04) 0%,
+            transparent 50%
+          );
       }
       /* Phone-sized container */
       .app-shell {
@@ -57,7 +73,7 @@
         position: absolute;
         inset: 0;
         z-index: 0;
-        background: #000;
+        background: #f5fffb;
         overflow: hidden;
       }
       .viewer-wrapper video,
@@ -595,7 +611,7 @@
         alt=""
         aria-hidden="true"
         style="
-          width: 320px;
+          width: 380px;
           height: auto;
           filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25));
         "
@@ -794,7 +810,8 @@
             action: "brush",
             requiredPose: { yaw: "left", mouth: "open" },
             image: "../assets/images/sikat_gigi_depan.png",
-            transform: "translateY(-30px) skewY(-20deg)",
+            transform:
+              "translateX(-100%) translateY(-30px) rotate(180deg) skewY(20deg)",
             modalImage: "../assets/images/Regio 1 2 3.png",
             modalBrushImage: "../assets/images/sikat_gigi_depan.png",
             modalBrushStyle:
@@ -808,8 +825,7 @@
             action: "brush",
             requiredPose: { yaw: "right", mouth: "open" },
             image: "../assets/images/sikat_gigi_depan.png",
-            transform:
-              "translateX(-100%) translateY(-30px) rotate(180deg) skewY(20deg)",
+            transform: "translateY(-30px) skewY(-20deg)",
             modalImage: "../assets/images/Regio 1 2 3.png",
             modalBrushImage: "../assets/images/sikat_gigi_depan.png",
             modalBrushStyle:
@@ -1255,6 +1271,18 @@
                 canvasElement.width / 2 - faceCenterPixelX * savedZoom;
               savedOffsetY =
                 canvasElement.height / 2 - faceCenterPixelY * savedZoom;
+
+              // Clamp offset so image never goes out of canvas bounds
+              const scaledW = canvasElement.width * savedZoom;
+              const scaledH = canvasElement.height * savedZoom;
+              savedOffsetX = Math.min(
+                0,
+                Math.max(savedOffsetX, canvasElement.width - scaledW),
+              );
+              savedOffsetY = Math.min(
+                0,
+                Math.max(savedOffsetY, canvasElement.height - scaledH),
+              );
             }
 
             autoZoomDone = true;
@@ -1633,8 +1661,8 @@
             ) {
               navigator.vibrate(20);
             }
-            // Spawn foam more frequently
-            if (interactionCount % 3 === 0) {
+            // Spawn foam less frequently
+            if (interactionCount % 8 === 0) {
               spawnFoam(brushAnchorX, brushAnchorY);
             }
             interactionCount++;
