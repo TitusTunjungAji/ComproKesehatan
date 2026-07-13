@@ -66,6 +66,7 @@
         height: 100dvh;
         margin: 0 auto;
         overflow: hidden;
+        touch-action: none;
       }
 
       /* ── Camera: absolute fullscreen inside app-shell ── */
@@ -811,7 +812,7 @@
             requiredPose: { yaw: "left", mouth: "open" },
             image: "../assets/images/sikat_gigi_depan.png",
             transform:
-              "translateX(-100%) translateY(-30px) rotate(180deg) skewY(20deg)",
+              "translateX(-100%) translateY(-60px) rotate(180deg) skewY(20deg)",
             modalImage: "../assets/images/Regio 1 2 3.png",
             modalBrushImage: "../assets/images/sikat_gigi_depan.png",
             modalBrushStyle:
@@ -825,7 +826,7 @@
             action: "brush",
             requiredPose: { yaw: "right", mouth: "open" },
             image: "../assets/images/sikat_gigi_depan.png",
-            transform: "translateY(-30px) skewY(-20deg)",
+            transform: "translateY(-60px) skewY(-20deg)",
             modalImage: "../assets/images/Regio 1 2 3.png",
             modalBrushImage: "../assets/images/sikat_gigi_depan.png",
             modalBrushStyle:
@@ -1076,7 +1077,7 @@
         function applyBrushTransform() {
           if (!brushCursor) return;
           brushCursor.style.transform =
-            "rotate(" + currentBrushAngle.toFixed(1) + "deg)";
+            "translateY(-20px) rotate(" + currentBrushAngle.toFixed(1) + "deg)";
         }
 
         function showBrushCursor(x, y) {
@@ -1689,7 +1690,11 @@
         const attachPointerListeners = () => {
           if (!viewerEl) return; // Sanity check
 
-          viewerEl.addEventListener("pointerdown", (e) => {
+          // ── Pointer/Touch input — document-level so finger swipes over
+          // UI panels are still captured ──
+          document.addEventListener("pointerdown", (e) => {
+            // Ignore taps on buttons/nav
+            if (e.target.closest("button, a, [data-no-brush]")) return;
             e.preventDefault();
             isInteracting = true;
             const scene = scenarios[currentStep];
@@ -1698,10 +1703,22 @@
             }
             updateDebugInfo();
             handleInteraction();
-          });
+          }, { passive: false });
 
-          viewerEl.addEventListener("pointermove", (e) => {
-            if (!isInteracting) return;
+          document.addEventListener("pointermove", (e) => {
+            if (!isInteracting) {
+              // Still update brush position for hover preview on desktop
+              const scene = scenarios[currentStep];
+              if (scene && scene.action === "brush" && brushCursor && e.pointerType === "mouse") {
+                brushCursor.style.display = "block";
+                brushCursor.style.left = e.clientX + "px";
+                brushCursor.style.top = e.clientY + "px";
+                brushCursor.style.opacity = "0.5";
+                updateBrushAngle(e.clientX);
+                applyBrushTransform();
+              }
+              return;
+            }
             e.preventDefault();
             const scene = scenarios[currentStep];
             if (scene && scene.action === "brush") {
@@ -1709,31 +1726,18 @@
             }
             updateDebugInfo();
             handleInteraction();
-          });
+          }, { passive: false });
 
-          window.addEventListener("pointerup", () => {
+          document.addEventListener("pointerup", () => {
             isInteracting = false;
             hideBrushCursor();
           });
 
-          viewerEl.addEventListener("mousemove", (e) => {
-            const scene = scenarios[currentStep];
-            if (scene && scene.action === "brush" && brushCursor) {
-              brushCursor.style.display = "block";
-              brushCursor.style.left = e.clientX + "px";
-              brushCursor.style.top = e.clientY + "px";
-              brushCursor.style.opacity = isInteracting ? "1" : "0.5";
-              updateBrushAngle(e.clientX);
-              applyBrushTransform();
-              brushAnchorX = e.clientX;
-              brushAnchorY = e.clientY;
-              updateDebugInfo();
-            }
+          document.addEventListener("pointercancel", () => {
+            isInteracting = false;
+            hideBrushCursor();
           });
 
-          viewerEl.addEventListener("mouseleave", () => {
-            if (!isInteracting) hideBrushCursor();
-          });
 
           // ── Navigation ──
           if (btnNext) {
